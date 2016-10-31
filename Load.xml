@@ -1,0 +1,9 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Include file="Libs\Embeds.xml" />
+    <Include file="Localization\Localization.xml" />
+    <Include file="Core\Core.xml" />
+    <Include file="UI\UI.xml" />
+    <Include file="Plugins\Plugins.xml" />
+    <Include file="Extension\Extension.xml" />
+</Ui>

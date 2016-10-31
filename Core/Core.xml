@@ -1,0 +1,14 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="Addon.lua" />
+    <Script file="Stack.lua" />
+    <Script file="Util.lua" />
+    <Script file="Round.lua" />
+    <Script file="Action.lua" />
+    <Script file="Condition.lua" />
+    <Script file="Director.lua" />
+    <Script file="ScriptManager.lua" />
+    <Script file="Script.lua" />
+    <Script file="Plugin.lua" />
+    <Script file="ImportExport.lua" />
+</Ui>

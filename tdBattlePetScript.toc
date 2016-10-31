@@ -1,0 +1,12 @@
+## Interface: 70000
+## Title: tdBattlePetScript
+## Description: 自动宠物战斗
+## Author: DengSir
+## Version: 70000.01
+## OptionalDeps: tdGUI, Ace3
+## SavedVariables: TD_DB_BATTLEPETSCRIPT_GLOBAL
+
+## LoadManagers: AddonLoader
+## X-LoadOn-Always: delayed
+
+Load.xml

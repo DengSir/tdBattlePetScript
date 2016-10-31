@@ -1,0 +1,10 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+    <Script file="Widgets\ScriptItem.lua" />
+    <Script file="UI.lua" />
+    <Script file="PetBattle.lua" />
+    <Script file="Option.lua" />
+    <Script file="Import.lua" />
+    <Script file="MainPanel.lua" />
+    <Script file="Minimap.lua" />
+</Ui>
