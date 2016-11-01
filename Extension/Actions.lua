@@ -22,7 +22,7 @@ Addon:RegisterAction('change', function(index)
     else
         index = Util.ParsePetIndex(LE_BATTLE_PET_ALLY, index)
     end
-    if not index or active == index or C_PetBattles.GetHealth(LE_BATTLE_PET_ALLY) == 0 or not C_PetBattles.ShouldShowPetSelect() then
+    if not index or active == index or C_PetBattles.GetHealth(LE_BATTLE_PET_ALLY, index) == 0 then
         return false
     end
     C_PetBattles.ChangePet(index)
