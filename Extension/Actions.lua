@@ -51,6 +51,9 @@ end)
 
 
 Addon:RegisterAction('standby', function()
+    if not C_PetBattles.IsSkipAvailable() then
+        return false
+    end
     C_PetBattles.SkipTurn()
     return true
 end)
