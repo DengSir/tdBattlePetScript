@@ -329,7 +329,7 @@ function Module:OnInitialize()
         BlockDialog:SetFrameLevel(MainPanel:GetFrameLevel() + 100)
     end
 
-    local Dropdown = CreateFrame('Frame', 'Dropdown', MainPanel, 'UIDropDownMenuTemplate') do
+    local Dropdown = CreateFrame('Frame', 'tdBattlePetScriptDropdown', MainPanel, 'UIDropDownMenuTemplate') do
         Dropdown:Hide()
         Dropdown.point = 'TOPRIGHT'
         Dropdown.relativePoint = 'BOTTOMRIGHT'

@@ -16,7 +16,7 @@ function Round:OnEnable()
     }
 
     if C_PetBattles.IsInBattle() then
-        local cvar = GetCVar('_Round')
+        local cvar = GetCVar('tdBattlePetScript_Round')
         if cvar then
             local all, ally, enemy = cvar:match('^(%d+)/(%d+)/(%d+)$')
 
@@ -52,8 +52,8 @@ end
 
 function Round:PET_BATTLE_AUTO_COMBAT_DB_SHUTDOWN()
     if C_PetBattles.IsInBattle() then
-        RegisterCVar('_Round')
-        SetCVar('_Round', format('%d/%d/%d', self.rounds[0], unpack(self.rounds)))
+        RegisterCVar('tdBattlePetScript_Round')
+        SetCVar('tdBattlePetScript_Round', format('%d/%d/%d', self.rounds[0], unpack(self.rounds)))
     end
 end
 

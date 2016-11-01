@@ -63,7 +63,7 @@ function Module:OnInitialize()
         end)
     end
 
-    local AutoButton = CreateFrame('Button', 'AutoButton', SkipButton:GetParent(), 'UIPanelButtonTemplate') do
+    local AutoButton = CreateFrame('Button', 'tdBattlePetScriptAutoButton', SkipButton:GetParent(), 'UIPanelButtonTemplate') do
         AutoButton:SetSize(SkipButton:GetSize())
         AutoButton:SetPoint('LEFT', SkipButton, 'RIGHT')
         AutoButton:SetText(L['Auto'])
