@@ -370,10 +370,10 @@ function Module:OnEnable()
     self:RegisterEvent('PET_BATTLE_OPENING_START', 'UpdateDebugButton')
     self:RegisterEvent('PET_BATTLE_CLOSE', 'UpdateDebugButton')
     self:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE', 'UpdateDebugButton')
-    self:RegisterMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_LIST_UPDATE', 'UpdateScriptList')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_LIST_UPDATE', 'UpdateScriptList')
 
-    self:RegisterMessage('PET_BATTLE_AUTO_COMBAT_SETTING_CHANGED_editorFontFace', 'OnFontChanged')
-    self:RegisterMessage('PET_BATTLE_AUTO_COMBAT_SETTING_CHANGED_editorFontSize', 'OnFontChanged')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_editorFontFace', 'OnFontChanged')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_editorFontSize', 'OnFontChanged')
 end
 
 function Module:OnFontChanged()

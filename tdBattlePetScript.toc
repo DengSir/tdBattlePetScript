@@ -5,6 +5,7 @@
 ## Version: 70000.01
 ## OptionalDeps: tdGUI, Ace3
 ## SavedVariables: TD_DB_BATTLEPETSCRIPT_GLOBAL
+## SavedVariablesPerCharacter: TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE
 
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed

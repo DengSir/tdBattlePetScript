@@ -171,8 +171,8 @@ function Module:OnEnable()
     self:RegisterEvent('PET_BATTLE_CLOSE')
     self:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE', 'UpdateAutoButton')
 
-    self:RegisterMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_UPDATE', 'UpdateAutoButton')
-    self:RegisterMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_UPDATE', 'UpdateAutoButton')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE', 'UpdateAutoButton')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE', 'UpdateAutoButton')
 
     self:SecureHook('PetBattleFrame_UpdatePassButtonAndTimer')
 

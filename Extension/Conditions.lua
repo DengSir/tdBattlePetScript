@@ -4,10 +4,11 @@ Conditions.lua
 @Link    : https://dengsir.github.io
 ]]
 
-local ns    = select(2, ...)
-local Addon = ns.Addon
-local Util  = ns.Util
-local Round = ns.Round
+local ns     = select(2, ...)
+local Addon  = ns.Addon
+local Util   = ns.Util
+local Round  = ns.Round
+local Played = ns.Played
 
 Addon:RegisterCondition('dead', { type = 'boolean', arg = false }, function(owner, pet)
     return C_PetBattles.GetHealth(owner, pet) == 0
@@ -85,4 +86,8 @@ Addon:RegisterCondition('round', { type = 'compare', pet = false, arg = false },
     else
         return Round:GetRound()
     end
+end)
+
+Addon:RegisterCondition('played', { type = 'boolean', arg = false }, function(owner, pet)
+    return Played:IsPetPlayed(owner, pet)
 end)

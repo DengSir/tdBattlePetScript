@@ -217,7 +217,7 @@ end
 
 function Director:SetScript(script)
     self.script = script
-    self:SendMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_UPDATE')
+    self:SendMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE')
 end
 
 function Director:GetScript()
@@ -226,5 +226,5 @@ end
 
 function Director:ClearScript()
     self.script = nil
-    self:SendMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_UPDATE')
+    self:SendMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE')
 end

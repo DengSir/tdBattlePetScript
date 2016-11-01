@@ -9,27 +9,24 @@ local Addon = ns.Addon
 local Round = Addon:NewModule('Round', 'AceEvent-3.0')
 
 function Round:OnEnable()
-    self.rounds = {
+    self.rounds = Addon:GetBattleCache('rounds') or {
         [0]                   = 0,
         [LE_BATTLE_PET_ALLY]  = 0,
         [LE_BATTLE_PET_ENEMY] = 0,
     }
 
     if C_PetBattles.IsInBattle() then
-        local cvar = GetCVar('tdBattlePetScript_Round')
-        if cvar then
-            local all, ally, enemy = cvar:match('^(%d+)/(%d+)/(%d+)$')
-
-            self.rounds[0]                   = tonumber(all) or 0
-            self.rounds[LE_BATTLE_PET_ALLY]  = tonumber(ally) or 0
-            self.rounds[LE_BATTLE_PET_ENEMY] = tonumber(enemy) or 0
-        end
+        self:RegisterEvent('PET_BATTLE_CLOSE', function()
+            self:UnregisterEvent('PET_BATTLE_CLOSE')
+            self:RegisterEvent('PET_BATTLE_OPENING_START')
+        end)
+    else
+        self:RegisterEvent('PET_BATTLE_OPENING_START')
     end
 
-    self:RegisterEvent('PET_BATTLE_OPENING_START')
     self:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
     self:RegisterEvent('PET_BATTLE_PET_CHANGED')
-    self:RegisterMessage('PET_BATTLE_AUTO_COMBAT_DB_SHUTDOWN')
+    self:RegisterMessage('PET_BATTLE_INBATTLE_SHUTDOWN')
 end
 
 function Round:PET_BATTLE_OPENING_START()
@@ -50,11 +47,8 @@ function Round:PET_BATTLE_PET_CHANGED(_, owner)
     end
 end
 
-function Round:PET_BATTLE_AUTO_COMBAT_DB_SHUTDOWN()
-    if C_PetBattles.IsInBattle() then
-        RegisterCVar('tdBattlePetScript_Round')
-        SetCVar('tdBattlePetScript_Round', format('%d/%d/%d', self.rounds[0], unpack(self.rounds)))
-    end
+function Round:PET_BATTLE_INBATTLE_SHUTDOWN()
+    Addon:SetBattleCache('rounds', self.rounds)
 end
 
 function Round:GetRound()

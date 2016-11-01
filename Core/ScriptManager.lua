@@ -17,7 +17,7 @@ local db = setmetatable({}, {
 
 function ScriptManager:AddScript(plugin, key, script)
     db[plugin][key] = script
-    self:SendMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_LIST_UPDATE')
+    self:SendMessage('PET_BATTLE_SCRIPT_SCRIPT_LIST_UPDATE')
 end
 
 function ScriptManager:GetScript(plugin, key)
@@ -26,7 +26,7 @@ end
 
 function ScriptManager:RemoveScript(plugin, key)
     db[plugin][key] = nil
-    self:SendMessage('PET_BATTLE_AUTO_COMBAT_SCRIPT_LIST_UPDATE')
+    self:SendMessage('PET_BATTLE_SCRIPT_SCRIPT_LIST_UPDATE')
 end
 
 function ScriptManager:IteratePluginScripts(plugin)
