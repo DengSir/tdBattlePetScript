@@ -16,7 +16,8 @@ local template = ([[
 # %s (Author) : %%s
 # %s (Selector) : %%s
 # %s (Notes) : %%s
-# %s (Script) : %%s
+# %s (Script) : #
+%%s
 ]]):format(L['Script name'], L['Script author'], L['Script selector'], L['Script notes'], L['Script'])
 
 function Addon:Export(script)
@@ -24,8 +25,10 @@ function Addon:Export(script)
         script:GetName() or '',
         script:GetAuthor() or '',
         script:GetPlugin():GetPluginTitle(),
-        (script:GetNotes() or ''):gsub('\n', '\n                     '),
-        Base64:enc(self:RawExport(script))
+        (script:GetNotes() or ''):gsub('\n', '\n#                    '),
+        Base64:enc(self:RawExport(script)):gsub('(..?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?)', function(x)
+            return '# ' .. x .. '\n'
+        end)
     )
 end
 
@@ -44,6 +47,9 @@ function Addon:Import(code)
     if not code then
         return false, 'Decode failed'
     end
+
+    code = code:gsub('\n[^#](.+)$', '')
+
     local crc, data = Base64:dec(code):match('^(%d+)(^.+)$')
     if not crc or not data then
         return false, 'Decode failed'
