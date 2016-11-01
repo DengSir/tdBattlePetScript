@@ -48,6 +48,7 @@ L.OPTION_SCRIPTSELECTOR_NOTES                 = 'Here you can manage the script 
 L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_ONLY_ONE = 'It is only a script automatically selected'
 L.OPTION_SETTINGS_HIDE_SELECTOR_NO_SCRIPT     = 'The script selector is not displayed when there is no script'
 L.OPTION_SETTINGS_NO_WAIT_DELETE_SCRIPT       = 'Do not wait for the script to be deleted'
+L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY           = 'Auto button hotkey'
 L.OPTION_SCRIPTEDITOR_NOTES                   = 'Here is the script editor preferences'
 
 

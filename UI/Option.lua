@@ -76,6 +76,12 @@ function Addon:LoadOptionFrame()
                 width = 'double',
                 order = order(),
             },
+            autoButtonHotKey = {
+                type  = 'keybinding',
+                name  = L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY,
+                width = 'double',
+                order = order(),
+            }
         }
     }
 

@@ -24,10 +24,11 @@ function Addon:OnInitialize()
             },
             settings = {
                 selectOnlyOneScript = true,
-                hideNoScript = false,
-                noWaitDeleteScript = false,
-                editorFontFace = STANDARD_TEXT_FONT,
-                editorFontSize = 14,
+                hideNoScript        = false,
+                noWaitDeleteScript  = false,
+                editorFontFace      = STANDARD_TEXT_FONT,
+                editorFontSize      = 14,
+                autoButtonHotKey    = 'A',
             },
             minimap = {
                 minimapPos = 50,

@@ -48,6 +48,7 @@ L.OPTION_SCRIPTSELECTOR_NOTES                 = '在这里你可以管理脚本�
 L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_ONLY_ONE = '只有一个脚本时自动选择'
 L.OPTION_SETTINGS_HIDE_SELECTOR_NO_SCRIPT     = '没有脚本时不显示脚本选择器'
 L.OPTION_SETTINGS_NO_WAIT_DELETE_SCRIPT       = '删除脚本时不等待'
+L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY           = '自动按钮快捷键'
 L.OPTION_SCRIPTEDITOR_NOTES                   = '这里是脚本编辑器的偏好设置'
 
 

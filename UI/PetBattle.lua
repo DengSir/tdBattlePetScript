@@ -71,6 +71,16 @@ function Module:OnInitialize()
         AutoButton:SetScript('OnClick', function()
             self:OnAutoButtonClick()
         end)
+        AutoButton:SetScript('OnShow', function(AutoButton)
+            self:UpdateHotKey()
+        end)
+        AutoButton:SetScript('OnHide', function(AutoButton)
+            ClearOverrideBindings(AutoButton)
+        end)
+
+        AutoButton.HotKey = AutoButton:CreateFontString(nil, 'OVERLAY', 'NumberFontNormalSmallGray')
+        AutoButton.HotKey:SetPoint('TOPRIGHT', -1, -2)
+        AutoButton.HotKey:SetText('')
     end
 
     local ArtFrame2 = CreateFrame('Frame', nil, TurnTimer) do
@@ -174,6 +184,8 @@ function Module:OnEnable()
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE', 'UpdateAutoButton')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE', 'UpdateAutoButton')
 
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_autoButtonHotKey', 'UpdateHotKey')
+
     self:SecureHook('PetBattleFrame_UpdatePassButtonAndTimer')
 
     if C_PetBattles.IsInBattle() then
@@ -195,6 +207,22 @@ end
 function Module:PET_BATTLE_CLOSE()
     self:UpdateAutoButton()
     self.ScriptFrame:Hide()
+end
+
+function Module:UpdateHotKey()
+    if not self.AutoButton:IsShown() then
+        return
+    end
+
+    ClearOverrideBindings(self.AutoButton)
+
+    local hotKey = Addon:GetSetting('autoButtonHotKey')
+    if hotKey then
+        SetOverrideBindingClick(self.AutoButton, true, hotKey, self.AutoButton:GetName())
+        self.AutoButton.HotKey:SetText(hotKey)
+    else
+        self.AutoButton.HotKey:SetText('')
+    end
 end
 
 function Module:UpdateAutoButton()
