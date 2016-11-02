@@ -2,7 +2,7 @@
 ## Title: tdBattlePetScript
 ## Description: 自动宠物战斗
 ## Author: DengSir
-## Version: 70100.02
+## Version: 70100.03
 ## OptionalDeps: tdGUI, Ace3
 ## SavedVariables: TD_DB_BATTLEPETSCRIPT_GLOBAL
 ## SavedVariablesPerCharacter: TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE
