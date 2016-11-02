@@ -11,6 +11,8 @@ ns.Addon = Addon
 ns.UI    = {}
 ns.L     = LibStub('AceLocale-3.0'):GetLocale('tdBattlePetScript', true)
 
+_G.tdBattlePetScript = Addon
+
 function Addon:OnInitialize()
     local defaults = {
         global = {
