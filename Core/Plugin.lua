@@ -34,6 +34,16 @@ function Addon:IteratePlugins()
     return pairs(self.plugins)
 end
 
+function Addon:IterateEnabledPlugins()
+    return coroutine.wrap(function()
+        for name, plugin in pairs(self.plugins) do
+            if plugin:IsEnabled() then
+                coroutine.yield(name, plugin)
+            end
+        end
+    end)
+end
+
 function Addon:InitPluginScriptDB()
     for name, plugin in self:IteratePlugins() do
         self.db.global.scripts[name] = self.db.global.scripts[name] or {}
@@ -49,7 +59,11 @@ end
 ---- override
 
 function PluginPrototype:GetCurrentKey()
-    error(format('`%s`:SelectScript not define', self:GetPluginName()))
+    error(format('`%s`:GetCurrentKey not define', self:GetPluginName()))
+end
+
+function PluginPrototype:GetTitleByKey(key)
+    return self:AllocName()
 end
 
 function PluginPrototype:OnTooltipFormatting(tip, key)

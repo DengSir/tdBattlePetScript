@@ -39,6 +39,8 @@ L.TOGGLE_SCRIPT_SELECTOR           = 'Toggle script selector'
 L.SCRIPT_SELECTOR_LOST_TOOLTIP     = 'Script selector developer does not define the function `OnTooltipFormatting`'
 L.SCRIPT_EDITOR_LABEL_TOGGLE_EXTRA = 'Toggle extension information editor'
 L.SCRIPT_EDITOR_DELETE_SCRIPT      = 'Are you sure you want to |cffff0000delete|r the script |cffffd000[%s - %s]|r ?'
+L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT   = 'Create or debug script'
+L.SCRIPT_SELECTOR_NOT_MATCH        = 'No script selector matches to the current battle'
 
 L.SCRIPT_IMPORT_LABEL_COVER = 'The matching mode existing script, and continue to import will cover the current script.'
 L.SCRIPT_IMPORT_LABEL_EXTRA = 'Continue to import the plugin data'

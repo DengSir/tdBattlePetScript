@@ -36,9 +36,7 @@ function Module:OnInitialize()
             GameTooltip:SetOwner(ToolButton, 'ANCHOR_BOTTOM')
             GameTooltip:SetText(L.ADDON_NAME)
             GameTooltip:AddLine(UI.LEFT_MOUSE_BUTTON .. L.TOGGLE_SCRIPT_SELECTOR, HIGHLIGHT_FONT_COLOR:GetRGB())
-            if Addon:GetPlugin('Base'):IsEnabled() then
-                GameTooltip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L.PLUGINBASE_TOOLTIP_CREATE_SCRIPT, HIGHLIGHT_FONT_COLOR:GetRGB())
-            end
+            GameTooltip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT, HIGHLIGHT_FONT_COLOR:GetRGB())
             GameTooltip:Show()
         end)
         ToolButton:SetScript('OnLeave', function()
@@ -48,11 +46,10 @@ function Module:OnInitialize()
 
         ToolButton:SetScript('OnClick', function(ToolButton, click)
             local basePlugin = Addon:GetPlugin('Base')
+            GameTooltip:Hide()
 
             if click == 'RightButton' then
-                if basePlugin:IsEnabled() then
-                    basePlugin:OpenScriptEditor(basePlugin:GetCurrentKey(), basePlugin:AllocName())
-                end
+                self:ToggleCreateMenu(ToolButton, 'TOP', ToolButton, 'BOTTOM', 0, 0)
             elseif click == 'LeftButton' then
                 if self.ScriptFrame:IsShown() then
                     self.ScriptFrame:Hide()
@@ -162,8 +159,13 @@ function Module:OnInitialize()
             GameTooltip:Hide()
         end)
         ScriptList:SetCallback('OnRefresh', function(ScriptList)
-            self.ScriptFrame:SetHeight(max(60, ScriptList:GetHeight() + 30))
-            EmptyLabel:SetShown(ScriptList:GetItemCount() == 0)
+            if ScriptList:GetItemCount() == 0 then
+                EmptyLabel:Show()
+                ScriptFrame:SetHeight(60)
+            else
+                EmptyLabel:Hide()
+                ScriptFrame:SetHeight(ScriptList:GetHeight() + 30)
+            end
         end)
     end
 
@@ -262,4 +264,34 @@ function Module:OnAutoButtonClick()
     if Director:GetScript() then
         Director:Run()
     end
+end
+
+function Module:ToggleCreateMenu(anchor, ...)
+    local menuTable = {
+        {
+            text    = L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT,
+            isTitle = true,
+        }
+    }
+
+    for name, plugin in Addon:IterateEnabledPlugins() do
+        local key = plugin:GetCurrentKey()
+        if key then
+            tinsert(menuTable, {
+                text = name,
+                func = function()
+                    plugin:OpenScriptEditor(key, plugin:GetTitleByKey(key))
+                end
+            })
+        end
+    end
+
+    if #menuTable <= 1 then
+        tinsert(menuTable, {
+            text     = L.SCRIPT_SELECTOR_NOT_MATCH,
+            disabled = true,
+        })
+    end
+
+    GUI:ToggleMenu(anchor, menuTable, ...)
 end

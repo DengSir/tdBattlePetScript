@@ -39,6 +39,8 @@ L.TOGGLE_SCRIPT_SELECTOR           = '切换脚本选择器'
 L.SCRIPT_SELECTOR_LOST_TOOLTIP     = '脚本选择器开发者没有定义 OnTooltipFormatting'
 L.SCRIPT_EDITOR_LABEL_TOGGLE_EXTRA = '切换扩展信息编辑器'
 L.SCRIPT_EDITOR_DELETE_SCRIPT      = '你确定要|cffff0000删除|r脚本 |cffffd000[%s - %s]|r 么？'
+L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT   = '创建或调试脚本'
+L.SCRIPT_SELECTOR_NOT_MATCH        = '没有脚本选择器匹配到当前战斗'
 
 L.SCRIPT_IMPORT_LABEL_COVER = '这个匹配模式下已存在脚本，继续导入将覆盖当前脚本。'
 L.SCRIPT_IMPORT_LABEL_EXTRA = '继续导入扩展信息'
