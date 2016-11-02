@@ -203,13 +203,11 @@ end
 function Director:Select()
     local list = {}
 
-    for name, plugin in Addon:IteratePlugins() do
-        if plugin:IsEnabled() then
-            local ok, key = xpcall(function() return plugin:GetCurrentKey() end, errorhandler)
-            local script  = ok and key and plugin:GetScript(key)
-            if script then
-                tinsert(list, script)
-            end
+    for name, plugin in Addon:IterateEnabledPlugins() do
+        local ok, key = xpcall(function() return plugin:GetCurrentKey() end, errorhandler)
+        local script  = ok and key and plugin:GetScript(key)
+        if script then
+            tinsert(list, script)
         end
     end
     return list
