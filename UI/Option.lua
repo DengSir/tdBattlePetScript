@@ -160,3 +160,14 @@ function Addon:RefillPluginOptions()
     end
     AceConfigRegistry:NotifyChange('tdBattlePetScript Plugins')
 end
+
+local function OpenToCategory(key)
+    InterfaceOptionsFrame_OpenToCategory(key)
+    InterfaceOptionsFrame_OpenToCategory(key)
+
+    OpenToCategory = InterfaceOptionsFrame_OpenToCategory
+end
+
+function Addon:OpenOptionFrame()
+    OpenToCategory('tdBattlePetScript')
+end

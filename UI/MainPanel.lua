@@ -329,12 +329,6 @@ function Module:OnInitialize()
         BlockDialog:SetFrameLevel(MainPanel:GetFrameLevel() + 100)
     end
 
-    local Dropdown = CreateFrame('Frame', 'tdBattlePetScriptDropdown', MainPanel, 'UIDropDownMenuTemplate') do
-        Dropdown:Hide()
-        Dropdown.point = 'TOPRIGHT'
-        Dropdown.relativePoint = 'BOTTOMRIGHT'
-    end
-
     self.AuthorBox      = AuthorBox
     self.Banner         = Banner
     self.BlockDialog    = BlockDialog
@@ -344,7 +338,6 @@ function Module:OnInitialize()
     self.Content        = Content
     self.DebugButton    = DebugButton
     self.DeleteButton   = DeleteButton
-    self.Dropdown       = Dropdown
     self.EditBoxGroup   = EditBoxGroup
     self.ExtraFrame     = ExtraFrame
     self.HelpIcon       = HelpIcon
@@ -479,9 +472,10 @@ function Module:ShowDialog()
     self.MainPanel:SetMovable(true)
     self.MainPanel:SetResizable(true)
     self.MainPanel:SetFrameStrata('DIALOG')
+    self.MainPanel:SetText(L['Script editor'])
 
     if self.MainPanel:IsShown() then
-        HideUIPanel(self.MainPanel)
+        self:HidePanel()
     end
 
     self.MainPanel:Show()
@@ -495,9 +489,10 @@ function Module:ShowPanel()
     self.MainPanel:SetMovable(false)
     self.MainPanel:SetResizable(false)
     self.MainPanel:SetFrameStrata('MEDIUM')
+    self.MainPanel:SetText(L['Script manager'])
 
     if self.MainPanel:IsShown() then
-        HideUIPanel(self.MainPanel)
+        self:HidePanel()
     end
     self.MainPanel:SetAttribute('UIPanelLayout-defined', true)
     ShowUIPanel(self.MainPanel)
@@ -505,10 +500,14 @@ end
 
 function Module:TogglePanel()
     if self.MainPanel:IsShown() then
-        HideUIPanel(self.MainPanel)
+        self:HidePanel()
     else
         self:ShowPanel()
     end
+end
+
+function Module:HidePanel()
+    HideUIPanel(self.MainPanel)
 end
 
 function Module:UpdateLayout()
@@ -623,7 +622,7 @@ function Module:OnDeleteButtonClick()
         OnAccept = function(script)
             script:GetPlugin():RemoveScript(script:GetKey())
             if self.isDialog then
-                HideUIPanel(self.MainPanel)
+                self:HidePanel()
             else
                 self:ShowPanel()
             end
@@ -641,28 +640,25 @@ function Module:Run()
 end
 
 function Module:OnShareButtonClick()
-    EasyMenu({
+    GUI:ToggleMenu(self.ShareButton, {
         {
-            text         = L['Beauty script'],
-            notCheckable = true,
-            disabled     = not self.script or not self.script:GetCode() or self:IsCanSave(),
-            func         = function()
+            text     = L['Beauty script'],
+            disabled = not self.script or not self.script:GetCode() or self:IsCanSave(),
+            func     = function()
                 self:OnBeautyButtonClick()
             end
         },
         {
-            text         = L['Import'],
-            notCheckable = true,
-            func         = function()
+            text = L['Import'],
+            func = function()
                 UI.Import.Frame:Show()
-                HideUIPanel(self.MainPanel)
+                self:HidePanel()
             end
         },
         {
-            text         = L['Export'],
-            notCheckable = true,
-            disabled     = self.status ~= STATUS_EDIT,
-            func = function()
+            text     = L['Export'],
+            disabled = self.status ~= STATUS_EDIT,
+            func     = function()
                 self.BlockDialog:Open{
                     text             = L['Export'],
                     cancelHidden     = true,
@@ -676,13 +672,11 @@ function Module:OnShareButtonClick()
         },
         {
             text = L['Options'],
-            notCheckable = true,
             func = function()
-                InterfaceOptionsFrame_OpenToCategory('tdBattlePetScript')
-                InterfaceOptionsFrame_OpenToCategory('tdBattlePetScript')
+                Addon:OpenOptionFrame()
             end
         }
-    }, self.Dropdown, self.ShareButton, 0, 0, 'MENU')
+    })
 end
 
 function Module:Bind(method, obj)

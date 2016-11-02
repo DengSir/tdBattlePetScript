@@ -7,7 +7,7 @@ enUS.lua
 local L = LibStub('AceLocale-3.0'):NewLocale('tdBattlePetScript', 'enUS', true)
 if not L then return end
 
-L.ADDON_NAME = 'Battle pet auto combat'
+L.ADDON_NAME = 'Battle pet script'
 
 L['Auto']             = true
 L['Create script']    = true
@@ -32,8 +32,9 @@ L['Script selector']  = true
 L['Script']           = true
 L['Select script']    = true
 L['Beauty script']    = true
+L['Script manager']   = true
 
-
+L.TOGGLE_SCRIPT_MANAGER            = 'Toggle script manager'
 L.TOGGLE_SCRIPT_SELECTOR           = 'Toggle script selector'
 L.SCRIPT_SELECTOR_LOST_TOOLTIP     = 'Script selector developer does not define the function `OnTooltipFormatting`'
 L.SCRIPT_EDITOR_LABEL_TOGGLE_EXTRA = 'Toggle extension information editor'

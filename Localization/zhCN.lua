@@ -7,7 +7,7 @@ zhCN.lua
 local L = LibStub('AceLocale-3.0'):NewLocale('tdBattlePetScript', 'zhCN')
 if not L then return end
 
-L.ADDON_NAME = '小宠物自动战斗'
+L.ADDON_NAME = '小宠物战斗脚本'
 
 L['Auto']             = '自动'
 L['Create script']    = '创建脚本'
@@ -32,8 +32,9 @@ L['Script selector']  = '脚本选择器'
 L['Script']           = '脚本'
 L['Select script']    = '选择脚本'
 L['Beauty script']    = '美化脚本'
+L['Script manager']   = '脚本管理器'
 
-
+L.TOGGLE_SCRIPT_MANAGER            = '切换脚本管理器'
 L.TOGGLE_SCRIPT_SELECTOR           = '切换脚本选择器'
 L.SCRIPT_SELECTOR_LOST_TOOLTIP     = '脚本选择器开发者没有定义 OnTooltipFormatting'
 L.SCRIPT_EDITOR_LABEL_TOGGLE_EXTRA = '切换扩展信息编辑器'
