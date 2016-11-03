@@ -114,8 +114,6 @@ function Condition:RunCondition(condition)
         error('Big Bang !!!!!!')
     end
 
-    print(owner, pet, cmd, arg, op, value)
-
     if opts.pet and not pet then
         return false
     end

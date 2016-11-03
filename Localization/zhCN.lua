@@ -53,6 +53,7 @@ L.OPTION_SETTINGS_HIDE_SELECTOR_NO_SCRIPT     = '没有脚本时不显示脚本�
 L.OPTION_SETTINGS_NO_WAIT_DELETE_SCRIPT       = '删除脚本时不等待'
 L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY           = '自动按钮快捷键'
 L.OPTION_SCRIPTEDITOR_NOTES                   = '这里是脚本编辑器的偏好设置'
+L.OPTION_SETTINGS_TEST_BREAK                  = 'Debug: test 命令中断脚本'
 
 
 L.PLUGINBASE_TITLE      = '基础'

@@ -11,7 +11,7 @@ local Util  = ns.Util
 
 Addon:RegisterAction('test', function(arg)
     print(arg)
-    return true
+    return Addon:GetSetting('testBreak')
 end)
 
 

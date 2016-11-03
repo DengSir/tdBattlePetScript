@@ -53,6 +53,7 @@ L.OPTION_SETTINGS_HIDE_SELECTOR_NO_SCRIPT     = 'The script selector is not disp
 L.OPTION_SETTINGS_NO_WAIT_DELETE_SCRIPT       = 'Do not wait for the script to be deleted'
 L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY           = 'Auto button hotkey'
 L.OPTION_SCRIPTEDITOR_NOTES                   = 'Here is the script editor preferences'
+L.OPTION_SETTINGS_TEST_BREAK                  = 'Debug: Action test break script'
 
 
 L.PLUGINBASE_TITLE      = 'Base'

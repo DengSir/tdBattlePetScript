@@ -76,12 +76,18 @@ function Addon:LoadOptionFrame()
                 width = 'double',
                 order = order(),
             },
+            testBreak = {
+                type  = 'toggle',
+                name  = L.OPTION_SETTINGS_TEST_BREAK,
+                width = 'double',
+                order = order(),
+            },
             autoButtonHotKey = {
                 type  = 'keybinding',
                 name  = L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY,
                 width = 'double',
                 order = order(),
-            }
+            },
         }
     }
 

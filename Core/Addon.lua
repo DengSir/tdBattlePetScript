@@ -31,6 +31,7 @@ function Addon:OnInitialize()
                 editorFontFace      = STANDARD_TEXT_FONT,
                 editorFontSize      = 14,
                 autoButtonHotKey    = 'A',
+                testBreak           = true,
             },
             minimap = {
                 minimapPos = 50,
