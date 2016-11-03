@@ -130,6 +130,23 @@ Addon:RegisterCondition('power', { type = 'compare', arg = false }, C_PetBattles
 Addon:RegisterCondition('level', { type = 'compare', arg = false }, C_PetBattles.GetLevel)
 
 
+Addon:RegisterCondition('level.max', { type = 'boolean', arg = false }, function(owner, pet)
+    return C_PetBattles.GetLevel(owner, pet) == 25
+end)
+
+
+Addon:RegisterCondition('speed.fast', { type = 'boolean', pet = false, arg = false }, function(owner)
+    local opponent = getOpponent(owner)
+    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) > C_PetBattles.GetSpeed(opponent, C_PetBattles.GetActivePet(opponent))
+end)
+
+
+Addon:RegisterCondition('speed.slow', { type = 'boolean', pet = false, arg = false }, function(owner)
+    local opponent = getOpponent(owner)
+    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) < C_PetBattles.GetSpeed(opponent, C_PetBattles.GetActivePet(opponent))
+end)
+
+
 Addon:RegisterCondition('type', { type = 'equality', arg = false, valueParse = Util.ParsePetType }, function(owner, pet)
     return C_PetBattles.GetPetType(owner, pet)
 end)
@@ -137,16 +154,4 @@ end)
 
 Addon:RegisterCondition('quality', { type = 'compare', arg = false, valueParse = Util.ParseQuality }, function(owner, pet)
     return C_PetBattles.GetBreedQuality(owner, pet)
-end)
-
-
-Addon:RegisterCondition('fast', { type = 'boolean', pet = false, arg = false }, function(owner)
-    local opponent = getOpponent(owner)
-    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) > C_PetBattles.GetSpeed(opponent, C_PetBattles.GetActivePet(opponent))
-end)
-
-
-Addon:RegisterCondition('slow', { type = 'boolean', pet = false, arg = false }, function(owner)
-    local opponent = getOpponent(owner)
-    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) < C_PetBattles.GetSpeed(opponent, C_PetBattles.GetActivePet(opponent))
 end)
