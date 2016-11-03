@@ -75,4 +75,36 @@ function Util.assert(flag, formatter, ...)
     if not flag then
         error(format(formatter, ...), 0)
     end
+    return flag
+end
+
+local function lower(value)
+    if type(value) == 'string' then
+        return value:lower()
+    end
+    return value
+end
+
+local PET_TYPES = {} do
+    for id = 1, C_PetJournal.GetNumPetTypes() do
+        local name      = _G['BATTLE_PET_NAME_' .. id]:lower()
+        PET_TYPES[name] = id
+        PET_TYPES[id]   = id
+    end
+end
+
+function Util.ParsePetType(value)
+    return value and PET_TYPES[lower(value)] or nil
+end
+
+local PET_QUALITIES = {} do
+    for id = 1, 6 do
+        local name          = _G['BATTLE_PET_BREED_QUALITY' .. id]:lower()
+        PET_QUALITIES[name] = id
+        PET_QUALITIES[id]   = id
+    end
+end
+
+function Util.ParseQuality(value)
+    return value and PET_QUALITIES[lower(value)] or nil
 end

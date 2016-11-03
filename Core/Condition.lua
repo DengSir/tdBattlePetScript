@@ -114,6 +114,8 @@ function Condition:RunCondition(condition)
         error('Big Bang !!!!!!')
     end
 
+    print(owner, pet, cmd, arg, op, value)
+
     if opts.pet and not pet then
         return false
     end
@@ -208,7 +210,7 @@ function Condition:ParseCondition(condition)
     if not opts.arg then
         Util.assert(not arg, 'Invalid Condition: `%s` (Not need arg)', condition)
     else
-        arg = trynumber(ar)
+        arg = trynumber(arg)
         if opts.argParse then
             arg = opts.argParse(owner, pet, arg)
         end

@@ -9,6 +9,7 @@ local Addon  = ns.Addon
 local Util   = ns.Util
 local Round  = ns.Round
 local Played = ns.Played
+local null   = ns.Condition.null
 
 Addon:RegisterCondition('dead', { type = 'boolean', arg = false }, function(owner, pet)
     return C_PetBattles.GetHealth(owner, pet) == 0
@@ -44,7 +45,7 @@ Addon:RegisterCondition('aura.duration', { type = 'compare' }, function(owner, p
 end)
 
 
-Addon:RegisterCondition('weather', { type = 'boolean', owner = false }, function(_, _, weather)
+Addon:RegisterCondition('weather', { type = 'boolean', owner = false, pet = false }, function(_, _, weather)
     local id, name = 0, ''
     local aura = C_PetBattles.GetAuraInfo(LE_BATTLE_PET_WEATHER, PET_BATTLE_PAD_INDEX, 1)
     if aura then
@@ -54,7 +55,7 @@ Addon:RegisterCondition('weather', { type = 'boolean', owner = false }, function
 end)
 
 
-Addon:RegisterCondition('weather.duration', { type = 'compare', owner = false }, function(_, _, weather)
+Addon:RegisterCondition('weather.duration', { type = 'compare', owner = false, pet = false }, function(_, _, weather)
     local id, _, duration = C_PetBattles.GetAuraInfo(LE_BATTLE_PET_WEATHER, PET_BATTLE_PAD_INDEX, 1)
     if id and (id == weather or select(2, C_PetBattles.GetAbilityInfoByID(id)) == weather) then
         return duration
@@ -68,15 +69,43 @@ Addon:RegisterCondition('active', { type = 'boolean', arg = false }, function(ow
 end)
 
 
-Addon:RegisterCondition('ability.usable', { type = 'boolean' }, function(owner, pet, ability)
-    local ability = Util.ParseAbility(owner, pet, ability)
-    return ability and C_PetBattles.GetAbilityState(owner, pet, ability)
+Addon:RegisterCondition('ability.usable', { type = 'boolean', argParse = Util.ParseAbility }, function(owner, pet, ability)
+    return (C_PetBattles.GetAbilityState(owner, pet, ability))
 end)
 
 
-Addon:RegisterCondition('ability.duration', { type = 'compare' }, function(owner, pet, ability)
-    local ability = Util.ParseAbility(owner, pet, ability)
-    return ability and select(2, C_PetBattles.GetAbilityState(owner, pet, ability)) or 0
+Addon:RegisterCondition('ability.duration', { type = 'compare', argParse = Util.ParseAbility }, function(owner, pet, ability)
+    return (select(2, C_PetBattles.GetAbilityState(owner, pet, ability)))
+end)
+
+
+local function GetAbilityAttackModifier(owner, pet, ability)
+    local abilityType, noStrongWeakHints = select(7, C_PetBattles.GetAbilityInfo(owner, pet, ability))
+    if noStrongWeakHints then
+        return
+    end
+
+    local opponent = owner == LE_BATTLE_PET_ALLY and LE_BATTLE_PET_ENEMY or LE_BATTLE_PET_ALLY
+    local opponentType = C_PetBattles.GetPetType(opponent, C_PetBattles.GetActivePet(opponent))
+
+    return C_PetBattles.GetAttackModifier(abilityType, opponentType)
+end
+
+
+Addon:RegisterCondition('ability.strong', { type = 'boolean', argParse = Util.ParseAbility }, function(owner, pet, ability)
+    local modifier = GetAbilityAttackModifier(owner, pet, ability)
+    return modifier and modifier > 1
+end)
+
+
+Addon:RegisterCondition('ability.weak', { type = 'boolean', argParse = Util.ParseAbility }, function(owner, pet, ability)
+    local modifier = GetAbilityAttackModifier(owner, pet, ability)
+    return modifier and modifier < 1
+end)
+
+
+Addon:RegisterCondition('ability.type', { type = 'equality', argParse = Util.ParseAbility, valueParse = Util.ParsePetType }, function(owner, pet, ability)
+    return (select(7, C_PetBattles.GetAbilityInfo(owner, pet, ability)))
 end)
 
 
@@ -90,4 +119,18 @@ end)
 
 Addon:RegisterCondition('played', { type = 'boolean', arg = false }, function(owner, pet)
     return Played:IsPetPlayed(owner, pet)
+end)
+
+Addon:RegisterCondition('speed', { type = 'compare', arg = false }, C_PetBattles.GetSpeed)
+Addon:RegisterCondition('power', { type = 'compare', arg = false }, C_PetBattles.GetPower)
+Addon:RegisterCondition('level', { type = 'compare', arg = false }, C_PetBattles.GetLevel)
+
+
+Addon:RegisterCondition('type', { type = 'equality', arg = false, valueParse = Util.ParsePetType }, function(owner, pet)
+    return C_PetBattles.GetPetType(owner, pet)
+end)
+
+
+Addon:RegisterCondition('quality', { type = 'compare', arg = false, valueParse = Util.ParseQuality }, function(owner, pet)
+    return C_PetBattles.GetBreedQuality(owner, pet)
 end)
