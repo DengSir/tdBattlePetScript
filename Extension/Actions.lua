@@ -22,9 +22,14 @@ Addon:RegisterAction('change', function(index)
     else
         index = Util.ParsePetIndex(LE_BATTLE_PET_ALLY, index)
     end
-    if not index or active == index or C_PetBattles.GetHealth(LE_BATTLE_PET_ALLY, index) == 0 then
+    -- if not index or active == index or C_PetBattles.GetHealth(LE_BATTLE_PET_ALLY, index) == 0 then
+    --     return false
+    -- end
+
+    if not index or active == index or not C_PetBattles.CanActivePetSwapOut() or not C_PetBattles.CanPetSwapIn(index) then
         return false
     end
+
     C_PetBattles.ChangePet(index)
     return true
 end)
@@ -55,5 +60,14 @@ Addon:RegisterAction('standby', function()
         return false
     end
     C_PetBattles.SkipTurn()
+    return true
+end)
+
+
+Addon:RegisterAction('catch', function()
+    if not C_PetBattles.IsTrapAvailable() then
+        return false
+    end
+    C_PetBattles.UseTrap()
     return true
 end)

@@ -62,13 +62,17 @@ function Util.ParseAbility(owner, pet, ability)
     end
 end
 
-function Util.FindAura(owner, pet, aura)
+local function FindAura(owner, pet, aura)
     for i = 1, C_PetBattles.GetNumAuras(owner, pet) do
         local id, name = C_PetBattles.GetAbilityInfoByID(C_PetBattles.GetAuraInfo(owner, pet, i))
         if id == aura or name == aura then
             return i
         end
     end
+end
+
+function Util.FindAura(owner, pet, aura)
+    return FindAura(owner, pet, aura) or FindAura(owner, PET_BATTLE_PAD_INDEX, aura)
 end
 
 function Util.assert(flag, formatter, ...)
