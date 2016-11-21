@@ -66,13 +66,18 @@ local function FindAura(owner, pet, aura)
     for i = 1, C_PetBattles.GetNumAuras(owner, pet) do
         local id, name = C_PetBattles.GetAbilityInfoByID(C_PetBattles.GetAuraInfo(owner, pet, i))
         if id == aura or name == aura then
-            return i
+            return owner, pet, i
         end
     end
 end
 
 function Util.FindAura(owner, pet, aura)
-    return FindAura(owner, pet, aura) or FindAura(owner, PET_BATTLE_PAD_INDEX, aura)
+    for i, pet in ipairs({pet, PET_BATTLE_PAD_INDEX}) do
+        local owner, pet, i = FindAura(owner, pet, aura)
+        if owner then
+            return owner, pet, i
+        end
+    end
 end
 
 function Util.assert(flag, formatter, ...)
