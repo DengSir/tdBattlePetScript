@@ -57,7 +57,7 @@ L.OPTION_SETTINGS_TEST_BREAK                  = 'Debug: test 命令中断脚本'
 
 
 L.PLUGINBASE_TITLE      = '基础'
-L.PLUGINBASE_NOTES      = '这个脚本选择器匹配我方阵容和敌方阵容。'
+L.PLUGINBASE_NOTES      = '这个脚本选择器将脚本绑定到对阵双方的完整阵容。'
 L.PLUGINBASE_TEAM_ALLY  = '我方阵容'
 L.PLUGINBASE_TEAM_ENEMY = '敌方阵容'
 L.PLUGINBASE_TOOLTIP_CREATE_SCRIPT = '基础：为当前对阵创建脚本'
