@@ -52,6 +52,9 @@ end
 function Addon:OnEnable()
     self:InitPluginScriptDB()
 
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_ADDED')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_REMOVED')
+
     C_Timer.After(0, function()
         for _, module in ipairs(self.moduleEnableQueue) do
             if not module.GetPluginName or self:IsPluginAllowed(module:GetPluginName()) then
@@ -72,12 +75,6 @@ function Addon:OnModuleCreated(module)
 end
 
 function Addon:OnDatabaseShutdown()
-    for name, plugin in self:IteratePlugins() do
-        local db = wipe(self.db.global.scripts[name])
-        for key, script in plugin:IterateScripts() do
-            db[key] = script:GetDB()
-        end
-    end
     self:SendMessage('PET_BATTLE_SCRIPT_DB_SHUTDOWN')
 
     if C_PetBattles.IsInBattle() then
@@ -88,10 +85,12 @@ function Addon:OnDatabaseShutdown()
     end
 end
 
-_G.SD = function()
-    Addon:SendMessage('PET_BATTLE_INBATTLE_SHUTDOWN')
+function Addon:PET_BATTLE_SCRIPT_SCRIPT_ADDED(_, plugin, key, script)
+    self.db.global.scripts[plugin:GetPluginName()][key] = script:GetDB()
+end
 
-    dump(Addon.battleCache)
+function Addon:PET_BATTLE_SCRIPT_SCRIPT_REMOVED(_, plugin, key)
+    self.db.global.scripts[plugin:GetPluginName()][key] = nil
 end
 
 Addon.moduleWatings     = {}

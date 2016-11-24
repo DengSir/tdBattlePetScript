@@ -583,7 +583,7 @@ function Module:GetEditBoxText(editBox)
 end
 
 function Module:OnSaveButtonClick()
-    local ok, err = self.script:SetCode(self.ScriptBox:GetText())
+    local ok, err = self.script:SetCode(self.ScriptBox:GetText():trim())
     if ok and not self.status ~= STATUS_EDIT then
         self.status = STATUS_EDIT
         self.plugin:AddScript(self.key, self.script)
