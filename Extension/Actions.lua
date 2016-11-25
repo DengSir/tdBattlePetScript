@@ -35,7 +35,7 @@ Addon:RegisterAction('change', function(index)
 end)
 
 
-Addon:RegisterAction('ability', function(ability)
+Addon:RegisterAction('ability', 'use', function(ability)
     local index = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
     local ability= Util.ParseAbility(LE_BATTLE_PET_ALLY, index, ability)
     if not ability then

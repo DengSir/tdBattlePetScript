@@ -11,8 +11,17 @@ local Action = {} ns.Action = Action
 
 Action.apis = {}
 
-function Addon:RegisterAction(name, method)
-    Action.apis[name] = method
+function Addon:RegisterAction(...)
+    local last = select('#', ...)
+    local method = select(last, ...)
+
+    if last < 2 or type(method) ~= 'function' then
+        error('Usage: :RegisterAction(name, [name2, ...], method)')
+    end
+
+    for i = 1, last - 1 do
+        Action.apis[select(i, ...)] = method
+    end
 end
 
 function Action:Run(action)

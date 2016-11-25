@@ -124,7 +124,9 @@ function Condition:RunCondition(condition)
 end
 
 function Condition:ParseCondition(condition)
-    local non, args, op, value = condition:match('^(!?)([^!=<>%s]+)%s*([!=<>~]*)%s*(.*)$')
+    local non, args, op, value = condition:match('^(!?)([^!=<>~%s]+)%s*([!=<>~]*)%s*(.*)$')
+
+    print(non, args, op, value)
 
     Util.assert(non, 'Invalid Condition: `%s` (Can`t parse)', condition)
 
