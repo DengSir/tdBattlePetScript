@@ -55,7 +55,6 @@ end)
 
 Addon:RegisterCondition('aura.duration', { type = 'compare' }, function(owner, pet, aura)
     local owner, pet, index = Util.FindAura(owner, pet, aura)
-    print(owner, pet, index)
     if index then
         return (select(3, C_PetBattles.GetAuraInfo(owner, pet, index)))
     end
