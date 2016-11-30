@@ -53,12 +53,21 @@ function Util.ParseAbility(owner, pet, ability)
             return index
         end
     else
+        local best, bestDuration
         for i = 1, NUM_BATTLE_PET_ABILITIES do
             local id, name = C_PetBattles.GetAbilityInfo(owner, pet, i)
             if id == tonumber(ability) or name == ability then
-                return i
+                local usable, duration = C_PetBattles.GetAbilityState(owner, pet, i)
+                if usable then
+                    return i
+                end
+                if not bestDuration or bestDuration > duration then
+                    bestDuration = duration
+                    best = i
+                end
             end
         end
+        return best
     end
 end
 
