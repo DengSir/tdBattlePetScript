@@ -1,4 +1,4 @@
-
+enable-nolib-creation: no
 externals:
     Libs/LibClass-2.0:
         url: https://github.com/DengSir/LibClass-2.0.git
