@@ -4,8 +4,7 @@ zhCN.lua
 @Link    : https://dengsir.github.io
 ]]
 
-local L = LibStub('AceLocale-3.0'):NewLocale('tdBattlePetScript', 'zhCN')
-if not L then return end
+local L = LibStub('AceLocale-3.0'):NewLocale('tdBattlePetScript', 'zhCN', true)
 
 L.ADDON_NAME = '小宠物战斗脚本'
 
