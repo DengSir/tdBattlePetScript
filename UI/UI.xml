@@ -1,7 +1,11 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
     <Script file="Widgets\ScriptItem.lua" />
+    <Script file="Widgets\AutoCompleteItem.lua" />
+    <Script file="Widgets\AutoCompleteBox.lua" />
     <Script file="UI.lua" />
+    <Script file="Snippets.lua" />
+    <Script file="ScriptEditor.lua" />
     <Script file="PetBattle.lua" />
     <Script file="Option.lua" />
     <Script file="Import.lua" />
