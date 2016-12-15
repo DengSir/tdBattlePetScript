@@ -86,9 +86,9 @@ end
 local function battleSelector(inBattle, outBattle)
     return function(...)
         if C_PetBattles.IsInBattle() then
-            return inBattle(...)
+            return inBattle and inBattle(...)
         else
-            return outBattle(...)
+            return outBattle and outBattle(...)
         end
     end
 end
@@ -108,20 +108,25 @@ Snippets.__default = function(list, trigger)
     end
 end
 
-Snippets.use = battleSelector(
-    function(list)
-        local pet  = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
-        for i = 1, NUM_BATTLE_PET_ABILITIES do
-            local id, name, icon = C_PetBattles.GetAbilityInfo(LE_BATTLE_PET_ALLY, pet, i)
-            if id then
-                tinsert(list, makeIconSnippet(icon))
-                tinsert(list, makeNameSnippet(name))
-                tinsert(list, makeIndexSnippet(i))
-            end
+local function fillAbilityInBattle(list, owner, pet)
+    for i = 1, NUM_BATTLE_PET_ABILITIES do
+        local id, name, icon = C_PetBattles.GetAbilityInfo(owner, pet, i)
+        if id then
+            tinsert(list, makeIconSnippet(icon))
+            tinsert(list, makeNameSnippet(name))
+            tinsert(list, makeIndexSnippet(i))
         end
-        return 3
-    end,
-    function(list)
+    end
+    return 3
+end
+
+local function fillAbilityOutBattle(list, owner, pet)
+    if owner == LE_BATTLE_PET_ENEMY then
+        for i = 1, 3 do
+            tinsert(list, makeIndexSnippet(i))
+        end
+        return 1
+    else
         for i = 1, 3 do
             local petId, ability1, ability2, ability3 = C_PetJournal.GetPetLoadOutInfo(i)
             local abilities = {ability1, ability2, ability3}
@@ -137,40 +142,49 @@ Snippets.use = battleSelector(
         end
         return 3
     end
-)
+end
 
-local fillSelfInBattle, fillEnemyInBattle do
-    local function factory(owner)
-        return function(list)
-            for i = 1, C_PetBattles.GetNumPets(owner) do
-                local name = C_PetBattles.GetName(owner, i)
-                local icon = C_PetBattles.GetIcon(owner, i)
+local function fillTargetInBattle(list, owner)
+    for i = 1, C_PetBattles.GetNumPets(owner) do
+        local name = C_PetBattles.GetName(owner, i)
+        local icon = C_PetBattles.GetIcon(owner, i)
+
+        tinsert(list, makeIconSnippet(icon))
+        tinsert(list, makeNameSnippet(name))
+        tinsert(list, makeIndexSnippet(i))
+    end
+    return 3
+end
+
+local function fillTargetOutBattle(list, owner, pet)
+    if owner == LE_BATTLE_PET_ENEMY then
+        for i = 1, 3 do
+            tinsert(list, makeIndexSnippet(i))
+        end
+        return 1
+    else
+        for i = 1, 3 do
+            local petId = C_PetJournal.GetPetLoadOutInfo(i)
+            if petId then
+                local name, icon = select(8, C_PetJournal.GetPetInfoByPetID(petId))
 
                 tinsert(list, makeIconSnippet(icon))
                 tinsert(list, makeNameSnippet(name))
                 tinsert(list, makeIndexSnippet(i))
             end
-            return 3
         end
+        return 3
     end
-
-    fillSelfInBattle = factory(LE_BATTLE_PET_ALLY)
-    fillEnemyInBattle = factory(LE_BATTLE_PET_ENEMY)
 end
 
-local function fillSelfOutBattle(list)
-    for i = 1, 3 do
-        local petId = C_PetJournal.GetPetLoadOutInfo(i)
-        if petId then
-            local name, icon = select(8, C_PetJournal.GetPetInfoByPetID(petId))
-
-            tinsert(list, makeIconSnippet(icon))
-            tinsert(list, makeNameSnippet(name))
-            tinsert(list, makeIndexSnippet(i))
-        end
+Snippets.use = battleSelector(
+    function(list)
+        return fillAbilityInBattle(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
+    end,
+    function(list)
+        return fillAbilityOutBattle(list, LE_BATTLE_PET_ALLY, 0)
     end
-    return 3
-end
+)
 
 local function fillNext(list, column)
     tinsert(list, empty)
@@ -184,15 +198,31 @@ end
 
 Snippets.change = battleSelector(
     function(list)
-        return fillNext(list, fillSelfInBattle(list))
+        return fillNext(list, fillTargetInBattle(list, LE_BATTLE_PET_ALLY))
     end,
     function(list)
-        return fillNext(list, fillSelfOutBattle(list))
+        return fillNext(list, fillTargetOutBattle(list, LE_BATTLE_PET_ALLY))
     end
 )
 
-Snippets.enemy = fillEnemyInBattle
-Snippets.ally = battleSelector(fillSelfInBattle, fillSelfOutBattle)
+Snippets.enemy = battleSelector(
+    function(list)
+        return fillTargetInBattle(list, LE_BATTLE_PET_ENEMY)
+    end,
+    function(list)
+        return fillTargetOutBattle(list, LE_BATTLE_PET_ENEMY)
+    end
+)
+
+Snippets.ally = battleSelector(
+    function(list)
+        return fillTargetInBattle(list, LE_BATTLE_PET_ALLY)
+    end,
+    function(list)
+        return fillTargetOutBattle(list, LE_BATTLE_PET_ALLY)
+    end
+)
+
 Snippets.self = Snippets.ally
 
 Snippets.weather = function(list)
@@ -217,9 +247,13 @@ Snippets.weather = function(list)
     return 2
 end
 
-Snippets.aura = function(list)
-    for _, owner in ipairs({LE_BATTLE_PET_ALLY, LE_BATTLE_PET_ENEMY}) do
-        for pet = 0, C_PetBattles.GetNumPets(owner) do
+Snippets.aura = battleSelector(
+    function(list, word, _, owner, pet)
+        if not owner or not pet then
+            return
+        end
+
+        for _, pet in ipairs({pet, PET_BATTLE_PAD_INDEX}) do
             for i = 1, C_PetBattles.GetNumAuras(owner, pet) do
                 local id, name, icon = C_PetBattles.GetAbilityInfoByID(C_PetBattles.GetAuraInfo(owner, pet, i))
 
@@ -227,17 +261,30 @@ Snippets.aura = function(list)
                 tinsert(list, makeNameSnippet(name))
             end
         end
+        return 2
     end
-    return 2
-end
+)
 
-Snippets.ability = function(list)
-    -- body...
-end
+Snippets.ability = battleSelector(
+    function(list, word, isCondition, owner, pet)
+        if isCondition then
+            return fillAbilityInBattle(list, owner, pet)
+        else
+            return fillAbilityInBattle(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
+        end
+    end,
+    function(list, word, isCondition, owner, pet)
+        if isCondition then
+            return fillAbilityOutBattle(list, owner, pet)
+        else
+            return fillAbilityOutBattle(list, LE_BATTLE_PET_ALLY, 0)
+        end
+    end
+)
 
-function Addon:MakeSnippets(word)
+function Addon:MakeSnippets(word, condition, owner, pet)
     local list   = {}
-    local column = Snippets[word](list, word) or 1
+    local column = Snippets[word](list, word, condition, owner, pet) or 1
     if #list == 0 then
         return
     end
