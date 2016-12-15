@@ -63,19 +63,17 @@ local function tfillrow(t, column)
     end
 end
 
-local function makeNameSnippet(name, tip)
+local function makeNameSnippet(name)
     return {
         text  = name,
         value = format('(%s)', name),
-        tip   = tip,
     }
 end
 
-local function makeIndexSnippet(index, tip)
+local function makeIndexSnippet(index)
     return {
         text  = format('#%d', index),
         value = format('(#%d)', index),
-        tip   = tip,
     }
 end
 
@@ -83,6 +81,16 @@ local function makeIconSnippet(icon)
     return {
         icon = icon
     }
+end
+
+local function battleSelector(inBattle, outBattle)
+    return function(...)
+        if C_PetBattles.IsInBattle() then
+            return inBattle(...)
+        else
+            return outBattle(...)
+        end
+    end
 end
 
 Snippets.__default = function(list, trigger)
@@ -100,52 +108,92 @@ Snippets.__default = function(list, trigger)
     end
 end
 
-Snippets.use = function(list)
-    local pet  = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
-    for i = 1, NUM_BATTLE_PET_ABILITIES do
-        local id, name, icon = C_PetBattles.GetAbilityInfo(LE_BATTLE_PET_ALLY, pet, i)
+Snippets.use = battleSelector(
+    function(list)
+        local pet  = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
+        for i = 1, NUM_BATTLE_PET_ABILITIES do
+            local id, name, icon = C_PetBattles.GetAbilityInfo(LE_BATTLE_PET_ALLY, pet, i)
+            if id then
+                tinsert(list, makeIconSnippet(icon))
+                tinsert(list, makeNameSnippet(name))
+                tinsert(list, makeIndexSnippet(i))
+            end
+        end
+        return 3
+    end,
+    function(list)
+        for i = 1, 3 do
+            local petId, ability1, ability2, ability3 = C_PetJournal.GetPetLoadOutInfo(i)
+            local abilities = {ability1, ability2, ability3}
 
-        tinsert(list, makeIconSnippet(icon))
-        tinsert(list, makeNameSnippet(name))
-        tinsert(list, makeIndexSnippet(i))
+            for i = 1, 3 do
+                local id, name, icon = C_PetBattles.GetAbilityInfoByID(abilities[i])
+                if id then
+                    tinsert(list, makeIconSnippet(icon))
+                    tinsert(list, makeNameSnippet(name))
+                    tinsert(list, makeIndexSnippet(i))
+                end
+            end
+        end
+        return 3
     end
-    return 3
+)
+
+local fillSelfInBattle, fillEnemyInBattle do
+    local function factory(owner)
+        return function(list)
+            for i = 1, C_PetBattles.GetNumPets(owner) do
+                local name = C_PetBattles.GetName(owner, i)
+                local icon = C_PetBattles.GetIcon(owner, i)
+
+                tinsert(list, makeIconSnippet(icon))
+                tinsert(list, makeNameSnippet(name))
+                tinsert(list, makeIndexSnippet(i))
+            end
+            return 3
+        end
+    end
+
+    fillSelfInBattle = factory(LE_BATTLE_PET_ALLY)
+    fillEnemyInBattle = factory(LE_BATTLE_PET_ENEMY)
 end
 
-Snippets.change = function(list)
-    for i = 1, C_PetBattles.GetNumPets(LE_BATTLE_PET_ALLY) do
-        local name = C_PetBattles.GetName(LE_BATTLE_PET_ALLY, i)
-        local icon = C_PetBattles.GetIcon(LE_BATTLE_PET_ALLY, i)
-
-        tinsert(list, makeIconSnippet(icon))
-        tinsert(list, makeNameSnippet(name))
-        tinsert(list, makeIndexSnippet(i))
-    end
-
-    tinsert(list, empty)
-    tinsert(list, {
-        text = 'next',
-        value = '(next)',
-    })
-    tfillrow(list, 3)
-    return 3
-end
-
-for k, owner in pairs({ ally = LE_BATTLE_PET_ALLY, enemy = LE_BATTLE_PET_ENEMY }) do
-    Snippets[k] = function(list)
-        for i = 1, C_PetBattles.GetNumPets(owner) do
-            local name = C_PetBattles.GetName(owner, i)
-            local icon = C_PetBattles.GetIcon(owner, i)
+local function fillSelfOutBattle(list)
+    for i = 1, 3 do
+        local petId = C_PetJournal.GetPetLoadOutInfo(i)
+        if petId then
+            local name, icon = select(8, C_PetJournal.GetPetInfoByPetID(petId))
 
             tinsert(list, makeIconSnippet(icon))
             tinsert(list, makeNameSnippet(name))
             tinsert(list, makeIndexSnippet(i))
         end
-        return 3
     end
+    return 3
 end
 
-Snippets['self'] = Snippets['ally']
+local function fillNext(list, column)
+    tinsert(list, empty)
+    tinsert(list, {
+        text = 'next',
+        value = '(next)',
+    })
+    tfillrow(list, column)
+    return column
+end
+
+Snippets.change = battleSelector(
+    function(list)
+        return fillNext(list, fillSelfInBattle(list))
+    end,
+    function(list)
+        return fillNext(list, fillSelfOutBattle(list))
+    end
+)
+
+Snippets.enemy = fillEnemyInBattle
+Snippets.ally = battleSelector(fillSelfInBattle, fillSelfOutBattle)
+Snippets.self = Snippets.ally
 
 Snippets.weather = function(list)
     local weathers = { 596, 590, 229, 403, 171, 205, 718, 257, 454 }

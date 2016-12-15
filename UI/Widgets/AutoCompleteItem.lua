@@ -70,10 +70,8 @@ end
 
 function AutoCompleteItem:GetAutoWidth()
     if self.Icon:IsShown() then
-        print(1)
         return 24
     else
-        print(self.Text:GetStringWidth())
         return self.Text:GetStringWidth() + 3
     end
 end
