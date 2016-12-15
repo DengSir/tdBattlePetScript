@@ -7,54 +7,140 @@ Snippets.lua
 
 local ns    = select(2, ...)
 local Addon = ns.Addon
+local Util  = ns.Util
 
-local Words = {
-    'if',
-    'endif',
+local Snippets = {} ns.Snippets = Snippets
 
-    -- actions
-    'use',
-    'ability',
-    'test',
-    'change',
-    'quit',
-    'standby',
-    'catch',
+do
+    local function sinppet(v, l)
+        local f, t = v:sub(1, l), v:sub(l + 1)
+        return {
+            text = format('|cff00ff00%s|r%s', f, t),
+            value = t,
+        }
+    end
 
-    -- target
-    'self',
-    'enemy',
+    local function checkdot(v, l)
+        local p = v:find('.', nil, true)
+        return not p or p <= l + 0
+    end
 
-    -- condition
-    'dead',
-    'hp',
-    'hpp',
-    'aura',
-    'weather',
-    'round',
-    'speed',
-    'power',
-    'level',
-    'type',
-    'quality',
+    local function checkowner(v, owner)
+        return not owner or ns.Condition.opts[v].owner
+    end
 
-    'active',
-    'duration',
-    'exists',
-    'usable',
-    'played',
-    'full',
-    'strong',
-    'weak',
-    'fast',
-    'slow',
-    'max',
+    local function factory(opts)
+        local words = opts.words or {}
 
-    -- target
-    'ally',
-}
+        if opts.extend then
+            local set = {}
+            local function add(k)
+                if set[k] then return end
+                set[k] = true
+                tinsert(words, k)
+            end
 
-local Snippets = setmetatable({}, {__index = function(t) return t.__default end })
+            for k in pairs(opts.extend) do
+                add(strsplit('.', k))
+                add(k)
+            end
+        end
+
+        local default = opts.default or function(list, word, owner)
+            if not word then
+                return
+            end
+            local l = #word
+            for i, v in ipairs(words) do
+                if v ~= word and v:sub(1, l) == word and checkowner(v, owner) and checkdot(v, l) then
+                    tinsert(list, sinppet(v, l))
+                end
+            end
+            return 1
+        end
+
+        return setmetatable({
+            __default = default,
+            __words   = words,
+        }, {__index = function(t) return default end})
+    end
+
+    Snippets.Condition = factory({
+        extend = ns.Condition.apis
+    })
+
+    Snippets.Action = factory({
+        words = { 'if', 'endif' },
+        extend = ns.Action.apis,
+    })
+
+    Snippets.Target = factory({
+        words = { 'self', 'enemy', 'ally' }
+    })
+end
+
+function Snippets:Check(line)
+    local list, column = {}
+    local condition = line:match('[[&]%s*([^&[]+)$')
+
+    if condition then
+        local owner, pet, word, arg = self:ParseCondition(condition)
+        word = word or line:match('(%w+)$')
+        if not word then
+            return
+        end
+
+        if not owner and not arg then
+            self.Target.__default(list, word)
+        end
+        if arg then
+            column = self.Condition.__default(list, word, owner, pet, arg)
+        else
+            column = self.Condition[word](list, word, owner, pet, arg)
+        end
+    else
+        word = line:match('(%w+)$')
+        if not word then
+            return
+        end
+
+        column = self.Action[word](list, word)
+    end
+
+    if not column or #list == 0 then
+        return
+    end
+    return list, column
+end
+
+function Snippets:ParseCondition(condition)
+    if not condition then
+        return
+    end
+
+    local args = {strsplit('.', condition)}
+    if #args == 0 then
+        return
+    end
+
+    local owner, pet = args[1]:match('^([^()]+)%(?([^()]*)%)?$')
+    owner = Util.ParsePetOwner(owner)
+
+    local cmd, arg do
+        local major, minor = unpack(args, owner and 2 or 1)
+        if major then
+            cmd, arg = major:match('(.+)%(%s*(.+)%s*%)$')
+            cmd = cmd or major
+            cmd = minor and format('%s.%s', cmd, minor) or cmd
+        end
+    end
+
+    if C_PetBattles.IsInBattle() then
+        pet = pet ~= '' and pet or nil
+        pet = Util.ParsePetIndex(owner, pet)
+    end
+    return owner, pet, cmd, arg
+end
 
 local empty = {}
 local function tfillrow(t, column)
@@ -89,21 +175,6 @@ local function battleSelector(inBattle, outBattle)
             return inBattle and inBattle(...)
         else
             return outBattle and outBattle(...)
-        end
-    end
-end
-
-Snippets.__default = function(list, trigger)
-    if not trigger then
-        return
-    end
-    local len  = #trigger
-    for i, v in ipairs(Words) do
-        if v ~= trigger and v:sub(1, len) == trigger then
-            tinsert(list, {
-                text  = v,
-                value = v:sub(len + 1),
-            })
         end
     end
 end
@@ -177,7 +248,7 @@ local function fillTargetOutBattle(list, owner, pet)
     end
 end
 
-Snippets.use = battleSelector(
+Snippets.Action.use = battleSelector(
     function(list)
         return fillAbilityInBattle(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
     end,
@@ -185,6 +256,8 @@ Snippets.use = battleSelector(
         return fillAbilityOutBattle(list, LE_BATTLE_PET_ALLY, 0)
     end
 )
+
+Snippets.Action.ability = Snippets.Action.use
 
 local function fillNext(list, column)
     tinsert(list, empty)
@@ -196,7 +269,7 @@ local function fillNext(list, column)
     return column
 end
 
-Snippets.change = battleSelector(
+Snippets.Action.change = battleSelector(
     function(list)
         return fillNext(list, fillTargetInBattle(list, LE_BATTLE_PET_ALLY))
     end,
@@ -205,7 +278,7 @@ Snippets.change = battleSelector(
     end
 )
 
-Snippets.enemy = battleSelector(
+Snippets.Condition.enemy = battleSelector(
     function(list)
         return fillTargetInBattle(list, LE_BATTLE_PET_ENEMY)
     end,
@@ -214,7 +287,7 @@ Snippets.enemy = battleSelector(
     end
 )
 
-Snippets.ally = battleSelector(
+Snippets.Condition.ally = battleSelector(
     function(list)
         return fillTargetInBattle(list, LE_BATTLE_PET_ALLY)
     end,
@@ -223,9 +296,9 @@ Snippets.ally = battleSelector(
     end
 )
 
-Snippets.self = Snippets.ally
+Snippets.Condition.self = Snippets.Condition.ally
 
-Snippets.weather = function(list)
+Snippets.Condition.weather = function(list)
     local weathers = { 596, 590, 229, 403, 171, 205, 718, 257, 454 }
 
     -- 596 月光
@@ -247,8 +320,8 @@ Snippets.weather = function(list)
     return 2
 end
 
-Snippets.aura = battleSelector(
-    function(list, word, _, owner, pet)
+Snippets.Condition.aura = battleSelector(
+    function(list, word, owner, pet)
         if not owner or not pet then
             return
         end
@@ -265,28 +338,11 @@ Snippets.aura = battleSelector(
     end
 )
 
-Snippets.ability = battleSelector(
-    function(list, word, isCondition, owner, pet)
-        if isCondition then
-            return fillAbilityInBattle(list, owner, pet)
-        else
-            return fillAbilityInBattle(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
-        end
+Snippets.Condition.ability = battleSelector(
+    function(list, word, owner, pet)
+        return fillAbilityInBattle(list, owner, pet)
     end,
-    function(list, word, isCondition, owner, pet)
-        if isCondition then
-            return fillAbilityOutBattle(list, owner, pet)
-        else
-            return fillAbilityOutBattle(list, LE_BATTLE_PET_ALLY, 0)
-        end
+    function(list, word, owner, pet)
+        return fillAbilityOutBattle(list, owner, pet)
     end
 )
-
-function Addon:MakeSnippets(word, condition, owner, pet)
-    local list   = {}
-    local column = Snippets[word](list, word, condition, owner, pet) or 1
-    if #list == 0 then
-        return
-    end
-    return list, column
-end

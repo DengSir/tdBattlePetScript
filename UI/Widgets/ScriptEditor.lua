@@ -7,7 +7,6 @@ ScriptEditor.lua
 local ns    = select(2, ...)
 local Addon = ns.Addon
 local UI    = ns.UI
-local Util  = ns.Util
 local GUI   = LibStub('tdGUI-1.0')
 
 local ScriptEditor = Addon:NewClass('ScriptEditor', GUI:GetClass('EditBox'))
@@ -33,15 +32,7 @@ function ScriptEditor:OnTextChanged(userInput)
         return
     end
 
-    local word = line:match('(%w+)$')
-    if not word then
-        return
-    end
-
-    local condition = line:match('[[&]([^&[]+)$')
-    local owner, pet = self:ParseOwnerPet(condition)
-
-    local list, column = Addon:MakeSnippets(word, condition, owner, pet)
+    local list, column = ns.Snippets:Check(line)
     if not list then
         self.AutoCompleteBox:Hide()
     else
@@ -49,30 +40,4 @@ function ScriptEditor:OnTextChanged(userInput)
         self.AutoCompleteBox:SetPoint('TOPLEFT', self, 'TOPLEFT', self.cursorX, self.cursorY)
         self.AutoCompleteBox:Open(self, list, column)
     end
-end
-
-function ScriptEditor:ParseOwnerPet(condition)
-    if not condition then
-        return
-    end
-
-    local arg = strsplit('.', condition:trim())
-    if not arg then
-        return
-    end
-
-    local owner, pet = arg:match('^([^()]+)%(?([^()]*)%)?$')
-    owner = Util.ParsePetOwner(owner)
-    if not owner then
-        return
-    end
-
-    if not C_PetBattles.IsInBattle() then
-        return owner
-    end
-
-    pet = pet ~= '' and pet or nil
-    pet = Util.ParsePetIndex(owner, pet)
-
-    return owner, pet
 end

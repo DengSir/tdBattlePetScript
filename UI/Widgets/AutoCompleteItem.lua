@@ -17,16 +17,14 @@ function AutoCompleteItem:Constructor()
         Text:SetWordWrap(false)
     end
 
-    local ct = self:CreateTexture(nil, 'OVERLAY') do
+    local ct = self:CreateTexture(nil, 'BACKGROUND') do
         ct:SetAllPoints(true)
-        ct:SetAlpha(0.3)
-        ct:SetColorTexture(0, 1, 1)
+        ct:SetColorTexture(1, 0.82, 0, 0.2)
     end
 
     local ht = self:CreateTexture(nil, 'HIGHLIGHT') do
         ht:SetAllPoints(true)
-        ht:SetAlpha(0.3)
-        ht:SetColorTexture(1, 0.82, 0)
+        ht:SetColorTexture(1, 0.82, 0, 0.2)
     end
 
     local Icon = self:CreateTexture(nil, 'BORDER') do
