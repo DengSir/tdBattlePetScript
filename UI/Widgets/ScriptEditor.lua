@@ -4,11 +4,10 @@ ScriptEditor.lua
 @Link    : https://dengsir.github.io
 ]]
 
-local ns       = select(2, ...)
-local Addon    = ns.Addon
-local UI       = ns.UI
-local GUI      = LibStub('tdGUI-1.0')
-local Snippets = ns.Snippets
+local ns    = select(2, ...)
+local Addon = ns.Addon
+local UI    = ns.UI
+local GUI   = LibStub('tdGUI-1.0')
 
 local ScriptEditor = Addon:NewClass('ScriptEditor', GUI:GetClass('EditBox'))
 
@@ -38,24 +37,12 @@ function ScriptEditor:OnTextChanged(userInput)
         return
     end
 
-    return self:TriggerAutoComplete(self:CallSnippet(Snippets[word], word))
-end
-
-function ScriptEditor:CallSnippet(snippet, word)
-    local list = Addon:GetClass('SnippetList'):New()
-
-    snippet(list, word)
-
-    return list:ToList()
-end
-
-function ScriptEditor:TriggerAutoComplete(list)
-    if not list or #list == 0 then
+    local list, column = Addon:MakeSnippets(word)
+    if not list then
         self.AutoCompleteBox:Hide()
-        return
+    else
+        self.AutoCompleteBox:ClearAllPoints()
+        self.AutoCompleteBox:SetPoint('TOPLEFT', self, 'TOPLEFT', self.cursorX, self.cursorY)
+        self.AutoCompleteBox:Open(self, list, column)
     end
-    self.AutoCompleteBox:ClearAllPoints()
-    self.AutoCompleteBox:SetPoint('TOPLEFT', self, 'TOPLEFT', self.cursorX, self.cursorY)
-    self.AutoCompleteBox:Open(self, list)
-    return true
 end

@@ -5,4 +5,6 @@
 
   <Script file="Actions.lua" />
   <Script file="Conditions.lua" />
+  
+  <Script file="Snippets.lua" />
 </Ui>

@@ -29,10 +29,51 @@ function AutoCompleteItem:Constructor()
         ht:SetColorTexture(1, 0.82, 0)
     end
 
+    local Icon = self:CreateTexture(nil, 'BORDER') do
+        Icon:SetMask([[Textures\MinimapMask]])
+        Icon:SetSize(24, 24)
+        Icon:SetPoint('CENTER')
+    end
+
+    local IconBorder = self:CreateTexture(nil, 'ARTWORK') do
+        IconBorder:SetTexture([[Interface\PetBattles\PetBattleHUD]])
+        IconBorder:SetPoint('TOPLEFT', Icon, 'TOPLEFT', 0, 1)
+        IconBorder:SetPoint('BOTTOMRIGHT', Icon, 'BOTTOMRIGHT', 1, 0)
+        IconBorder:SetTexCoord(0.884765625, 0.943359375, 0.681640625, 0.798828125)
+    end
+
     self.CheckedTexture = ct
     self.Text           = Text
+    self.Icon           = Icon
+    self.IconBorder     = IconBorder
+end
+
+function AutoCompleteItem:SetItem(item)
+    if item.icon then
+        self.Icon:SetTexture(item.icon)
+        self.Icon:Show()
+        self.IconBorder:Show()
+    else
+        self.Icon:Hide()
+        self.IconBorder:Hide()
+    end
+
+    if item.text then
+        self.Text:SetText(item.text)
+        self.Text:Show()
+    else
+        self.Text:Hide()
+    end
+
+    self:SetEnabled(item.value)
 end
 
 function AutoCompleteItem:GetAutoWidth()
-    return self.Text:GetStringWidth() + 10
+    if self.Icon:IsShown() then
+        print(1)
+        return 24
+    else
+        print(self.Text:GetStringWidth())
+        return self.Text:GetStringWidth() + 3
+    end
 end
