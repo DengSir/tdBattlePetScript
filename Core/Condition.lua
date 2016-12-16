@@ -167,8 +167,6 @@ function Condition:ParseCondition(condition)
 
     local owner, pet, cmd, arg, petInputed, argInputed = self:ParseApi(args:trim())
 
-    print(owner, pet, cmd, arg, petInputed, argInputed)
-
     Util.assert(cmd, 'Invalid Condition: `%s` (Can`t parse)', condition)
     Util.assert(self.apis[cmd], 'Invalid Condition: `%s` (Not found cmd: `%s`)', condition, cmd)
 
