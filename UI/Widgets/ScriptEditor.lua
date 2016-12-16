@@ -23,7 +23,7 @@ function ScriptEditor:OnCursorChanged(x, y, w, h)
 end
 
 function ScriptEditor:OnTextChanged(userInput)
-    if not userInput then
+    if not userInput or not C_PetBattles.IsInBattle() then
         return
     end
     local pos  = self:GetCursorPosition()

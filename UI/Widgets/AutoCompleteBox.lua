@@ -54,6 +54,10 @@ end
 function AutoCompleteBox:Input(item)
     self:GetOwner():Insert(item.value)
     self:Hide()
+
+    if item.callback then
+        item.callback(item)
+    end
 end
 
 function AutoCompleteBox:OnItemFormatting(button, item)
