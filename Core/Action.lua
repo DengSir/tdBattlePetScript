@@ -33,7 +33,7 @@ end
 
 function Action:ParseAction(action)
     Util.assert(type(action) == 'string', 'Invalid Action: `%s`', action)
-
+    
     local cmd, value = action:match('^([^()]+)%(?([^()]*)%)?$')
 
     Util.assert(cmd, 'Invalid Action: `%s`', action)

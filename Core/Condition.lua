@@ -123,36 +123,53 @@ function Condition:RunCondition(condition)
     return opTabler[opts.type][op](fn(owner, pet, arg), value)
 end
 
+function Condition:ParsePet(str)
+    if not str then
+        return
+    end
+
+    local owner, pet = Util.ParseQuote(str)
+    owner = Util.ParsePetOwner(owner)
+    if not owner then
+        return
+    end
+
+    petInputed = not not pet
+    pet        = Util.ParsePetIndex(owner, pet)
+    return owner, pet, petInputed
+end
+
+function Condition:ParseCmd(major, minor)
+    if not major then
+        return
+    end
+
+    local cmd, arg = Util.ParseQuote(major)
+    return minor and format('%s.%s', cmd, minor) or cmd, arg, not not arg
+end
+
+function Condition:ParseApi(str)
+    if not str then
+        return
+    end
+    local args = {strsplit('.', str)}
+
+    local owner, pet, petInputed = self:ParsePet(args[1])
+    local cmd,   arg, argInputed = self:ParseCmd(unpack(args, owner and 2 or 1))
+
+    return owner, pet, cmd, arg, petInputed, argInputed
+end
+
 function Condition:ParseCondition(condition)
-    local non, args, op, value = condition:match('^(!?)([^!=<>~%s]+)%s*([!=<>~]*)%s*(.*)$')
+    local non, args, op, value = condition:match('^(!?)([^!=<>~]+)%s*([!=<>~]*)%s*(.*)$')
 
     Util.assert(non, 'Invalid Condition: `%s` (Can`t parse)', condition)
 
-    local args = { strsplit('.', args) }
+    local owner, pet, cmd, arg, petInputed, argInputed = self:ParseApi(args:trim())
 
-    Util.assert(#args <= 3, 'Invalid Condition: `%s` (Can`t parse)', condition)
-
-    local owner, pet do
-        owner, pet = args[1]:match('^([^()]+)%(?([^()]*)%)?$')
-        owner = Util.ParsePetOwner(owner)
-        if not owner then
-            pet = nil
-        end
-    end
-
-    local cmd, arg do
-        local major, minor = unpack(args, owner and 2 or 1)
-        Util.assert(major, 'Invalid Condition: `%s` (Can`t parse)', condition)
-
-        cmd, arg = major:match('(.+)%(%s*(.+)%s*%)')
-        cmd = cmd or major
-        cmd = minor and format('%s.%s', cmd, minor) or cmd
-    end
-
+    Util.assert(cmd, 'Invalid Condition: `%s` (Can`t parse)', condition)
     Util.assert(self.apis[cmd], 'Invalid Condition: `%s` (Not found cmd: `%s`)', condition, cmd)
 
-    pet   = trynil(pet)
-    arg   = trynil(arg)
     op    = trynil(op)
     value = trynil(value)
     non   = trynil(non)
@@ -200,13 +217,11 @@ function Condition:ParseCondition(condition)
     end
 
     if not opts.pet then
-        Util.assert(not pet, 'Invalid Condition: `%s` (Not need pet)', condition)
-    else
-        pet = Util.ParsePetIndex(owner, pet)
+        Util.assert(not petInputed, 'Invalid Condition: `%s` (Not need pet)', condition)
     end
 
     if not opts.arg then
-        Util.assert(not arg, 'Invalid Condition: `%s` (Not need arg)', condition)
+        Util.assert(not argInputed, 'Invalid Condition: `%s` (Not need arg)', condition)
     else
         arg = trynumber(arg)
         if opts.argParse then

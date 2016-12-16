@@ -11,6 +11,14 @@ local function comparePet(owner, index, pet)
     return pet == C_PetBattles.GetName(owner, index) or tonumber(pet) == C_PetBattles.GetPetSpeciesID(owner, index)
 end
 
+function Util.ParseQuote(str)
+    local major, quote = str:match('^([^()]+)%((.+)%)$')
+    if major then
+        return major, quote
+    end
+    return str, nil
+end
+
 function Util.ParseIndex(value)
     return type(value) == 'string' and tonumber(value:match('^#(%d+)$')) or nil
 end
