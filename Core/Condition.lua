@@ -163,8 +163,6 @@ end
 function Condition:ParseCondition(condition)
     local non, args, op, value = condition:match('^(!?)([^!=<>~]+)%s*([!=<>~]*)%s*(.*)$')
 
-    print(non, args, op, value)
-
     Util.assert(non, 'Invalid Condition: `%s` (Can`t parse)', condition)
 
     local owner, pet, cmd, arg, petInputed, argInputed = self:ParseApi(args:trim())

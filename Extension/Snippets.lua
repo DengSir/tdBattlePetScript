@@ -76,7 +76,7 @@ do
             end
 
             local opts = Condition.opts[v]
-            if not opts.owner ~= not owner then
+            if not opts.owner ~= not owner and v ~= 'round' then
                 return false
             end
             if opts.pet and not pet then
