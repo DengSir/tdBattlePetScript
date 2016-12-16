@@ -128,14 +128,14 @@ function Condition:ParsePet(str)
         return
     end
 
-    local owner, petInputed, pet = str:match('^(%w+)(%(?)([^()]*)%)?$')
+    local owner, pet = Util.ParseQuote(str)
     owner = Util.ParsePetOwner(owner)
     if not owner then
         return
     end
 
-    petInputed = petInputed ~= ''
-    pet        = Util.ParsePetIndex(owner, petInputed and pet)
+    petInputed = not not pet
+    pet        = Util.ParsePetIndex(owner, pet)
     return owner, pet, petInputed
 end
 
@@ -144,13 +144,8 @@ function Condition:ParseCmd(major, minor)
         return
     end
 
-    local cmd, argInputed, arg = major:match('^(%w+)(%(?)([^()]*)%)?$')
-
-    argInputed = argInputed ~= ''
-    cmd        = cmd or major
-    cmd        = minor and format('%s.%s', cmd, minor) or cmd
-    arg        = argInputed and arg or nil
-    return cmd, arg, argInputed
+    local cmd, arg = Util.ParseQuote(major)
+    return minor and format('%s.%s', cmd, minor), arg, not not arg
 end
 
 function Condition:ParseApi(str)
@@ -160,7 +155,7 @@ function Condition:ParseApi(str)
     local args = {strsplit('.', str)}
 
     local owner, pet, petInputed = self:ParsePet(args[1])
-    local cmd, arg, argInputed   = self:ParseCmd(unpack(args, owner and 2 or 1))
+    local cmd,   arg, argInputed = self:ParseCmd(unpack(args, owner and 2 or 1))
 
     return owner, pet, cmd, arg, petInputed, argInputed
 end
