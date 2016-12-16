@@ -10,6 +10,7 @@ local UI       = ns.UI
 local L        = ns.L
 local Director = ns.Director
 local GUI      = LibStub('tdGUI-1.0')
+local Class    = LibStub('LibClass-2.0')
 
 local STATUS_NONE = 0
 local STATUS_ADD  = 1
@@ -226,7 +227,8 @@ function Module:OnInitialize()
     end
 
     local function MakeBox(className, parent, labelText)
-        local box = GUI:GetClass(className):New(parent, true) do
+        local class = Class:IsClass(className) and className or GUI:GetClass(className)
+        local box = class:New(parent, true) do
             local label = box:CreateFontString(nil, 'ARTWORK', 'GameFontNormalSmall') do
                 label:SetPoint('BOTTOMLEFT', box, 'TOPLEFT')
                 label:SetText(labelText)
@@ -258,10 +260,11 @@ function Module:OnInitialize()
         ScriptEditor:SetPoint('BOTTOMRIGHT')
     end
 
-    local ScriptBox = MakeBox('EditBox', ScriptEditor, L['Script']) do
+    local ScriptBox = MakeBox(Addon:GetClass('ScriptEditor'), ScriptEditor, L['Script']) do
         ScriptBox:SetPoint('TOPLEFT', 10, -25)
         ScriptBox:SetPoint('BOTTOMRIGHT', -10, 10)
-        ScriptBox:SetCallback('OnTextChanged', function()
+        ScriptBox:SetCallback('OnTextChanged', function(ScriptBox, userInput)
+            ScriptBox:OnTextChanged(userInput)
             self.BugFrame:Hide()
             self:UpdateSaveButton()
         end)
