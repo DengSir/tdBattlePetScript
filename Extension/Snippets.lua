@@ -13,14 +13,6 @@ local Condition = ns.Condition
 local Snippets = {} ns.Snippets = Snippets
 
 do
-    local function sinppet(v, l)
-        local f, t = v:sub(1, l), v:sub(l + 1)
-        return {
-            text = format('|cff00ff00%s|r%s', f, t),
-            value = t,
-        }
-    end
-
     local function factory(opts)
         local words  = opts.words or {}
         local filter = opts.filter
@@ -39,14 +31,33 @@ do
             end
         end
 
+        sort(words)
+
+        local function callback(item)
+            return tinsert(words, 1, tremove(words, item.index))
+        end
+
         local function default(list, word, ...)
             if not word then
                 return
             end
-            local l = #word
+
+            local front, tail
+            local len = #word
             for i, v in ipairs(words) do
-                if v ~= word and v:sub(1, l) == word and (not filter or filter(v, word, ...)) then
-                    tinsert(list, sinppet(v, l))
+                if v ~= word then
+                    front = v:sub(1, len)
+
+                    if front == word and (not filter or filter(v, word, ...)) then
+                        tail = v:sub(len + 1)
+
+                        tinsert(list, {
+                            text     = format('|cff00ff00%s|r%s', front, tail),
+                            value    = tail,
+                            callback = callback,
+                            index    = i,
+                        })
+                    end
                 end
             end
             return 1
@@ -57,34 +68,40 @@ do
         }
     end
 
-    local function checkdot(v, l)
-        local p = v:find('.', nil, true)
-        return not p or p <= l + 0
-    end
-
-    local function checkowner(v, owner)
-        if Condition.opts[v].owner then
-            return owner
-        else
-            return not owner
-        end
-    end
-
-    local function checkpet(v, pet)
-        return Condition.opts[v].pet or not pet
-    end
-
-    local function checknon(v, non)
-        return not non or Condition.opts[v].type == 'boolean'
-    end
-
     Snippets.Condition = factory({
         extend = Condition.apis,
-        filter = function(v, word, owner, pet, arg, non, petInputed)
+        filter = function(v, word, owner, pet, arg, non, petInputed, argInputed)
             if not Condition.apis[v] then
                 return true
             end
-            return checkowner(v, owner) and checkpet(v, petInputed) and checknon(v, non) and checkdot(v, #word)
+
+            local opts = Condition.opts[v]
+            if not opts.owner ~= not owner then
+                return false
+            end
+            if opts.pet and not pet then
+                return false
+            end
+            if not opts.pet and petInputed then
+                return false
+            end
+            if non and opts.type ~= 'boolean' then
+                return false
+            end
+            if not opts.arg and argInputed then
+                return false
+            end
+
+            local len = #word
+            local pos = v:find('.', nil, true)
+            if opts.arg and not argInputed and pos and len >= pos then
+                return false
+            end
+
+            if pos and pos > len then
+                return false
+            end
+            return true
         end
     })
 
@@ -114,7 +131,7 @@ function Snippets:Check(line)
         end
 
         if arg or not self.Condition[word] then
-            column = self.Condition.__default(list, word, owner, pet, arg, non, petInputed)
+            column = self.Condition.__default(list, word, owner, pet, arg, non, petInputed, argInputed)
         else
             column = self.Condition[word](list, word, owner, pet)
         end
