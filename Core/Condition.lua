@@ -145,7 +145,7 @@ function Condition:ParseCmd(major, minor)
     end
 
     local cmd, arg = Util.ParseQuote(major)
-    return minor and format('%s.%s', cmd, minor), arg, not not arg
+    return minor and format('%s.%s', cmd, minor) or cmd, arg, not not arg
 end
 
 function Condition:ParseApi(str)
@@ -163,9 +163,13 @@ end
 function Condition:ParseCondition(condition)
     local non, args, op, value = condition:match('^(!?)([^!=<>~]+)%s*([!=<>~]*)%s*(.*)$')
 
+    print(non, args, op, value)
+
     Util.assert(non, 'Invalid Condition: `%s` (Can`t parse)', condition)
 
     local owner, pet, cmd, arg, petInputed, argInputed = self:ParseApi(args:trim())
+
+    print(owner, pet, cmd, arg, petInputed, argInputed)
 
     Util.assert(cmd, 'Invalid Condition: `%s` (Can`t parse)', condition)
     Util.assert(self.apis[cmd], 'Invalid Condition: `%s` (Not found cmd: `%s`)', condition, cmd)
