@@ -5,9 +5,10 @@ Snippets.lua
 ]]
 
 
-local ns    = select(2, ...)
-local Addon = ns.Addon
-local Util  = ns.Util
+local ns        = select(2, ...)
+local Addon     = ns.Addon
+local Util      = ns.Util
+local Condition = ns.Condition
 
 local Snippets = {} ns.Snippets = Snippets
 
@@ -20,17 +21,9 @@ do
         }
     end
 
-    local function checkdot(v, l)
-        local p = v:find('.', nil, true)
-        return not p or p <= l + 0
-    end
-
-    local function checkowner(v, owner)
-        return not owner or ns.Condition.opts[v].owner
-    end
-
     local function factory(opts)
-        local words = opts.words or {}
+        local words  = opts.words or {}
+        local filter = opts.filter
 
         if opts.extend then
             local set = {}
@@ -46,27 +39,53 @@ do
             end
         end
 
-        local default = opts.default or function(list, word, owner)
+        local function default(list, word, ...)
             if not word then
                 return
             end
             local l = #word
             for i, v in ipairs(words) do
-                if v ~= word and v:sub(1, l) == word and checkowner(v, owner) and checkdot(v, l) then
+                if v ~= word and v:sub(1, l) == word and (not filter or filter(v, word, ...)) then
                     tinsert(list, sinppet(v, l))
                 end
             end
             return 1
         end
 
-        return setmetatable({
+        return {
             __default = default,
-            __words   = words,
-        }, {__index = function(t) return default end})
+        }
+    end
+
+    local function checkdot(v, l)
+        local p = v:find('.', nil, true)
+        return not p or p <= l + 0
+    end
+
+    local function checkowner(v, owner)
+        if Condition.opts[v].owner then
+            return owner
+        else
+            return not owner
+        end
+    end
+
+    local function checkpet(v, pet)
+        return Condition.opts[v].pet or not pet
+    end
+
+    local function checknon(v, non)
+        return not non or Condition.opts[v].type == 'boolean'
     end
 
     Snippets.Condition = factory({
-        extend = ns.Condition.apis
+        extend = Condition.apis,
+        filter = function(v, word, owner, pet, arg, non, petInputed)
+            if not Condition.apis[v] then
+                return true
+            end
+            return checkowner(v, owner) and checkpet(v, petInputed) and checknon(v, non) and checkdot(v, #word)
+        end
     })
 
     Snippets.Action = factory({
@@ -84,19 +103,20 @@ function Snippets:Check(line)
     local condition = line:match('[[&]%s*([^&[]+)$')
 
     if condition then
-        local owner, pet, word, arg = self:ParseCondition(condition)
+        local owner, pet, word, arg, non, petInputed, argInputed = self:ParseCondition(condition)
         word = word or line:match('(%w+)$')
         if not word then
             return
         end
 
-        if not owner and not arg then
+        if not owner then
             self.Target.__default(list, word)
         end
-        if arg then
-            column = self.Condition.__default(list, word, owner, pet, arg)
+
+        if arg or not self.Condition[word] then
+            column = self.Condition.__default(list, word, owner, pet, arg, non, petInputed)
         else
-            column = self.Condition[word](list, word, owner, pet, arg)
+            column = self.Condition[word](list, word, owner, pet)
         end
     else
         word = line:match('(%w+)$')
@@ -104,7 +124,11 @@ function Snippets:Check(line)
             return
         end
 
-        column = self.Action[word](list, word)
+        if not self.Action[word] then
+            column = self.Action.__default(list, word)
+        else
+            column = self.Action[word](list, word)
+        end
     end
 
     if not column or #list == 0 then
@@ -118,28 +142,19 @@ function Snippets:ParseCondition(condition)
         return
     end
 
-    local args = {strsplit('.', condition)}
-    if #args == 0 then
-        return
-    end
+    local non do
+        local _cond
+        non, _cond = condition:match('^(!?)%s*(.+)$')
+        non = non == '!'
 
-    local owner, pet = args[1]:match('^([^()]+)%(?([^()]*)%)?$')
-    owner = Util.ParsePetOwner(owner)
-
-    local cmd, arg do
-        local major, minor = unpack(args, owner and 2 or 1)
-        if major then
-            cmd, arg = major:match('(.+)%(%s*(.+)%s*%)$')
-            cmd = cmd or major
-            cmd = minor and format('%s.%s', cmd, minor) or cmd
+        if non then
+            condition = _cond
         end
     end
 
-    if C_PetBattles.IsInBattle() then
-        pet = pet ~= '' and pet or nil
-        pet = Util.ParsePetIndex(owner, pet)
-    end
-    return owner, pet, cmd, arg
+    local owner, pet, cmd, arg, petInputed, argInputed = Condition:ParseApi(condition)
+
+    return owner, pet, cmd, arg, non, petInputed, argInputed
 end
 
 local empty = {}
@@ -169,17 +184,7 @@ local function makeIconSnippet(icon)
     }
 end
 
-local function battleSelector(inBattle, outBattle)
-    return function(...)
-        if C_PetBattles.IsInBattle() then
-            return inBattle and inBattle(...)
-        else
-            return outBattle and outBattle(...)
-        end
-    end
-end
-
-local function fillAbilityInBattle(list, owner, pet)
+local function fillAbility(list, owner, pet)
     for i = 1, NUM_BATTLE_PET_ABILITIES do
         local id, name, icon = C_PetBattles.GetAbilityInfo(owner, pet, i)
         if id then
@@ -191,31 +196,7 @@ local function fillAbilityInBattle(list, owner, pet)
     return 3
 end
 
-local function fillAbilityOutBattle(list, owner, pet)
-    if owner == LE_BATTLE_PET_ENEMY then
-        for i = 1, 3 do
-            tinsert(list, makeIndexSnippet(i))
-        end
-        return 1
-    else
-        for i = 1, 3 do
-            local petId, ability1, ability2, ability3 = C_PetJournal.GetPetLoadOutInfo(i)
-            local abilities = {ability1, ability2, ability3}
-
-            for i = 1, 3 do
-                local id, name, icon = C_PetBattles.GetAbilityInfoByID(abilities[i])
-                if id then
-                    tinsert(list, makeIconSnippet(icon))
-                    tinsert(list, makeNameSnippet(name))
-                    tinsert(list, makeIndexSnippet(i))
-                end
-            end
-        end
-        return 3
-    end
-end
-
-local function fillTargetInBattle(list, owner)
+local function fillPet(list, owner)
     for i = 1, C_PetBattles.GetNumPets(owner) do
         local name = C_PetBattles.GetName(owner, i)
         local icon = C_PetBattles.GetIcon(owner, i)
@@ -227,35 +208,9 @@ local function fillTargetInBattle(list, owner)
     return 3
 end
 
-local function fillTargetOutBattle(list, owner, pet)
-    if owner == LE_BATTLE_PET_ENEMY then
-        for i = 1, 3 do
-            tinsert(list, makeIndexSnippet(i))
-        end
-        return 1
-    else
-        for i = 1, 3 do
-            local petId = C_PetJournal.GetPetLoadOutInfo(i)
-            if petId then
-                local name, icon = select(8, C_PetJournal.GetPetInfoByPetID(petId))
-
-                tinsert(list, makeIconSnippet(icon))
-                tinsert(list, makeNameSnippet(name))
-                tinsert(list, makeIndexSnippet(i))
-            end
-        end
-        return 3
-    end
+Snippets.Action.use = function(list)
+    return fillAbility(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
 end
-
-Snippets.Action.use = battleSelector(
-    function(list)
-        return fillAbilityInBattle(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
-    end,
-    function(list)
-        return fillAbilityOutBattle(list, LE_BATTLE_PET_ALLY, 0)
-    end
-)
 
 Snippets.Action.ability = Snippets.Action.use
 
@@ -269,32 +224,17 @@ local function fillNext(list, column)
     return column
 end
 
-Snippets.Action.change = battleSelector(
-    function(list)
-        return fillNext(list, fillTargetInBattle(list, LE_BATTLE_PET_ALLY))
-    end,
-    function(list)
-        return fillNext(list, fillTargetOutBattle(list, LE_BATTLE_PET_ALLY))
-    end
-)
+Snippets.Action.change = function(list)
+    return fillNext(list, fillPet(list, LE_BATTLE_PET_ALLY))
+end
 
-Snippets.Condition.enemy = battleSelector(
-    function(list)
-        return fillTargetInBattle(list, LE_BATTLE_PET_ENEMY)
-    end,
-    function(list)
-        return fillTargetOutBattle(list, LE_BATTLE_PET_ENEMY)
-    end
-)
+Snippets.Condition.enemy = function(list)
+    return fillPet(list, LE_BATTLE_PET_ENEMY)
+end
 
-Snippets.Condition.ally = battleSelector(
-    function(list)
-        return fillTargetInBattle(list, LE_BATTLE_PET_ALLY)
-    end,
-    function(list)
-        return fillTargetOutBattle(list, LE_BATTLE_PET_ALLY)
-    end
-)
+Snippets.Condition.ally = function(list)
+    return fillPet(list, LE_BATTLE_PET_ALLY)
+end
 
 Snippets.Condition.self = Snippets.Condition.ally
 
@@ -320,29 +260,22 @@ Snippets.Condition.weather = function(list)
     return 2
 end
 
-Snippets.Condition.aura = battleSelector(
-    function(list, word, owner, pet)
-        if not owner or not pet then
-            return
-        end
-
-        for _, pet in ipairs({pet, PET_BATTLE_PAD_INDEX}) do
-            for i = 1, C_PetBattles.GetNumAuras(owner, pet) do
-                local id, name, icon = C_PetBattles.GetAbilityInfoByID(C_PetBattles.GetAuraInfo(owner, pet, i))
-
-                tinsert(list, makeIconSnippet(icon))
-                tinsert(list, makeNameSnippet(name))
-            end
-        end
-        return 2
+Snippets.Condition.aura = function(list, word, owner, pet)
+    if not owner or not pet then
+        return
     end
-)
 
-Snippets.Condition.ability = battleSelector(
-    function(list, word, owner, pet)
-        return fillAbilityInBattle(list, owner, pet)
-    end,
-    function(list, word, owner, pet)
-        return fillAbilityOutBattle(list, owner, pet)
+    for _, pet in ipairs({pet, PET_BATTLE_PAD_INDEX}) do
+        for i = 1, C_PetBattles.GetNumAuras(owner, pet) do
+            local id, name, icon = C_PetBattles.GetAbilityInfoByID(C_PetBattles.GetAuraInfo(owner, pet, i))
+
+            tinsert(list, makeIconSnippet(icon))
+            tinsert(list, makeNameSnippet(name))
+        end
     end
-)
+    return 2
+end
+
+Snippets.Condition.ability = function(list, word, owner, pet)
+    return fillAbility(list, owner, pet)
+end
