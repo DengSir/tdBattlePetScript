@@ -136,7 +136,7 @@ function Snippets:Check(line)
             column = self.Condition[word](list, word, owner, pet)
         end
     else
-        word = line:match('(%w+)$')
+        word = line:match('^%s*(%w+)$')
         if not word then
             return
         end
