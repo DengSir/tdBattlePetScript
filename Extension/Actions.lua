@@ -71,3 +71,7 @@ Addon:RegisterAction('catch', function()
     C_PetBattles.UseTrap()
     return true
 end)
+
+Addon:RegisterAction('--', function()
+    return false
+end)
