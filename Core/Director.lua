@@ -125,7 +125,9 @@ function Director:BuildScript(code)
         if line ~= '' then
             local script = stack:Top()
             local action, condition do
-                if line:find('[', nil, true) then
+                if line:find('^%-%-') then
+                    action = line
+                elseif line:find('[', nil, true) then
                     action, condition = line:match('^/?(.+)%s+%[(.+)%]$')
                 else
                     action = line:match('^/?(.+)$')
