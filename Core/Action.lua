@@ -33,8 +33,12 @@ end
 
 function Action:ParseAction(action)
     Util.assert(type(action) == 'string', 'Invalid Action: `%s`', action)
-    
-    local cmd, value = action:match('^([^()]+)%(?([^()]*)%)?$')
+
+    if action:find('^%-%-') then
+        return '--', action
+    end
+
+    local cmd, value = Util.ParseQuote(action)
 
     Util.assert(cmd, 'Invalid Action: `%s`', action)
     Util.assert(self.apis[cmd], 'Invalid Action: `%s` (Not found command)', action)
