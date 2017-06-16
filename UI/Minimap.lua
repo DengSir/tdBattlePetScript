@@ -4,13 +4,14 @@ Minimap.lua
 @Link    : https://dengsir.github.io
 ]]
 
-local ns    = select(2, ...)
-local Addon = ns.Addon
-local UI    = ns.UI
-local L     = ns.L
-local GUI   = LibStub('tdGUI-1.0')
+local ns        = select(2, ...)
+local Addon     = ns.Addon
+local UI        = ns.UI
+local L         = ns.L
+local GUI       = LibStub('tdGUI-1.0')
+local LibDBIcon = LibStub('LibDBIcon-1.0')
 
-local Minimap = Addon:NewModule('UI.Minimap')
+local Minimap = Addon:NewModule('UI.Minimap', 'AceEvent-3.0')
 
 function Minimap:OnInitialize()
     local LDB = LibStub('LibDataBroker-1.1')
@@ -59,6 +60,15 @@ function Minimap:OnInitialize()
         OnLeave = GameTooltip_Hide,
     })
 
-    LibStub('LibDBIcon-1.0'):Register('tdBattlePetScript', BrokerObject, Addon.db.profile.minimap)
-    LibStub('LibDBIcon-1.0'):Show('tdBattlePetScript')
+    LibDBIcon:Register('tdBattlePetScript', BrokerObject, Addon.db.profile.minimap)
+
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_hideMinimap')
+end
+
+function Minimap:PET_BATTLE_SCRIPT_SETTING_CHANGED_hideMinimap(_, value)
+    if value then
+        LibDBIcon:Hide('tdBattlePetScript')
+    else
+        LibDBIcon:Show('tdBattlePetScript')
+    end
 end

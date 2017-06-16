@@ -76,6 +76,12 @@ function Addon:LoadOptionFrame()
                 width = 'double',
                 order = order(),
             },
+            hideMinimap = {
+                type  = 'toggle',
+                name  = L.OPTION_SETTINGS_HIDE_MINIMAP,
+                width = 'double',
+                order = order(),
+            },
             testBreak = {
                 type  = 'toggle',
                 name  = L.OPTION_SETTINGS_TEST_BREAK,
