@@ -56,13 +56,24 @@ function Addon:OnEnable()
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_REMOVED')
 
     C_Timer.After(0, function()
-        for _, module in ipairs(self.moduleEnableQueue) do
-            if not module.GetPluginName or self:IsPluginAllowed(module:GetPluginName()) then
-                module:Enable()
-            end
-        end
+        self:InitSettings()
+        self:LoadModules()
         self:LoadOptionFrame()
     end)
+end
+
+function Addon:InitSettings()
+    for key, value in pairs(self.db.profile.settings) do
+        self:SetSetting(key, value)
+    end
+end
+
+function Addon:LoadModules()
+    for _, module in ipairs(self.moduleEnableQueue) do
+        if not module.GetPluginName or self:IsPluginAllowed(module:GetPluginName()) then
+            module:Enable()
+        end
+    end
 end
 
 function Addon:OnModuleCreated(module)
