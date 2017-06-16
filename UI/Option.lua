@@ -35,7 +35,7 @@ function Addon:LoadOptionFrame()
     end
 
     local function get(item)
-        return Addon:GetSetting(item[#item])
+        return self:GetSetting(item[#item])
     end
 
     local function set(item, value)
@@ -43,7 +43,7 @@ function Addon:LoadOptionFrame()
         if not check(key, value) then
             return
         end
-        return Addon:SetSetting(key, value)
+        return self:SetSetting(key, value)
     end
 
     local general = {
@@ -81,6 +81,17 @@ function Addon:LoadOptionFrame()
                 name  = L.OPTION_SETTINGS_HIDE_MINIMAP,
                 width = 'double',
                 order = order(),
+                confirm = function()
+                    return IsAddOnLoaded('MBB')
+                end,
+                confirmText = L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP,
+                set = function(item, value)
+                    set(item, value)
+
+                    if IsAddOnLoaded('MBB') then
+                        ReloadUI()
+                    end
+                end
             },
             testBreak = {
                 type  = 'toggle',

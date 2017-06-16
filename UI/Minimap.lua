@@ -25,7 +25,7 @@ function Minimap:OnInitialize()
             if click == 'RightButton' then
                 GUI:ToggleMenu(button, {
                     {
-                        text = L.ADDON_NAME,
+                        text = 'tdBattlePetScript',
                         isTitle = true,
                     },
                     {
@@ -53,7 +53,9 @@ function Minimap:OnInitialize()
             end
         end,
         OnTooltipShow = function(tooltip)
-            tooltip:SetText(L.ADDON_NAME)
+            tooltip:SetText('tdBattlePetScript')
+            tooltip:AddLine(L.ADDON_NAME, GREEN_FONT_COLOR:GetRGB())
+            tooltip:AddLine(' ')
             tooltip:AddLine(UI.LEFT_MOUSE_BUTTON .. L.TOGGLE_SCRIPT_MANAGER, 1, 1, 1)
             tooltip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L.Options, 1, 1, 1)
         end,
@@ -62,13 +64,17 @@ function Minimap:OnInitialize()
 
     LibDBIcon:Register('tdBattlePetScript', BrokerObject, Addon.db.profile.minimap)
 
-    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_hideMinimap')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_hideMinimap', 'OnSettingChanged')
 end
 
-function Minimap:PET_BATTLE_SCRIPT_SETTING_CHANGED_hideMinimap(_, value)
-    if value then
-        LibDBIcon:Hide('tdBattlePetScript')
-    else
+function Minimap:OnSettingChanged(_, value, userInput)
+    self:SetShown(not value)
+end
+
+function Minimap:SetShown(flag)
+    if flag then
         LibDBIcon:Show('tdBattlePetScript')
+    else
+        LibDBIcon:Hide('tdBattlePetScript')
     end
 end

@@ -34,7 +34,9 @@ function Module:OnInitialize()
             PetBattleFrame.TopVersusText:SetTextColor(GREEN_FONT_COLOR:GetRGB())
 
             GameTooltip:SetOwner(ToolButton, 'ANCHOR_BOTTOM')
-            GameTooltip:SetText(L.ADDON_NAME)
+            GameTooltip:SetText('tdBattlePetScript')
+            GameTooltip:AddLine(L.ADDON_NAME, GREEN_FONT_COLOR:GetRGB())
+            GameTooltip:AddLine(' ')
             GameTooltip:AddLine(UI.LEFT_MOUSE_BUTTON .. L.TOGGLE_SCRIPT_SELECTOR, HIGHLIGHT_FONT_COLOR:GetRGB())
             GameTooltip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT, HIGHLIGHT_FONT_COLOR:GetRGB())
             GameTooltip:Show()
@@ -212,7 +214,7 @@ function Module:PET_BATTLE_CLOSE()
 end
 
 function Module:UpdateHotKey()
-    if not self.AutoButton:IsShown() then
+    if not self.AutoButton:IsVisible() then
         return
     end
 

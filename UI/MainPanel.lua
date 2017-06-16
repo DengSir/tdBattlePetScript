@@ -28,6 +28,8 @@ function Module:OnInitialize()
     local function UpdateSaveButton() self:UpdateSaveButton() end
 
     local MainPanel = GUI:GetClass('BasicPanel'):New(UIParent) do
+        MainPanel.SetTitle = function(p, t) return p:SetText('tdBattlePetScript - ' .. t) end
+
         MainPanel:Hide()
         MainPanel:SetSize(550, 450)
         MainPanel:SetPoint('CENTER')
@@ -37,7 +39,7 @@ function Module:OnInitialize()
         MainPanel:SetMaxResize(900, 700)
         MainPanel:ShowPortrait()
         MainPanel:SetFrameStrata('DIALOG')
-        MainPanel:SetText(L['Script editor'])
+        MainPanel:SetTitle(L['Script editor'])
         MainPanel:SetPortrait([[Interface\Icons\INV_Misc_PenguinPet]])
 
         MainPanel:RegisterConfig(Addon.db.profile.position)
@@ -475,7 +477,7 @@ function Module:ShowDialog()
     self.MainPanel:SetMovable(true)
     self.MainPanel:SetResizable(true)
     self.MainPanel:SetFrameStrata('DIALOG')
-    self.MainPanel:SetText(L['Script editor'])
+    self.MainPanel:SetTitle(L['Script editor'])
 
     if self.MainPanel:IsShown() then
         self:HidePanel()
@@ -492,7 +494,7 @@ function Module:ShowPanel()
     self.MainPanel:SetMovable(false)
     self.MainPanel:SetResizable(false)
     self.MainPanel:SetFrameStrata('MEDIUM')
-    self.MainPanel:SetText(L['Script manager'])
+    self.MainPanel:SetTitle(L['Script manager'])
 
     if self.MainPanel:IsShown() then
         self:HidePanel()
