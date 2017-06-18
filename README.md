@@ -4,7 +4,7 @@ This addon makes battle pet combat support scripting.
 
 ## Screenshot
 
-![Screenshot](.images/screenshot.jpg "Screenshot")
+![Screenshot](https://raw.githubusercontent.com/DengSir/tdBattlePetScript/master/.images/screenshot.jpg "Screenshot")
 
 ## Script tutorial (Chinese only)
 
@@ -21,7 +21,7 @@ This addon makes battle pet combat support scripting.
 
 Example:
 
-![Script](.images/example.jpg "Script")
+![Script](https://raw.githubusercontent.com/DengSir/tdBattlePetScript/master/.images/example.jpg "Script")
 
 ## Script selector
 
@@ -34,9 +34,15 @@ This script selector bind the script to both teams of the current pet battle.
 This script selector ind the script to the Rematch team, please download [tdBattlePetScript Rematch](https://wow.curseforge.com/projects/tdbattlepetscript-rematch "tdBattlePetScript Rematch").
 
 
+## TODOS
+
+* Translate script
+* Share script to friend
+
+
 ## Support development
 
 [**Paypal Me**](https://www.paypal.me/dengsir "Paypal Me")
 
-![Weixin](.images/weixin.jpg "Weixin")
-![Zhifubao](.images/zhifubao.jpg "Zhifubao")
+![Weixin](https://raw.githubusercontent.com/DengSir/tdBattlePetScript/master/.images/weixin.jpg "Weixin")
+![Zhifubao](https://raw.githubusercontent.com/DengSir/tdBattlePetScript/master/.images/zhifubao.jpg "Zhifubao")
