@@ -4,7 +4,7 @@ This addon makes battle pet combat support scripting.
 
 ## Screenshot
 
-![Screenshot](https://media-elerium.cursecdn.com/attachments/115/387/bfq8pig-etasz11t3cs1f4-sr.jpg "Screenshot")
+![Screenshot](.images/screenshot.jpg "Screenshot")
 
 ## Script tutorial (Chinese only)
 
@@ -21,7 +21,7 @@ This addon makes battle pet combat support scripting.
 
 Example:
 
-![Script](https://media-elerium.cursecdn.com/attachments/115/389/script.png "Script")
+![Script](.images/example.jpg "Script")
 
 ## Script selector
 
