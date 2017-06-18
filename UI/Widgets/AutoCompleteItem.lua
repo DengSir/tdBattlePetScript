@@ -60,6 +60,7 @@ function AutoCompleteItem:SetItem(item)
         self.Text:SetText(item.text)
         self.Text:Show()
     else
+        self.Text:SetText('')
         self.Text:Hide()
     end
 

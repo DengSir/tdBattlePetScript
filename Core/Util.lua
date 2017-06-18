@@ -7,6 +7,10 @@ Api.lua
 local ns   = select(2, ...)
 local Util = {} ns.Util = Util
 
+local function parseID(value)
+    return type(value) == 'string' and tonumber(value:match(':(%d+)$')) or nil
+end
+
 local function comparePet(owner, index, pet)
     return pet == C_PetBattles.GetName(owner, index) or tonumber(pet) == C_PetBattles.GetPetSpeciesID(owner, index)
 end
@@ -14,7 +18,7 @@ end
 function Util.ParseQuote(str)
     local major, quote = str:match('^([^()]+)%((.+)%)$')
     if major then
-        return major, quote
+        return major, parseID(quote) or quote
     end
     return str, nil
 end

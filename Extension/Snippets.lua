@@ -181,10 +181,10 @@ local function tfillrow(t, column)
     end
 end
 
-local function makeNameSnippet(name)
+local function makeNameSnippet(name, id)
     return {
         text  = name,
-        value = format('(%s)', name),
+        value = format('(%s:%d)', name, id),
     }
 end
 
@@ -206,7 +206,7 @@ local function fillAbility(list, owner, pet)
         local id, name, icon = C_PetBattles.GetAbilityInfo(owner, pet, i)
         if id then
             tinsert(list, makeIconSnippet(icon))
-            tinsert(list, makeNameSnippet(name))
+            tinsert(list, makeNameSnippet(name, id))
             tinsert(list, makeIndexSnippet(i))
         end
     end
@@ -217,9 +217,10 @@ local function fillPet(list, owner)
     for i = 1, C_PetBattles.GetNumPets(owner) do
         local name = C_PetBattles.GetName(owner, i)
         local icon = C_PetBattles.GetIcon(owner, i)
+        local id   = C_PetBattles.GetPetSpeciesID(owner, i)
 
         tinsert(list, makeIconSnippet(icon))
-        tinsert(list, makeNameSnippet(name))
+        tinsert(list, makeNameSnippet(name, id))
         tinsert(list, makeIndexSnippet(i))
     end
     return 3
@@ -272,7 +273,7 @@ Snippets.Condition.weather = function(list)
         local id, name, icon = C_PetBattles.GetAbilityInfoByID(id)
 
         tinsert(list, makeIconSnippet(icon))
-        tinsert(list, makeNameSnippet(name))
+        tinsert(list, makeNameSnippet(name, id))
     end
     return 2
 end
@@ -287,7 +288,7 @@ Snippets.Condition.aura = function(list, word, owner, pet)
             local id, name, icon = C_PetBattles.GetAbilityInfoByID(C_PetBattles.GetAuraInfo(owner, pet, i))
 
             tinsert(list, makeIconSnippet(icon))
-            tinsert(list, makeNameSnippet(name))
+            tinsert(list, makeNameSnippet(name, id))
         end
     end
     return 2
