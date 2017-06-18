@@ -220,7 +220,7 @@ local function fillPet(list, owner)
         local id   = C_PetBattles.GetPetSpeciesID(owner, i)
 
         tinsert(list, makeIconSnippet(icon))
-        tinsert(list, makeNameSnippet(name))
+        tinsert(list, makeNameSnippet(name, id))
         tinsert(list, makeIndexSnippet(i))
     end
     return 3
