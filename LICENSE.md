@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) 2015 Alessandro Fragnani
+Copyright (c) 2017 Dengzhun Lu <tdaddon@163.com>
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
