@@ -2,7 +2,7 @@
 Label Widget
 Displays text and optionally an icon.
 -------------------------------------------------------------------------------]]
-local Type, Version = "Label", 23
+local Type, Version = "Label", 24
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -57,7 +57,7 @@ local function UpdateImageAnchor(self)
 		label:SetWidth(width)
 		height = label:GetHeight()
 	end
-
+	
 	self.resizing = true
 	frame:SetHeight(height)
 	frame.height = height
@@ -78,6 +78,8 @@ local methods = {
 		self:SetImageSize(16, 16)
 		self:SetColor()
 		self:SetFontObject()
+		self:SetJustifyH("LEFT")
+		self:SetJustifyV("TOP")
 
 		-- reset the flag
 		self.resizing = nil
@@ -106,7 +108,7 @@ local methods = {
 	["SetImage"] = function(self, path, ...)
 		local image = self.image
 		image:SetTexture(path)
-
+		
 		if image:GetTexture() then
 			self.imageshown = true
 			local n = select("#", ...)
@@ -134,6 +136,14 @@ local methods = {
 		self.image:SetHeight(height)
 		UpdateImageAnchor(self)
 	end,
+
+	["SetJustifyH"] = function(self, justifyH)
+		self.label:SetJustifyH(justifyH)
+	end,
+
+	["SetJustifyV"] = function(self, justifyV)
+		self.label:SetJustifyV(justifyV)
+	end,
 }
 
 --[[-----------------------------------------------------------------------------
@@ -144,9 +154,6 @@ local function Constructor()
 	frame:Hide()
 
 	local label = frame:CreateFontString(nil, "BACKGROUND", "GameFontHighlightSmall")
-	label:SetJustifyH("LEFT")
-	label:SetJustifyV("TOP")
-
 	local image = frame:CreateTexture(nil, "BACKGROUND")
 
 	-- create widget

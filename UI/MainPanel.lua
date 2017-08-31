@@ -165,11 +165,11 @@ function Module:OnInitialize()
             if ExtraButton:GetChecked() then
                 ExtraButton:SetNormalTexture([[Interface\CHATFRAME\UI-ChatIcon-ScrollUp-Up]])
                 ExtraButton:SetPushedTexture([[Interface\CHATFRAME\UI-ChatIcon-ScrollUp-Down]])
-                PlaySound('igMainMenuOptionCheckBoxOff')
+                PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_OFF or 'igMainMenuOptionCheckBoxOff')
             else
                 ExtraButton:SetNormalTexture([[Interface\CHATFRAME\UI-ChatIcon-ScrollDown-Up]])
                 ExtraButton:SetPushedTexture([[Interface\CHATFRAME\UI-ChatIcon-ScrollDown-Down]])
-                PlaySound('igMainMenuOptionCheckBoxOn')
+                PlaySound(SOUNDKIT and SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON or 'igMainMenuOptionCheckBoxOn')
             end
             self.ExtraFrame:SetShown(ExtraButton:GetChecked())
         end)
