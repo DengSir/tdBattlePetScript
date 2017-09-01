@@ -108,8 +108,6 @@ end
 function Condition:RunCondition(condition)
     local owner, pet, cmd, arg, op, value = self:ParseCondition(condition)
 
-    pet = Util.ParsePetIndex(owner, pet)
-
     local fn  = self.apis[cmd]
     local opts = self.opts[cmd]
     if not fn then
@@ -137,7 +135,7 @@ function Condition:ParsePet(str)
     end
 
     petInputed = not not pet
-    -- pet        = Util.ParsePetIndex(owner, pet)
+    pet        = Util.ParsePetIndex(owner, pet)
     return owner, pet, petInputed
 end
 
