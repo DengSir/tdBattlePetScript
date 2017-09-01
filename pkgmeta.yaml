@@ -8,3 +8,4 @@ externals:
         url: https://github.com/DengSir/LibCRC32-1.0.git
     Libs/tdGUI:
         url: https://github.com/DengSir/tdGUI.git
+        tag: 70300.01
