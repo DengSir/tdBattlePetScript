@@ -152,7 +152,23 @@ function Condition:ParseApi(str)
     if not str then
         return
     end
-    local args = {strsplit('.', str)}
+
+    local inQuote = false
+    local args = {''}
+
+    for char in str:gmatch('.') do
+        if char == '.' and not inQuote then
+            table.insert(args, '')
+        else
+            args[#args] = args[#args] .. char
+        end
+
+        if char == '(' then
+            inQuote = true
+        elseif char == ')' then
+            inQuote = false
+        end
+    end
 
     local owner, pet, petInputed = self:ParsePet(args[1])
     local cmd,   arg, argInputed = self:ParseCmd(unpack(args, owner and 2 or 1))
