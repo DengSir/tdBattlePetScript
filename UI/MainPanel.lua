@@ -69,12 +69,12 @@ function Module:OnInitialize()
                 button:SetTexture(d.value:GetPluginIcon())
                 button:ShowIcon()
                 button:SetSelectable(false)
-                button:SetTab(0)
+                button:SetType(d.type)
             elseif d.type == 'script' then
                 button:SetText(d.value:GetName())
                 button:HideIcon()
                 button:SetSelectable(true)
-                button:SetTab(40)
+                button:SetType(d.type)
             end
         end)
         ScriptList:SetCallback('OnSelectChanged', function(ScriptList, index, d)
@@ -388,16 +388,7 @@ function Module:UpdateScriptList()
     end
 
     local list = {} do
-        local plugins = {} do
-            for _, plugin in Addon:IteratePlugins() do
-                tinsert(plugins, plugin)
-            end
-            sort(plugins, function(a, b)
-                return a:GetPluginTitle() < b:GetPluginTitle()
-            end)
-        end
-
-        for _, plugin in ipairs(plugins) do
+        for _, plugin in Addon:IteratePlugins() do
             tinsert(list, {
                 type = 'plugin',
                 value = plugin

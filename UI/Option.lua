@@ -172,13 +172,64 @@ function Addon:RefillPluginOptions()
         order    = order(),
     }
 
-    for name, plugin in self:IteratePlugins() do
+    local pluginCount = #self.db.profile.pluginOrders
+
+    for i, plugin in self:IteratePlugins() do
+        local name = plugin:GetPluginName()
+        local isFirst = i == 1
+        local isLast = i == pluginCount
+
         args[name] = {
             type  = 'toggle',
             name  = plugin:GetPluginTitle(),
             desc  = plugin:GetPluginNotes(),
             order = order(),
-            width = 'double',
+        }
+
+        args[name .. 'Up'] = isFirst and {
+            type = 'description',
+            name = '',
+            width = 'half',
+            order = order(),
+        } or {
+            type = 'execute',
+            name = '',
+            width = 'half',
+            image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
+            imageCoords = { 0.1875, 0.8125, 0.1875, 0.8125 },
+            imageWidth = 19,
+            imageHeight = 19,
+            order = order(),
+            func = function()
+                self:MoveUpPlugin(name)
+                self:RefillPluginOptions()
+            end,
+        }
+
+        args[name .. 'Down'] = isLast and {
+            type = 'description',
+            name = '',
+            width = 'half',
+            order = order(),
+        } or {
+            type = 'execute',
+            name = '',
+            width = 'half',
+            image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
+            imageCoords = { 0.1875, 0.8125, 0.8125, 0.1875 },
+            imageWidth = 19,
+            imageHeight = 19,
+            order = order(),
+            func = function()
+                self:MoveDownPlugin(name)
+                self:RefillPluginOptions()
+            end,
+        }
+
+        args[name .. 'Fill'] = {
+            type = 'description',
+            name = '',
+            order = order(),
         }
     end
     AceConfigRegistry:NotifyChange('tdBattlePetScript Plugins')

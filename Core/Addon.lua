@@ -38,6 +38,10 @@ function Addon:OnInitialize()
             },
             position = {
                 point = 'CENTER', x = 0, y = 0, width = 350, height = 450,
+            },
+            pluginOrders = {
+                'Rematch',
+                'Base',
             }
         }
     }
@@ -50,7 +54,7 @@ function Addon:OnInitialize()
 end
 
 function Addon:OnEnable()
-    self:InitPluginScriptDB()
+    self:InitPlugins()
 
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_ADDED')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_REMOVED')
