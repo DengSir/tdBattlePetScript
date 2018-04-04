@@ -41,11 +41,13 @@ function ScriptItem:Constructor()
     local Text = self:CreateFontString(nil, 'ARTWORK') do
         Text:SetPoint('LEFT', Icon, 'RIGHT')
         Text:SetPoint('RIGHT', -5, 0)
+        Text:SetWordWrap(false)
         self:SetFontString(Text)
         self:SetNormalFontObject('GameFontNormal')
         self:SetHighlightFontObject('GameFontHighlight')
     end
 
+    self.Text       = Text
     self.Bg         = Bg
     self.Icon       = Icon
     self.IconBorder = IconBorder
@@ -65,6 +67,10 @@ function ScriptItem:HideIcon()
     self.IconBorder:Hide()
 end
 
-function ScriptItem:SetTab(x)
-    -- self.Bg:SetPoint('TOPLEFT', x, 0)
+function ScriptItem:SetType(type)
+    if type == 'plugin' then
+        self.Text:SetPoint('LEFT', self.Icon, 'RIGHT')
+    else
+        self.Text:SetPoint('LEFT', 5, 0)
+    end
 end
