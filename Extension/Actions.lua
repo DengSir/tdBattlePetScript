@@ -26,7 +26,7 @@ Addon:RegisterAction('change', function(index)
     --     return false
     -- end
 
-    if not index or active == index or not C_PetBattles.CanActivePetSwapOut() or not C_PetBattles.CanPetSwapIn(index) then
+    if not index or active == index or not (C_PetBattles.CanActivePetSwapOut() or C_PetBattles.ShouldShowPetSelect()) or not C_PetBattles.CanPetSwapIn(index) then
         return false
     end
 
