@@ -58,9 +58,15 @@ function Addon:LoadOptionFrame()
                 name  = L.OPTION_GENERAL_NOTES .. '\n\n',
                 order = order(),
             },
-            selectOnlyOneScript = {
-                type  = 'toggle',
-                name  = L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_ONLY_ONE,
+            -- selectOnlyOneScript = {
+            --     type  = 'toggle',
+            --     name  = L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_ONLY_ONE,
+            --     width = 'double',
+            --     order = order(),
+            -- },
+            autoSelect = {
+                type = 'toggle',
+                name = L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_BY_ORDER,
                 width = 'double',
                 order = order(),
             },
@@ -186,15 +192,11 @@ function Addon:RefillPluginOptions()
             order = order(),
         }
 
-        args[name .. 'Up'] = isFirst and {
-            type = 'description',
-            name = '',
-            width = 'half',
-            order = order(),
-        } or {
+        args[name .. 'Up'] = {
             type = 'execute',
             name = '',
             width = 'half',
+            disabled = isFirst,
             image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
             imageCoords = { 0.1875, 0.8125, 0.1875, 0.8125 },
             imageWidth = 19,
@@ -206,15 +208,11 @@ function Addon:RefillPluginOptions()
             end,
         }
 
-        args[name .. 'Down'] = isLast and {
-            type = 'description',
-            name = '',
-            width = 'half',
-            order = order(),
-        } or {
+        args[name .. 'Down'] = {
             type = 'execute',
             name = '',
             width = 'half',
+            disabled = isLast,
             image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
             imageCoords = { 0.1875, 0.8125, 0.8125, 0.1875 },
             imageWidth = 19,
