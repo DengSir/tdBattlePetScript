@@ -1,7 +1,5 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
-    <Script file="Class\Snippet.lua" />
-    <Script file="Class\SnippetList.lua" />
     <Script file="Widgets\ScriptItem.lua" />
     <Script file="Widgets\AutoCompleteItem.lua" />
     <Script file="Widgets\AutoCompleteBox.lua" />

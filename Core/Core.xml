@@ -3,7 +3,6 @@
     <Script file="Addon.lua" />
     <Script file="Stack.lua" />
     <Script file="Util.lua" />
-    <Script file="Round.lua" />
     <Script file="Action.lua" />
     <Script file="Condition.lua" />
     <Script file="Director.lua" />
