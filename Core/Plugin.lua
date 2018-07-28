@@ -27,7 +27,7 @@ function Addon:NewPlugin(name, ...)
 end
 
 function Addon:GetPlugin(name)
-    return self:GetModule(format('Plugin_%s', name))
+    return self:GetModule(format('Plugin_%s', name), true)
 end
 
 function Addon:GetPluginList()

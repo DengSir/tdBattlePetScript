@@ -178,7 +178,7 @@ function Addon:RefillPluginOptions()
         order    = order(),
     }
 
-    local pluginCount = #self.db.profile.pluginOrders
+    local pluginCount = #self:GetPluginList()
 
     for i, plugin in self:IteratePlugins() do
         local name = plugin:GetPluginName()
