@@ -9,3 +9,5 @@ externals:
     Libs/tdGUI:
         url: https://github.com/DengSir/tdGUI.git
         tag: 70300.01
+    Libs/tdGUI/Libs/LibClass-2.0:
+        url: https://github.com/DengSir/LibClass-2.0.git
