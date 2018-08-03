@@ -1,0 +1,11 @@
+## Interface: 30000
+## Title: Lib: Base64-1.0
+## Notes: A library to encode and decode Base64 strings
+## Author: ckknight
+## X-eMail: ckknight@gmail.com
+## X-Category: Library
+## X-License: MIT
+## X-Curse-Packaged-Version: v1
+
+LibStub\LibStub.lua
+lib.xml
