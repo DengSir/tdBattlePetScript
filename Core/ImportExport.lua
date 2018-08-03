@@ -26,7 +26,7 @@ function Addon:Export(script)
         script:GetAuthor() or '',
         script:GetPlugin():GetPluginTitle(),
         (script:GetNotes() or ''):gsub('\n', '\n#                    '),
-        Base64:enc(self:RawExport(script)):gsub('(..?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?)', function(x)
+        Base64.Encode(self:RawExport(script)):gsub('(..?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?.?)', function(x)
             return '# ' .. x .. '\n'
         end)
     )
@@ -48,9 +48,13 @@ function Addon:Import(code)
         return false, 'Decode failed'
     end
 
-    code = code:gsub('\n[^#](.+)$', '')
+    code = code:gsub('[# ]', '')
+    local ok, data = pcall(Base64.Decode, code)
+    if not ok then
+        return false, 'Decode failed'
+    end
 
-    local crc, data = Base64:dec(code):match('^(%d+)(^.+)$')
+    local crc, data = data:match('^(%d+)(^.+)$')
     if not crc or not data then
         return false, 'Decode failed'
     end

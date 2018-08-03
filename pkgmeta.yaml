@@ -2,8 +2,6 @@ enable-nolib-creation: no
 externals:
     Libs/LibClass-2.0:
         url: https://github.com/DengSir/LibClass-2.0.git
-    Libs/LibBase64-1.0:
-        url: https://github.com/DengSir/LibBase64-1.0.git
     Libs/LibCRC32-1.0:
         url: https://github.com/DengSir/LibCRC32-1.0.git
     Libs/tdGUI:

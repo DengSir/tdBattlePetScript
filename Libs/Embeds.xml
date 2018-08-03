@@ -16,7 +16,7 @@
     <Script file="LibDBIcon-1.0\LibDBIcon-1.0.lua" />
 
     <Include file="LibClass-2.0\LibClass-2.0.xml" />
-    <Include file="LibBase64-1.0\LibBase64-1.0.xml" />
+    <Include file="LibBase64-1.0\lib.xml" />
     <Include file="LibCRC32-1.0\LibCRC32-1.0.xml" />
 
     <Include file="tdGUI\Load.xml" />
