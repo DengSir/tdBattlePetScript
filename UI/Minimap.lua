@@ -22,6 +22,10 @@ function Minimap:OnInitialize()
         OnClick = function(button, click)
             GameTooltip:Hide()
 
+            if LibDBIcon.tooltip then
+                LibDBIcon.tooltip:Hide()
+            end
+
             if click == 'RightButton' then
                 GUI:ToggleMenu(button, {
                     {

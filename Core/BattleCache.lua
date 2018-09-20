@@ -50,7 +50,6 @@ function BattleCache:AllocCache(name, default)
     if not self.caches[name] then
         self.caches[name] = CopyTable(default) or {}
     end
-    dump(name, self.caches[name])
     return self.caches[name]
 end
 
