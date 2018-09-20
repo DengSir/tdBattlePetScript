@@ -3,13 +3,12 @@ Option.lua
 @Author  : DengSir (tdaddon@163.com)
 @Link    : https://dengsir.github.io
 ]]
-
-local ns       = select(2, ...)
-local Addon    = ns.Addon
-local L        = ns.L
+local ns = select(2, ...)
+local Addon = ns.Addon
+local L = ns.L
 
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
-local AceConfigDialog   = LibStub('AceConfigDialog-3.0')
+local AceConfigDialog = LibStub('AceConfigDialog-3.0')
 
 local plugins_args = {}
 
@@ -46,118 +45,115 @@ function Addon:LoadOptionFrame()
         return self:SetSetting(key, value)
     end
 
-    local general = {
-        type  = 'group',
-        name  = GENERAL,
-        order = order(),
-        get   = get,
-        set   = set,
-        args  = {
-            description = {
-                type  = 'description',
-                name  = L.OPTION_GENERAL_NOTES .. '\n\n',
-                order = order(),
-            },
-            -- selectOnlyOneScript = {
-            --     type  = 'toggle',
-            --     name  = L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_ONLY_ONE,
-            --     width = 'double',
-            --     order = order(),
-            -- },
-            autoSelect = {
-                type = 'toggle',
-                name = L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_BY_ORDER,
-                width = 'double',
-                order = order(),
-            },
-            hideNoScript = {
-                type  = 'toggle',
-                name  = L.OPTION_SETTINGS_HIDE_SELECTOR_NO_SCRIPT,
-                width = 'double',
-                order = order(),
-            },
-            noWaitDeleteScript = {
-                type  = 'toggle',
-                name  = L.OPTION_SETTINGS_NO_WAIT_DELETE_SCRIPT,
-                width = 'double',
-                order = order(),
-            },
-            hideMinimap = {
-                type  = 'toggle',
-                name  = L.OPTION_SETTINGS_HIDE_MINIMAP,
-                width = 'double',
-                order = order(),
-                confirm = function()
-                    return IsAddOnLoaded('MBB')
-                end,
-                confirmText = L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP,
-                set = function(item, value)
-                    set(item, value)
-
-                    if IsAddOnLoaded('MBB') then
-                        ReloadUI()
-                    end
-                end
-            },
-            testBreak = {
-                type  = 'toggle',
-                name  = L.OPTION_SETTINGS_TEST_BREAK,
-                width = 'double',
-                order = order(),
-            },
-            autoButtonHotKey = {
-                type  = 'keybinding',
-                name  = L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY,
-                width = 'double',
-                order = order(),
-            },
-        }
-    }
-
-    local editor = {
+    local options = {
         type = 'group',
-        name = L['Script editor'],
-        order = order(),
-        get   = get,
-        set   = set,
+        childGroups = 'tab',
         args = {
-            description = {
-                type  = 'description',
-                name  = L.OPTION_SCRIPTEDITOR_NOTES .. '\n\n',
+            general = {
+                type = 'group',
+                name = GENERAL,
                 order = order(),
+                get = get,
+                set = set,
+                args = {
+                    description = {
+                        type = 'description',
+                        name = '\n' .. L.OPTION_GENERAL_NOTES .. '\n\n',
+                        order = order()
+                    },
+                    autoSelect = {
+                        type = 'toggle',
+                        name = L.OPTION_SETTINGS_AUTO_SELECT_SCRIPT_BY_ORDER,
+                        width = 'double',
+                        order = order()
+                    },
+                    hideNoScript = {
+                        type = 'toggle',
+                        name = L.OPTION_SETTINGS_HIDE_SELECTOR_NO_SCRIPT,
+                        width = 'double',
+                        order = order()
+                    },
+                    noWaitDeleteScript = {
+                        type = 'toggle',
+                        name = L.OPTION_SETTINGS_NO_WAIT_DELETE_SCRIPT,
+                        width = 'double',
+                        order = order()
+                    },
+                    hideMinimap = {
+                        type = 'toggle',
+                        name = L.OPTION_SETTINGS_HIDE_MINIMAP,
+                        width = 'double',
+                        order = order(),
+                        confirm = function()
+                            return IsAddOnLoaded('MBB')
+                        end,
+                        confirmText = L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP,
+                        set = function(item, value)
+                            set(item, value)
+
+                            if IsAddOnLoaded('MBB') then
+                                ReloadUI()
+                            end
+                        end
+                    },
+                    testBreak = {
+                        type = 'toggle',
+                        name = L.OPTION_SETTINGS_TEST_BREAK,
+                        width = 'double',
+                        order = order()
+                    },
+                    autoButtonHotKey = {
+                        type = 'keybinding',
+                        name = L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY,
+                        width = 'double',
+                        order = order()
+                    }
+                }
             },
-            editorFontFace = {
-                type  = 'input',
-                name  = L['Font face'],
-                width = 'double',
+            editor = {
+                type = 'group',
+                name = L['Script editor'],
+                order = order(),
+                get = get,
+                set = set,
+                args = {
+                    description = {
+                        type = 'description',
+                        name = L.OPTION_SCRIPTEDITOR_NOTES .. '\n\n',
+                        order = order()
+                    },
+                    editorFontFace = {
+                        type = 'input',
+                        name = L['Font face'],
+                        width = 'double'
+                    },
+                    editorFontSize = {
+                        type = 'range',
+                        name = L['Font size'],
+                        width = 'double',
+                        min = 9,
+                        max = 32,
+                        step = 1
+                    }
+                }
             },
-            editorFontSize = {
-                type = 'range',
-                name = L['Font size'],
-                width = 'double',
-                min = 9,
-                max = 32,
-                step = 1,
-            },
+            plugins = {
+                type = 'group',
+                name = L['Script selector'],
+                order = order(),
+                get = function(item)
+                    return self:IsPluginAllowed(item[#item])
+                end,
+                set = function(item, value)
+                    return self:SetPluginAllowed(item[#item], value)
+                end,
+                args = plugins_args
+            }
         }
     }
 
-    local plugins = {
-        type  = 'group',
-        name  = L['Script selector'],
-        order = order(),
-        get   = function(item) return self:IsPluginAllowed(item[#item]) end,
-        set   = function(item, value) return self:SetPluginAllowed(item[#item], value) end,
-        args  = plugins_args,
-    }
-
-    AceConfigRegistry:RegisterOptionsTable('tdBattlePetScript Options', general)
-    AceConfigRegistry:RegisterOptionsTable('tdBattlePetScript Editor',  editor)
-    AceConfigRegistry:RegisterOptionsTable('tdBattlePetScript Plugins', plugins)
-
+    AceConfigRegistry:RegisterOptionsTable('tdBattlePetScript Options', options)
     AceConfigDialog:AddToBlizOptions('tdBattlePetScript Options', 'tdBattlePetScript')
-    AceConfigDialog:AddToBlizOptions('tdBattlePetScript Editor',  L['Script editor'], 'tdBattlePetScript')
-    AceConfigDialog:AddToBlizOptions('tdBattlePetScript Plugins', L['Script selector'], 'tdBattlePetScript')
 end
 
 function Addon:CreateOrderFactory()
@@ -173,9 +169,9 @@ function Addon:RefillPluginOptions()
     local order = self:CreateOrderFactory()
 
     args.description = {
-        type     = 'description',
-        name     = L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
-        order    = order(),
+        type = 'description',
+        name = L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
+        order = order()
     }
 
     local pluginCount = #self:GetPluginList()
@@ -186,10 +182,10 @@ function Addon:RefillPluginOptions()
         local isLast = i == pluginCount
 
         args[name] = {
-            type  = 'toggle',
-            name  = plugin:GetPluginTitle(),
-            desc  = plugin:GetPluginNotes(),
-            order = order(),
+            type = 'toggle',
+            name = plugin:GetPluginTitle(),
+            desc = plugin:GetPluginNotes(),
+            order = order()
         }
 
         args[name .. 'Up'] = {
@@ -198,14 +194,14 @@ function Addon:RefillPluginOptions()
             width = 'half',
             disabled = isFirst,
             image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
-            imageCoords = { 0.1875, 0.8125, 0.1875, 0.8125 },
+            imageCoords = {0.1875, 0.8125, 0.1875, 0.8125},
             imageWidth = 19,
             imageHeight = 19,
             order = order(),
             func = function()
                 self:MoveUpPlugin(name)
                 self:RefillPluginOptions()
-            end,
+            end
         }
 
         args[name .. 'Down'] = {
@@ -214,20 +210,20 @@ function Addon:RefillPluginOptions()
             width = 'half',
             disabled = isLast,
             image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
-            imageCoords = { 0.1875, 0.8125, 0.8125, 0.1875 },
+            imageCoords = {0.1875, 0.8125, 0.8125, 0.1875},
             imageWidth = 19,
             imageHeight = 19,
             order = order(),
             func = function()
                 self:MoveDownPlugin(name)
                 self:RefillPluginOptions()
-            end,
+            end
         }
 
         args[name .. 'Fill'] = {
             type = 'description',
             name = '',
-            order = order(),
+            order = order()
         }
     end
     AceConfigRegistry:NotifyChange('tdBattlePetScript Plugins')
