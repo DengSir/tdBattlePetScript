@@ -26,6 +26,7 @@ function Import:OnInitialize()
             self.EditBox:SetText('')
             self.ExtraCheck:SetChecked(true)
             self:SetScript(nil)
+            self.PageFrame:SetPage(1, true)
         end)
 
         local Bg = Frame:CreateTexture(nil, 'BACKGROUND') do
@@ -95,9 +96,36 @@ function Import:OnInitialize()
         end
     end
 
-    local EditBox = GUI:GetClass('EditBox'):New(Frame, true) do
-        EditBox:SetPoint('TOPLEFT', 30, -70)
-        EditBox:SetPoint('TOPRIGHT', -30, -70)
+    local PageFrame = GUI:GetClass('AnimPageFrame'):New(Frame) do
+        PageFrame:SetPoint('TOPLEFT', 3, -22)
+        PageFrame:SetPoint('BOTTOMRIGHT', -3, 3)
+        PageFrame:SetOrientation('VERTICAL')
+    end
+
+    local PageWelcome = CreateFrame('Frame', nil, PageFrame) do
+        PageFrame:AddPage(PageWelcome)
+    end
+
+    local PageImport = CreateFrame('Frame', nil, PageFrame) do
+        PageFrame:AddPage(PageImport)
+    end
+
+    local HelpInfo = PageWelcome:CreateFontString(nil, 'OVERLAY', 'GameFontGreen') do
+        HelpInfo:SetPoint('TOP', 0, -30)
+        HelpInfo:SetPoint('LEFT', 60, 0)
+        HelpInfo:SetPoint('RIGHT', -20, 0)
+        HelpInfo:SetText('Copy share string or script in editbox.')
+
+        local HelpIcon = PageWelcome:CreateTexture(nil, 'OVERLAY') do
+            HelpIcon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertOther]])
+            HelpIcon:SetSize(32, 32)
+            HelpIcon:SetPoint('RIGHT', HelpInfo, 'LEFT', -8, 0)
+        end
+    end
+
+    local EditBox = GUI:GetClass('EditBox'):New(PageWelcome, true) do
+        EditBox:SetPoint('TOPLEFT', 27, -68)
+        EditBox:SetPoint('TOPRIGHT', -27, -68)
         EditBox:SetHeight(150)
         EditBox:SetCallback('OnTextChanged', function(_, userInput)
             if not userInput then
@@ -107,9 +135,9 @@ function Import:OnInitialize()
         end)
     end
 
-    local ScriptInfo = CreateFrame('Button', nil, Frame) do
+    local ScriptInfo = CreateFrame('Button', nil, PageImport) do
         ScriptInfo:SetSize(200, 28)
-        ScriptInfo:SetPoint('TOP', EditBox, 'BOTTOM', 0, -20)
+        ScriptInfo:SetPoint('TOP', 0, -48)
         ScriptInfo:SetScript('OnEnter', function(ScriptInfo)
             UI.OpenScriptTooltip(self.script, ScriptInfo, 'ANCHOR_RIGHT')
         end)
@@ -166,14 +194,21 @@ function Import:OnInitialize()
         ScriptInfo.Icon = Icon
     end
 
-    local Warning = Frame:CreateFontString(nil, 'OVERLAY', 'GameFontRed') do
+    local Warning = PageImport:CreateFontString(nil, 'OVERLAY', 'GameFontRed') do
         Warning:SetPoint('TOP', ScriptInfo, 'BOTTOM', 0, -20)
-        Warning:SetPoint('LEFT', 20, 0)
+        Warning:SetPoint('LEFT', 60, 0)
         Warning:SetPoint('RIGHT', -20, 0)
         Warning:SetText(L.SCRIPT_IMPORT_LABEL_COVER)
+
+        local WarningIcon = PageImport:CreateTexture(nil, 'OVERLAY') do
+            WarningIcon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
+            WarningIcon:SetSize(32, 32)
+            WarningIcon:SetPoint('RIGHT', Warning, 'LEFT', -8, 0)
+        end
     end
 
-    local CoverCheck = CreateFrame('CheckButton', nil, Frame, 'UICheckButtonTemplate') do
+
+    local CoverCheck = CreateFrame('CheckButton', nil, PageImport, 'UICheckButtonTemplate') do
         CoverCheck:SetPoint('BOTTOM', -60, 50)
         CoverCheck:SetSize(26, 26)
         CoverCheck:SetHitRectInsets(0, -100, 0, 0)
@@ -184,19 +219,16 @@ function Import:OnInitialize()
         end)
     end
 
-    local ExtraCheck = CreateFrame('CheckButton', nil, Frame, 'UICheckButtonTemplate') do
+    local ExtraCheck = CreateFrame('CheckButton', nil, PageImport, 'UICheckButtonTemplate') do
         ExtraCheck:SetPoint('BOTTOM', CoverCheck, 'TOP', 0, -3)
         ExtraCheck:SetSize(26, 26)
         ExtraCheck:SetHitRectInsets(0, -100, 0, 0)
         ExtraCheck:SetFontString(ExtraCheck.text)
         ExtraCheck:SetText(L.SCRIPT_IMPORT_LABEL_EXTRA)
-        ExtraCheck:SetScript('OnClick', function()
-
-        end)
     end
 
-    local SaveButton = CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate') do
-        SaveButton:SetPoint('BOTTOMRIGHT', Frame, 'BOTTOM',-2, 20)
+    local SaveButton = CreateFrame('Button', nil, PageImport, 'UIPanelButtonTemplate') do
+        SaveButton:SetPoint('BOTTOMRIGHT', PageImport, 'BOTTOM',-2, 20)
         SaveButton:SetSize(80, 22)
         SaveButton:SetText(SAVE)
         SaveButton:SetScript('OnClick', function()
@@ -204,8 +236,8 @@ function Import:OnInitialize()
         end)
     end
 
-    local CancelButton = CreateFrame('Button', nil, Frame, 'UIPanelButtonTemplate') do
-        CancelButton:SetPoint('BOTTOMLEFT', Frame, 'BOTTOM', 2, 20)
+    local CancelButton = CreateFrame('Button', nil, PageImport, 'UIPanelButtonTemplate') do
+        CancelButton:SetPoint('BOTTOMLEFT', PageImport, 'BOTTOM', 2, 20)
         CancelButton:SetSize(80, 22)
         CancelButton:SetText(CANCEL)
         CancelButton:SetScript('OnClick', function()
@@ -220,6 +252,9 @@ function Import:OnInitialize()
     self.SaveButton = SaveButton
     self.Warning    = Warning
     self.ScriptInfo = ScriptInfo
+    self.PageFrame  = PageFrame
+    self.PageWelcome = PageWelcome
+    self.PageImport  = PageImport
 end
 
 function Import:OnTextChanged()
@@ -229,6 +264,8 @@ function Import:OnTextChanged()
         return
     end
     self:SetScript(script, extra)
+    self.PageFrame:SetPage(2)
+    self.EditBox:ClearFocus()
 end
 
 function Import:OnSaveButtonClick()
@@ -277,7 +314,7 @@ function Import:SetScript(script, extra)
         self.ExtraCheck:Hide()
     end
 
-    self.Frame:SetHeight(height)
+    -- self.Frame:SetHeight(height)
 
     self:UpdateControl()
 end
