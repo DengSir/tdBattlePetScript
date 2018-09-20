@@ -61,4 +61,6 @@ L["Select script"] = true
 L["TOGGLE_SCRIPT_MANAGER"] = "Toggle script manager"
 L["TOGGLE_SCRIPT_SELECTOR"] = "Toggle script selector"
 L["TOOLTIP_CREATE_OR_DEBUG_SCRIPT"] = "Create or debug script"
+L["PLUGINALLINONE_TITLE"] = 'All in one'
+L["PLUGINALLINONE_NOTES"] = 'This script can be used in all pet battles.'
 --@end-debug@

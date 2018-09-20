@@ -42,6 +42,7 @@ function Addon:OnInitialize()
             pluginOrders = {
                 'Rematch',
                 'Base',
+                'AllInOne',
             }
         }
     }
