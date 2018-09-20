@@ -119,7 +119,7 @@ function Addon:LoadOptionFrame()
                 args = {
                     description = {
                         type = 'description',
-                        name = L.OPTION_SCRIPTEDITOR_NOTES .. '\n\n',
+                        name = '\n' .. L.OPTION_SCRIPTEDITOR_NOTES .. '\n\n',
                         order = order()
                     },
                     editorFontFace = {
@@ -170,7 +170,7 @@ function Addon:RefillPluginOptions()
 
     args.description = {
         type = 'description',
-        name = L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
+        name = '\n' .. L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
         order = order()
     }
 
