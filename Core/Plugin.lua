@@ -79,15 +79,6 @@ function Addon:RebuildPluginOrders()
     end
 end
 
-
-local function tIndexOf(tbl, item)
-    for i, v in ipairs(tbl) do
-        if v == item then
-            return i
-        end
-    end
-end
-
 function Addon:MoveUpPlugin(name)
     local pluginOrders = self.db.profile.pluginOrders
     local index = tIndexOf(pluginOrders, name)

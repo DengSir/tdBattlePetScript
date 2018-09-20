@@ -48,9 +48,6 @@ function Addon:OnInitialize()
     self.db = LibStub('AceDB-3.0'):New('TD_DB_BATTLEPETSCRIPT_GLOBAL', defaults, true)
 
     self.db.RegisterCallback(self, 'OnDatabaseShutdown')
-
-    self.battleCache = _G.TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE or {}
-    _G.TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE = nil
 end
 
 function Addon:OnEnable()
@@ -91,13 +88,6 @@ end
 
 function Addon:OnDatabaseShutdown()
     self:SendMessage('PET_BATTLE_SCRIPT_DB_SHUTDOWN')
-
-    if C_PetBattles.IsInBattle() then
-        self:SendMessage('PET_BATTLE_INBATTLE_SHUTDOWN')
-        _G.TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE = self.battleCache
-    else
-        _G.TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE = nil
-    end
 end
 
 function Addon:PET_BATTLE_SCRIPT_SCRIPT_ADDED(_, plugin, key, script)
@@ -173,12 +163,4 @@ function Addon:SetSetting(key, value)
     self.db.profile.settings[key] = value
     self:SendMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED', key, value)
     self:SendMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_' .. key, value)
-end
-
-function Addon:GetBattleCache(key)
-    return self.battleCache[key]
-end
-
-function Addon:SetBattleCache(key, value)
-    self.battleCache[key] = value
 end

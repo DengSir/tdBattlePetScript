@@ -3,32 +3,17 @@ Played.lua
 @Author  : DengSir (tdaddon@163.com)
 @Link    : https://dengsir.github.io
 ]]
-
-local ns     = select(2, ...)
-local Addon  = ns.Addon
-local Played = Addon:NewModule('Played', 'AceEvent-3.0')
+local ns = select(2, ...)
+local BattleCache = ns.BattleCache
+local Played = BattleCache:NewCache('Played', 'AceEvent-3.0')
 
 function Played:OnEnable()
-    self.played = Addon:GetBattleCache('played') or {}
-
-    if C_PetBattles.IsInBattle() then
-        self:RegisterEvent('PET_BATTLE_CLOSE', function()
-            self:UnregisterEvent('PET_BATTLE_CLOSE')
-            self:RegisterEvent('PET_BATTLE_OPENING_START')
-        end)
-    else
-        self:RegisterEvent('PET_BATTLE_OPENING_START')
-    end
+    self.played = self:SetDefault({})
 
     self:RegisterEvent('PET_BATTLE_PET_CHANGED')
-    self:RegisterMessage('PET_BATTLE_INBATTLE_SHUTDOWN')
 end
 
-function Played:PET_BATTLE_INBATTLE_SHUTDOWN()
-    Addon:SetBattleCache('played', self.played)
-end
-
-function Played:PET_BATTLE_OPENING_START()
+function Played:OnBattleStart()
     wipe(self.played)
 end
 

@@ -10,4 +10,5 @@
     <Script file="Script.lua" />
     <Script file="Plugin.lua" />
     <Script file="ImportExport.lua" />
+    <Script file="BattleCache.lua" />
 </Ui>
