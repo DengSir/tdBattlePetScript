@@ -12,6 +12,8 @@ local VERSION = 1
 local Share = Addon:NewShareHandler(VERSION)
 
 local template = [[
+# tdBattlePetScript Shared String
+# Url: https://www.curseforge.com/wow/addons/tdbattlepetscript
 # Version: %s
 # Name: %s
 # (Script) : #
@@ -63,11 +65,9 @@ function Share:Import(code)
         return false, 'Deserialize failed'
     end
 
-    if not data.plugin or not data.key or not data.db or not data.db.code then
+    if not data.db or not data.db.code then
         return false, 'Data error'
     end
-
-    data.auto = true
     return true, data
 end
 

@@ -11,8 +11,6 @@ local SharePrototype = {
     Export = nop,
     Import = nop,
     Is = nop,
-    AutoContinue = false,
-    Warning = nil,
 }
 
 local handlers = {}
@@ -43,10 +41,6 @@ function Addon:Import(code)
 
             if not Director:BuildScript(data.db.code) then
                 return false
-            end
-
-            if handler.Warning then
-                data.warning = handler.Warning
             end
             return true, data
         end

@@ -149,7 +149,7 @@ function Import:InitPageWelcome(frame)
     local EditBox = GUI:GetClass('EditBox'):New(frame, true) do
         EditBox:SetPoint('TOPLEFT', 27, -68)
         EditBox:SetPoint('TOPRIGHT', -27, -68)
-        EditBox:SetHeight(120)
+        EditBox:SetHeight(130)
         EditBox:SetCallback('OnTextChanged', function(_, userInput)
             if not userInput then
                 return
@@ -256,6 +256,9 @@ function Import:InitPageSelector(frame)
 
         KeyDropdown:SetMenuTable(function(list)
             local plugin = PluginDropdown:GetValue()
+            if not plugin then
+                return
+            end
             for key in plugin:IterateKeys() do
                 tinsert(list, {
                     text = format('|T%s:14|t %s',
@@ -488,7 +491,7 @@ function Import:UpdateData()
 
     local plugin = data.plugin and Addon:GetPlugin(data.plugin)
     if not plugin or not data.key then
-        return self.PageFrame:SetPage(2)
+        return self:ShowWarning(L.IMPORT_SHARED_STRING_WARNING)
     end
 
     local script = Addon:GetClass('Script'):New(data.db, plugin, data.key)

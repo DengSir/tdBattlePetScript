@@ -64,11 +64,12 @@ L["TOOLTIP_CREATE_OR_DEBUG_SCRIPT"] = "Create or debug script"
 L["PLUGINALLINONE_TITLE"] = 'All in one'
 L["PLUGINALLINONE_NOTES"] = 'This script can be used in all pet battles.'
 
-L.IMPORT_SCRIPT_WELCOME = 'Copy Shared string or script to edit box.'
-L.IMPORT_SCRIPT_WARNING = 'You have entered the script and are advised to import using the Shared string, although you can continue to import as well.'
+L.IMPORT_SCRIPT_WELCOME = 'Copy Share string or script to edit box.'
+L.IMPORT_SCRIPT_WARNING = 'You have entered the script and are advised to import using the Share string, although you can continue to import as well.'
 L.IMPORT_REINPUT_TEXT = 'Re-edit'
 L.IMPORT_CHOOSE_PLUGIN = 'Select the script selector...'
 L.IMPORT_CHOOSE_KEY = 'Select the key...'
 L.IMPORT_SCRIPT_EXISTS = 'Script exists'
+L.IMPORT_SHARED_STRING_WARNING = 'Share string data incomplete. But you can still import it.'
 
 --@end-debug@

@@ -9,8 +9,6 @@ local Director = ns.Director
 local VERSION = 0
 local Share = Addon:NewShareHandler(VERSION)
 
-Share.Warning = ns.L.IMPORT_SCRIPT_WARNING
-
 function Share:Import(code)
     if not code then
         return
@@ -23,7 +21,7 @@ function Share:Import(code)
     if not Director:BuildScript(code) then
         return
     end
-    return true, {db = {code = code}}
+    return true, {db = {code = code}, warning = ns.L.IMPORT_SCRIPT_WARNING}
 end
 
 function Share:Is()
