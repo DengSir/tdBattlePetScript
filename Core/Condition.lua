@@ -158,7 +158,7 @@ function Condition:ParseApi(str)
 
     for char in str:gmatch('.') do
         if char == '.' and not inQuote then
-            table.insert(args, '')
+            tinsert(args, '')
         else
             args[#args] = args[#args] .. char
         end

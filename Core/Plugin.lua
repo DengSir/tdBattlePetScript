@@ -86,7 +86,7 @@ function Addon:MoveUpPlugin(name)
         return
     end
 
-    tremove(pluginOrders, index)
+    table.remove(pluginOrders, index)
     tinsert(pluginOrders, index - 1, name)
 
     self:RebuildPluginOrders()
@@ -99,7 +99,7 @@ function Addon:MoveDownPlugin(name)
         return
     end
 
-    tremove(pluginOrders, index)
+    table.remove(pluginOrders, index)
     tinsert(pluginOrders, index + 1, name)
 
     self:RebuildPluginOrders()

@@ -20,7 +20,7 @@ function Stack:Push(item)
 end
 
 function Stack:Pop()
-    return tremove(self.stack, 1)
+    return table.remove(self.stack, 1)
 end
 
 function Stack:Top()

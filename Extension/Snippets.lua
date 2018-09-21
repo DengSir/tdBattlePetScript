@@ -34,7 +34,7 @@ do
         sort(words)
 
         local function callback(item)
-            return tinsert(words, 1, tremove(words, item.index))
+            return tinsert(words, 1, table.remove(words, item.index))
         end
 
         local function default(list, word, ...)

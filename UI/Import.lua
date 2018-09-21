@@ -17,16 +17,19 @@ function Import:OnInitialize()
         Frame:Hide()
         Frame:SetSize(350, 280)
         Frame:SetPoint('CENTER')
-        -- Frame:SetMovable(true)
-        -- Frame:SetMinResize(350, 350)
-        -- Frame:SetMaxResize(700, 700)
         Frame:SetFrameStrata('DIALOG')
         Frame:SetText(L['Import'])
         Frame:SetCallback('OnShow', function()
+            self.script = nil
+            self.data = nil
             self.EditBox:SetText('')
+            self.EditBox:SetFocus()
             self.ExtraCheck:SetChecked(true)
-            self:SetScript(nil)
+            self.PluginDropdown:SetValue(nil)
+            self.KeyDropdown:SetValue(nil)
             self.PageFrame:SetPage(1, true)
+            self.WelcomeWarning:Hide()
+            self:UpdateControl()
         end)
 
         local Bg = Frame:CreateTexture(nil, 'BACKGROUND') do
@@ -106,27 +109,47 @@ function Import:OnInitialize()
         PageFrame:AddPage(PageWelcome)
     end
 
+    local PageSelector = CreateFrame('Frame', nil, PageFrame) do
+        PageFrame:AddPage(PageSelector)
+    end
+
     local PageImport = CreateFrame('Frame', nil, PageFrame) do
         PageFrame:AddPage(PageImport)
     end
 
-    local HelpInfo = PageWelcome:CreateFontString(nil, 'OVERLAY', 'GameFontGreen') do
-        HelpInfo:SetPoint('TOP', 0, -30)
-        HelpInfo:SetPoint('LEFT', 60, 0)
-        HelpInfo:SetPoint('RIGHT', -20, 0)
-        HelpInfo:SetText('Copy share string or script in editbox.')
+    self.Frame = Frame
+    self.PageFrame = PageFrame
+    self.PageWelcome = PageWelcome
+    self.PageImport = PageImport
+    self.PageSelector = PageSelector
 
-        local HelpIcon = PageWelcome:CreateTexture(nil, 'OVERLAY') do
-            HelpIcon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertOther]])
-            HelpIcon:SetSize(32, 32)
-            HelpIcon:SetPoint('RIGHT', HelpInfo, 'LEFT', -8, 0)
+    self:InitPageWelcome(PageWelcome)
+    self:InitPageSelector(PageSelector)
+    self:InitPageImport(PageImport)
+end
+
+function Import:InitPageWelcome(frame)
+    local WelcomeHelp = CreateFrame('Frame', nil, frame) do
+        WelcomeHelp:SetAllPoints(true)
+
+        local Text = frame:CreateFontString(nil, 'OVERLAY', 'GameFontGreen') do
+            Text:SetPoint('TOP', 0, -30)
+            Text:SetPoint('LEFT', 60, 0)
+            Text:SetPoint('RIGHT', -20, 0)
+            Text:SetText(L.IMPORT_SCRIPT_WELCOME)
+        end
+
+        local Icon = frame:CreateTexture(nil, 'OVERLAY') do
+            Icon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertOther]])
+            Icon:SetSize(32, 32)
+            Icon:SetPoint('RIGHT', Text, 'LEFT', -8, 0)
         end
     end
 
-    local EditBox = GUI:GetClass('EditBox'):New(PageWelcome, true) do
+    local EditBox = GUI:GetClass('EditBox'):New(frame, true) do
         EditBox:SetPoint('TOPLEFT', 27, -68)
         EditBox:SetPoint('TOPRIGHT', -27, -68)
-        EditBox:SetHeight(150)
+        EditBox:SetHeight(120)
         EditBox:SetCallback('OnTextChanged', function(_, userInput)
             if not userInput then
                 return
@@ -135,7 +158,147 @@ function Import:OnInitialize()
         end)
     end
 
-    local ScriptInfo = CreateFrame('Button', nil, PageImport) do
+    local WelcomeNextButton = CreateFrame('Button', nil, frame, 'UIPanelButtonTemplate') do
+        WelcomeNextButton:SetPoint('BOTTOM', 0, 20)
+        WelcomeNextButton:SetSize(120, 26)
+        WelcomeNextButton:SetText(CONTINUE)
+        WelcomeNextButton:SetScript('OnClick', function()
+            self.EditBox:ClearFocus()
+            self.PageFrame:SetPage(2)
+        end)
+    end
+
+    local WelcomeWarning = CreateFrame('Frame', nil, EditBox) do
+        WelcomeWarning:SetAllPoints(true)
+        WelcomeWarning:SetFrameLevel(EditBox:GetFrameLevel() + 10)
+
+        local bg = WelcomeWarning:CreateTexture(nil, 'BACKGROUND') do
+            bg:SetAllPoints(true)
+            bg:SetColorTexture(0, 0, 0, 0.9)
+        end
+
+        local Text = WelcomeWarning:CreateFontString(nil, 'OVERLAY', 'GameFontRed') do
+            Text:SetPoint('LEFT', 40, 0)
+            Text:SetPoint('RIGHT')
+        end
+
+        local Icon = WelcomeWarning:CreateTexture(nil, 'OVERLAY') do
+            Icon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
+            Icon:SetSize(32, 32)
+            Icon:SetPoint('RIGHT', Text, 'LEFT', -8, 0)
+        end
+        WelcomeWarning.Text = Text
+    end
+
+    local ReinputButton = CreateFrame('Button', nil, WelcomeWarning, 'UIPanelButtonTemplate') do
+        ReinputButton:SetPoint('BOTTOM')
+        ReinputButton:SetSize(120, 26)
+        ReinputButton:SetText(L.IMPORT_REINPUT_TEXT)
+        ReinputButton:SetScript('OnClick', function()
+            self.WelcomeWarning:Hide()
+            self.EditBox:SetText('')
+            self.EditBox:SetFocus()
+        end)
+    end
+
+    self.WelcomeNextButton = WelcomeNextButton
+    self.EditBox = EditBox
+    self.WelcomeWarning = WelcomeWarning
+end
+
+function Import:InitPageSelector(frame)
+    local PluginDropdown = GUI:GetClass('Dropdown'):New(frame) do
+        PluginDropdown:SetPoint('TOP', 0, -58)
+        PluginDropdown:SetSize(200, 26)
+        PluginDropdown:SetMaxItem(20)
+        PluginDropdown:SetDefaultText(L.IMPORT_CHOOSE_PLUGIN)
+        PluginDropdown:SetMenuTable(function(list)
+            for _, plugin in Addon:IteratePlugins() do
+                if type(plugin.IterateKeys) == 'function' then
+                    tinsert(list, {
+                        text = plugin:GetPluginTitle(),
+                        value = plugin,
+                    })
+                end
+            end
+        end)
+        PluginDropdown:SetCallback('OnSelectChanged', function(_, item)
+            self.KeyDropdown:SetValue(nil)
+            self:UpdateControl()
+        end)
+    end
+
+    local KeyDropdown = GUI:GetClass('Dropdown'):New(frame) do
+        KeyDropdown:SetPoint('TOP', PluginDropdown, 'BOTTOM', 0, -30)
+        KeyDropdown:SetSize(200, 26)
+        KeyDropdown:SetMaxItem(20)
+        KeyDropdown:SetDefaultText(L.IMPORT_CHOOSE_KEY)
+
+        local function tooltipMore(tip, item)
+            local plugin = item.plugin
+            local key = item.value
+            local notes = plugin:GetPluginNotes()
+            local tipFormatting = plugin.OnTooltipFormatting
+
+            if notes then
+                tip:AddLine(notes, GRAY_FONT_COLOR.r, GRAY_FONT_COLOR.g, GRAY_FONT_COLOR.b, true)
+            end
+            if type(tipFormatting) == 'function' then
+                tip:AddLine(' ')
+                tipFormatting(plugin, tip, key)
+            end
+
+            if plugin:GetScript(key) then
+                tip:AddLine(' ')
+                tip:AddLine(L.SCRIPT_EXISTS, RED_FONT_COLOR:GetRGB())
+            end
+        end
+
+        KeyDropdown:SetMenuTable(function(list)
+            local plugin = PluginDropdown:GetValue()
+            for key in plugin:IterateKeys() do
+                tinsert(list, {
+                    text = format('|T%s:14|t %s',
+                        plugin:GetScript(key) and 518449 or 1319037,
+                        plugin:GetTitleByKey(key)
+                    ),
+                    full = plugin:GetTitleByKey(key),
+                    value = key,
+                    plugin = plugin,
+                    tooltipTitle = plugin:GetPluginTitle(),
+                    tooltipMore = tooltipMore,
+                    tooltipOnButton = true,
+                })
+            end
+        end)
+        KeyDropdown:SetCallback('OnSelectChanged', function()
+            self:UpdateControl()
+        end)
+    end
+
+    local SelectorNextButton = CreateFrame('Button', nil, frame, 'UIPanelButtonTemplate') do
+        SelectorNextButton:SetPoint('BOTTOM', 0, 20)
+        SelectorNextButton:SetSize(120, 26)
+        SelectorNextButton:SetText(CONTINUE)
+        SelectorNextButton:SetScript('OnClick', function()
+            local plugin = PluginDropdown:GetValue()
+            local key = KeyDropdown:GetValue()
+            local db = self.data.db
+            db.name = db.name or plugin:GetTitleByKey(key) or plugin:AllocName()
+            local script = Addon:GetClass('Script'):New(self.data.db, plugin, key)
+
+            self:SetScript(script)
+            self.PageFrame:SetPage(3)
+        end)
+    end
+
+    self.PluginDropdown = PluginDropdown
+    self.KeyDropdown = KeyDropdown
+    self.SelectorNextButton = SelectorNextButton
+end
+
+function Import:InitPageImport(frame)
+    local ScriptInfo = CreateFrame('Button', nil, frame) do
         ScriptInfo:SetSize(200, 28)
         ScriptInfo:SetPoint('TOP', 0, -48)
         ScriptInfo:SetScript('OnEnter', function(ScriptInfo)
@@ -194,21 +357,24 @@ function Import:OnInitialize()
         ScriptInfo.Icon = Icon
     end
 
-    local Warning = PageImport:CreateFontString(nil, 'OVERLAY', 'GameFontRed') do
-        Warning:SetPoint('TOP', ScriptInfo, 'BOTTOM', 0, -20)
-        Warning:SetPoint('LEFT', 60, 0)
-        Warning:SetPoint('RIGHT', -20, 0)
-        Warning:SetText(L.SCRIPT_IMPORT_LABEL_COVER)
+    local WarningHelp = CreateFrame('Frame', nil, frame) do
+        WarningHelp:SetAllPoints(true)
 
-        local WarningIcon = PageImport:CreateTexture(nil, 'OVERLAY') do
-            WarningIcon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
-            WarningIcon:SetSize(32, 32)
-            WarningIcon:SetPoint('RIGHT', Warning, 'LEFT', -8, 0)
+        local Text = WarningHelp:CreateFontString(nil, 'OVERLAY', 'GameFontRed') do
+            Text:SetPoint('TOP', ScriptInfo, 'BOTTOM', 0, -20)
+            Text:SetPoint('LEFT', 60, 0)
+            Text:SetPoint('RIGHT', -20, 0)
+            Text:SetText(L.SCRIPT_IMPORT_LABEL_COVER)
+        end
+
+        local Icon = WarningHelp:CreateTexture(nil, 'OVERLAY') do
+            Icon:SetTexture([[Interface\DialogFrame\UI-Dialog-Icon-AlertNew]])
+            Icon:SetSize(32, 32)
+            Icon:SetPoint('RIGHT', Text, 'LEFT', -8, 0)
         end
     end
 
-
-    local CoverCheck = CreateFrame('CheckButton', nil, PageImport, 'UICheckButtonTemplate') do
+    local CoverCheck = CreateFrame('CheckButton', nil, frame, 'UICheckButtonTemplate') do
         CoverCheck:SetPoint('BOTTOM', -60, 50)
         CoverCheck:SetSize(26, 26)
         CoverCheck:SetHitRectInsets(0, -100, 0, 0)
@@ -219,7 +385,7 @@ function Import:OnInitialize()
         end)
     end
 
-    local ExtraCheck = CreateFrame('CheckButton', nil, PageImport, 'UICheckButtonTemplate') do
+    local ExtraCheck = CreateFrame('CheckButton', nil, frame, 'UICheckButtonTemplate') do
         ExtraCheck:SetPoint('BOTTOM', CoverCheck, 'TOP', 0, -3)
         ExtraCheck:SetSize(26, 26)
         ExtraCheck:SetHitRectInsets(0, -100, 0, 0)
@@ -227,45 +393,29 @@ function Import:OnInitialize()
         ExtraCheck:SetText(L.SCRIPT_IMPORT_LABEL_EXTRA)
     end
 
-    local SaveButton = CreateFrame('Button', nil, PageImport, 'UIPanelButtonTemplate') do
-        SaveButton:SetPoint('BOTTOMRIGHT', PageImport, 'BOTTOM',-2, 20)
-        SaveButton:SetSize(80, 22)
+    local SaveButton = CreateFrame('Button', nil, frame, 'UIPanelButtonTemplate') do
+        SaveButton:SetPoint('BOTTOM', 0, 20)
+        SaveButton:SetSize(120, 22)
         SaveButton:SetText(SAVE)
         SaveButton:SetScript('OnClick', function()
             self:OnSaveButtonClick()
         end)
     end
 
-    local CancelButton = CreateFrame('Button', nil, PageImport, 'UIPanelButtonTemplate') do
-        CancelButton:SetPoint('BOTTOMLEFT', PageImport, 'BOTTOM', 2, 20)
-        CancelButton:SetSize(80, 22)
-        CancelButton:SetText(CANCEL)
-        CancelButton:SetScript('OnClick', function()
-            self.Frame:Hide()
-        end)
-    end
-
-    self.Frame      = Frame
-    self.EditBox    = EditBox
     self.CoverCheck = CoverCheck
     self.ExtraCheck = ExtraCheck
     self.SaveButton = SaveButton
-    self.Warning    = Warning
+    self.WarningHelp = WarningHelp
     self.ScriptInfo = ScriptInfo
-    self.PageFrame  = PageFrame
-    self.PageWelcome = PageWelcome
-    self.PageImport  = PageImport
 end
 
 function Import:OnTextChanged()
-    local ok, script, extra = Addon:Import(self.EditBox:GetText():trim())
+    local ok, data = Addon:Import(self.EditBox:GetText():trim())
     if not ok then
-        self:SetScript(nil)
-        return
+        self:Clear()
+    else
+        self:SetData(data)
     end
-    self:SetScript(script, extra)
-    self.PageFrame:SetPage(2)
-    self.EditBox:ClearFocus()
 end
 
 function Import:OnSaveButtonClick()
@@ -282,23 +432,19 @@ function Import:SetScript(script, extra)
     self.extra  = extra
     self.ExtraCheck:SetShown(extra)
 
-    local height = 280
-
     if script then
         self.ScriptInfo.Icon:SetTexture(script:GetPlugin():GetPluginIcon())
         self.ScriptInfo:SetText(format('%s-%s', script:GetPlugin():GetPluginTitle(), script:GetName()))
         self.ScriptInfo:Show()
-        height = height + 48
     else
         self.ScriptInfo:Hide()
     end
 
     if script and script:GetPlugin():GetScript(script:GetKey()) then
-        self.Warning:Show()
+        self.WarningHelp:Show()
         self.CoverCheck:Show()
-        height = height + self.Warning:GetHeight() + 20 + 26 + 8
     else
-        self.Warning:Hide()
+        self.WarningHelp:Hide()
         self.CoverCheck:Hide()
     end
 
@@ -309,12 +455,9 @@ function Import:SetScript(script, extra)
             self.ExtraCheck:SetPoint('BOTTOM', self.CoverCheck, 'TOP', 0, -3)
         end
         self.ExtraCheck:Show()
-        height = height + 29
     else
         self.ExtraCheck:Hide()
     end
-
-    -- self.Frame:SetHeight(height)
 
     self:UpdateControl()
 end
@@ -327,4 +470,54 @@ function Import:UpdateControl()
     else
         self.SaveButton:Enable()
     end
+
+    self.WelcomeNextButton:SetEnabled(not not self.data)
+    self.SelectorNextButton:SetEnabled(self.PluginDropdown:GetValue() and self.KeyDropdown:GetValue())
+end
+
+function Import:UpdateData()
+    local data = self.data
+    if not data or not data.db then
+        self.data = nil
+        return self.PageFrame:SetPage(1)
+    end
+
+    if data.warning then
+        return self:ShowWarning(data.warning)
+    end
+
+    local plugin = data.plugin and Addon:GetPlugin(data.plugin)
+    if not plugin or not data.key then
+        return self.PageFrame:SetPage(2)
+    end
+
+    local script = Addon:GetClass('Script'):New(data.db, plugin, data.key)
+    self:SetScript(script, data.extra)
+    self.PageFrame:SetPage(3)
+end
+
+function Import:ShowWarning(warning)
+    self.WelcomeWarning.Text:SetText(warning)
+    self.WelcomeWarning:Show()
+end
+
+function Import:Update()
+    self:UpdateData()
+    self:UpdateControl()
+end
+
+function Import:Clear()
+    self.data = nil
+    self.script = nil
+    self:Update()
+end
+
+function Import:SetData(data)
+    if not data.db or not data.db.code then
+        data = nil
+    end
+    self.data = data
+    self.script = nil
+    self:Update()
+    self.EditBox:ClearFocus()
 end

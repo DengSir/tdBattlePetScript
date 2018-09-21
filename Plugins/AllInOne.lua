@@ -21,6 +21,10 @@ function PluginAllInOne:GetCurrentKey()
     return '-'
 end
 
+function PluginAllInOne:IterateKeys()
+    return pairs({['-'] = true})
+end
+
 function PluginAllInOne:GetTitleByKey(key)
     return L.PLUGINALLINONE_TITLE
 end

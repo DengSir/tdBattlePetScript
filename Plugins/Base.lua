@@ -33,7 +33,7 @@ function PluginBase:GetOwnerKey(owner)
     for i = 1, C_PetBattles.GetNumPets(owner) do
         local id = C_PetBattles.GetPetSpeciesID(owner, i)
         if id then
-            table.insert(sb, id)
+            tinsert(sb, id)
         end
     end
     return table.concat(sb, ';')

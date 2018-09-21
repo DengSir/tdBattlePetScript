@@ -144,7 +144,7 @@ function Director:BuildScript(code)
 
             if action == 'if' then
                 stack:Push({})
-                table.insert(script, {stack:Top(), condition})
+                tinsert(script, {stack:Top(), condition})
             elseif action == 'endif' or action == 'ei' then
                 stack:Pop()
 
@@ -161,7 +161,7 @@ function Director:BuildScript(code)
                     dest[2] = MergeCondition(dest[2], item[2])
                 end
             else
-                table.insert(script, {action, condition})
+                tinsert(script, {action, condition})
             end
         end
     end

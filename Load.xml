@@ -3,6 +3,7 @@
     <Include file="Libs\Embeds.xml" />
     <Include file="Localization\Localization.xml" />
     <Include file="Core\Core.xml" />
+    <Include file="Share\Share.xml" />
     <Include file="UI\UI.xml" />
     <Include file="Plugins\Plugins.xml" />
     <Include file="Extension\Extension.xml" />

@@ -9,6 +9,6 @@
     <Script file="ScriptManager.lua" />
     <Script file="Script.lua" />
     <Script file="Plugin.lua" />
-    <Script file="ImportExport.lua" />
     <Script file="BattleCache.lua" />
+    <Script file="Share.lua" />
 </Ui>
