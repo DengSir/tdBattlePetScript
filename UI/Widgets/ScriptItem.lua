@@ -38,6 +38,18 @@ function ScriptItem:Constructor()
         Highlight:SetPoint('BOTTOMRIGHT', -20, 2)
     end
 
+    local Checked = self:CreateTexture(nil, 'OVERLAY') do
+        -- Checked:SetTexture([[Interface\PVPFrame\PvPMegaQueue]])
+        -- Checked:SetTexCoord(0.00195313, 0.63867188, 0.70703125, 0.76757813)
+        -- Checked:SetBlendMode('ADD')
+        -- Checked:SetPoint('TOPLEFT', 20, -3)
+        -- Checked:SetPoint('BOTTOMRIGHT', -20, 2)
+        Checked:SetTexture([[Interface\BUTTONS\UI-CheckBox-Check]])
+        Checked:SetSize(20, 20)
+        Checked:SetPoint('RIGHT', -5, -2)
+        Checked:Hide()
+    end
+
     local Text = self:CreateFontString(nil, 'ARTWORK') do
         Text:SetPoint('LEFT', Icon, 'RIGHT')
         Text:SetPoint('RIGHT', -5, 0)
@@ -51,6 +63,7 @@ function ScriptItem:Constructor()
     self.Bg         = Bg
     self.Icon       = Icon
     self.IconBorder = IconBorder
+    self.Checked    = Checked
 end
 
 function ScriptItem:SetTexture(texture)
