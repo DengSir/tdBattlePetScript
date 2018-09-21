@@ -5,7 +5,7 @@ Played.lua
 ]]
 local ns = select(2, ...)
 local BattleCache = ns.BattleCache
-local Played = BattleCache:NewCache('Played', 'AceEvent-3.0')
+local Played = BattleCache:NewModule('Played', 'AceEvent-3.0')
 
 function Played:OnEnable()
     self.played = self:SetDefault({})

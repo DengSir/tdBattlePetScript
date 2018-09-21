@@ -642,6 +642,7 @@ function Module:OnShareButtonClick()
                     editText         = Addon:Export(self.script),
                     editFocus        = true,
                     editHighlightAll = true,
+                    editFocusLost    = 'ACCEPT',
                 }
             end
         },

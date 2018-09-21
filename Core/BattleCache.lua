@@ -10,8 +10,9 @@ local Addon = ns.Addon
 local BattleCache = Addon:NewModule('BattleCache', 'AceEvent-3.0')
 local BattleCachePrototype = {}
 
+BattleCache:SetDefaultModulePrototype(BattleCachePrototype)
+
 function BattleCache:OnInitialize()
-    self.modules = {}
     self.caches = _G.TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE or {}
 
     self:RegisterMessage('PET_BATTLE_SCRIPT_DB_SHUTDOWN')
@@ -35,15 +36,9 @@ function BattleCache:PET_BATTLE_SCRIPT_DB_SHUTDOWN()
 end
 
 function BattleCache:PET_BATTLE_OPENING_START()
-    for _, module in pairs(self.modules) do
+    for _, module in self:IterateModules() do
         module:OnBattleStart()
     end
-end
-
-function BattleCache:NewCache(name, ...)
-    local module = Addon:NewModule(name, BattleCachePrototype, ...)
-    self.modules[name] = module
-    return module
 end
 
 function BattleCache:AllocCache(name, default)

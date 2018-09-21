@@ -7,8 +7,8 @@ Conditions.lua
 local ns     = select(2, ...)
 local Addon  = ns.Addon
 local Util   = ns.Util
-local Round  = ns.Round
-local Played = ns.Played
+local Round  = ns.BattleCache:GetModule('Round')
+local Played = ns.BattleCache:GetModule('Played')
 
 
 local function getOpponent(owner)

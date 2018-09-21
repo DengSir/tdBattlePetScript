@@ -6,7 +6,7 @@ Round.lua
 local ns = select(2, ...)
 local BattleCache = ns.BattleCache
 
-local Round = BattleCache:NewCache('Round', 'AceEvent-3.0')
+local Round = BattleCache:NewModule('Round', 'AceEvent-3.0')
 
 function Round:OnEnable()
     self.rounds = self:SetDefault({
