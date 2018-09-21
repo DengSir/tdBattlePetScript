@@ -27,22 +27,6 @@ function Script:SetName(name)
     self.db.name = name
 end
 
-function Script:GetAuthor()
-    return self.db.author
-end
-
-function Script:SetAuthor(author)
-    self.db.author = author
-end
-
-function Script:GetNotes()
-    return self.db.notes
-end
-
-function Script:SetNotes(notes)
-    self.db.notes = notes
-end
-
 function Script:GetCode()
     return self.db.code
 end

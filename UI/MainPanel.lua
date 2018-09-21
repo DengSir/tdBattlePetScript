@@ -222,7 +222,7 @@ function Module:OnInitialize()
         ExtraFrame:Hide()
         ExtraFrame:SetPoint('TOPLEFT')
         ExtraFrame:SetPoint('TOPRIGHT')
-        ExtraFrame:SetHeight(150)
+        ExtraFrame:SetHeight(40)
         ExtraFrame:EnableMouse(true)
         ExtraFrame:SetScript('OnShow', UpdateLayout)
         ExtraFrame:SetScript('OnHide', UpdateLayout)
@@ -241,20 +241,9 @@ function Module:OnInitialize()
 
     local NameBox = MakeBox('InputBox', ExtraFrame, L['Script name']) do
         NameBox:SetPoint('TOPLEFT', 10, -25)
-        NameBox:SetSize(150, 22)
+        NameBox:SetPoint('TOPRIGHT', -10, -25)
+        NameBox:SetHeight(22)
         NameBox:SetCallback('OnTextChanged', UpdateSaveButton)
-    end
-
-    local AuthorBox = MakeBox('InputBox', ExtraFrame, L['Script author']) do
-        AuthorBox:SetPoint('LEFT', NameBox, 'RIGHT', 10, 0)
-        AuthorBox:SetSize(150, 22)
-        AuthorBox:SetCallback('OnTextChanged', UpdateSaveButton)
-    end
-
-    local NotesBox = MakeBox('EditBox', ExtraFrame, L['Script notes']) do
-        NotesBox:SetPoint('TOPLEFT', NameBox, 'BOTTOMLEFT', 0, -20)
-        NotesBox:SetPoint('BOTTOMRIGHT', -10, 0)
-        NotesBox:SetCallback('OnTextChanged', UpdateSaveButton)
     end
 
     local ScriptEditor = CreateFrame('Frame', nil, Content) do
@@ -323,8 +312,6 @@ function Module:OnInitialize()
 
     local EditBoxGroup = GUI:GetClass('EditBoxGroup'):New() do
         EditBoxGroup:RegisterEditBox(NameBox)
-        EditBoxGroup:RegisterEditBox(AuthorBox)
-        EditBoxGroup:RegisterEditBox(NotesBox.EditBox)
         EditBoxGroup:RegisterEditBox(ScriptBox.EditBox)
     end
 
@@ -334,7 +321,6 @@ function Module:OnInitialize()
         BlockDialog:SetFrameLevel(MainPanel:GetFrameLevel() + 100)
     end
 
-    self.AuthorBox      = AuthorBox
     self.Banner         = Banner
     self.BlockDialog    = BlockDialog
     self.BugFrame       = BugFrame
@@ -349,7 +335,6 @@ function Module:OnInitialize()
     self.MainPanel      = MainPanel
     self.Name           = Name
     self.NameBox        = NameBox
-    self.NotesBox       = NotesBox
     self.SaveButton     = SaveButton
     self.ScriptBox      = ScriptBox
     self.ScriptEditor   = ScriptEditor
@@ -542,8 +527,6 @@ function Module:UpdateScript()
     self.HelpIcon:SetTexture(self.plugin:GetPluginIcon())
 
     self.NameBox:SetText(self.defaultName)
-    self.AuthorBox:SetText(self.script:GetAuthor() or format('%s-%s', UnitName('player'), GetRealmName()))
-    self.NotesBox:SetText(self.script:GetNotes() or '')
     self.ScriptBox:SetText(self.script:GetCode() or '')
 end
 
@@ -568,9 +551,7 @@ function Module:IsCanSave()
         return false
     end
     return  self.script:GetCode()   ~= self:GetEditBoxText(self.ScriptBox) or
-            self.script:GetName()   ~= self:GetEditBoxText(self.NameBox)   or
-            self.script:GetAuthor() ~= self:GetEditBoxText(self.AuthorBox) or
-            self.script:GetNotes()  ~= self:GetEditBoxText(self.NotesBox)
+            self.script:GetName()   ~= self:GetEditBoxText(self.NameBox)
 end
 
 function Module:GetEditBoxText(editBox)
@@ -592,8 +573,6 @@ function Module:OnSaveButtonClick()
     end
 
     self.script:SetName(self:GetEditBoxText(self.NameBox))
-    self.script:SetAuthor(self:GetEditBoxText(self.AuthorBox))
-    self.script:SetNotes(self:GetEditBoxText(self.NotesBox))
 
     self.EditBoxGroup:ClearFocus()
     self:UpdateSaveButton()
