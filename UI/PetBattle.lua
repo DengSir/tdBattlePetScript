@@ -76,6 +76,15 @@ function Module:OnInitialize()
         AutoButton:SetScript('OnHide', function(AutoButton)
             ClearOverrideBindings(AutoButton)
         end)
+        AutoButton:SetScript('OnEnter', function(AutoButton)
+            local script = Director:GetScript()
+            if script then
+                UI.OpenScriptTooltip(script, AutoButton, 'ANCHOR_TOP')
+            end
+        end)
+        AutoButton:SetScript('OnLeave', function()
+            GameTooltip:Hide()
+        end)
 
         AutoButton.HotKey = AutoButton:CreateFontString(nil, 'OVERLAY', 'NumberFontNormalSmallGray')
         AutoButton.HotKey:SetPoint('TOPRIGHT', -1, -2)
@@ -236,7 +245,7 @@ end
 function Module:UpdateScriptList(userCall)
     local scripts = Director:Select()
     if not userCall then
-        if #scripts == 1 and Addon:GetSetting('selectOnlyOneScript') then
+        if #scripts > 1 and Addon:GetSetting('autoSelect') then
             Director:SetScript(scripts[1])
             return self.ScriptFrame:Hide()
         end
