@@ -250,7 +250,7 @@ function Import:InitPageSelector(frame)
 
             if plugin:GetScript(key) then
                 tip:AddLine(' ')
-                tip:AddLine(L.SCRIPT_EXISTS, RED_FONT_COLOR:GetRGB())
+                tip:AddLine(L.IMPORT_SCRIPT_EXISTS, RED_FONT_COLOR:GetRGB())
             end
         end
 

@@ -51,6 +51,7 @@ L.IMPORT_SCRIPT_WARNING = '你输入了脚本，建议你使用分享码导入�
 L.IMPORT_REINPUT_TEXT = '重新编辑'
 L.IMPORT_CHOOSE_PLUGIN = '请选择脚本选择器...'
 L.IMPORT_CHOOSE_KEY = '请选择关建值...'
+L.IMPORT_SCRIPT_EXISTS = '已存在脚本'
 
 L.OPTION_GENERAL_NOTES                        = '这里是一些常规设置。'
 L.OPTION_SCRIPTSELECTOR_NOTES                 = '在这里你可以管理脚本选择器是否开启以及脚本选择器的优先级。'
