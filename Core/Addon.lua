@@ -25,13 +25,13 @@ function Addon:OnInitialize()
 
             },
             settings = {
-                selectOnlyOneScript = true,
-                hideNoScript        = false,
-                noWaitDeleteScript  = false,
-                editorFontFace      = STANDARD_TEXT_FONT,
-                editorFontSize      = 14,
-                autoButtonHotKey    = 'A',
-                testBreak           = true,
+                autoSelect         = true,
+                hideNoScript       = false,
+                noWaitDeleteScript = false,
+                editorFontFace     = STANDARD_TEXT_FONT,
+                editorFontSize     = 14,
+                autoButtonHotKey   = 'A',
+                testBreak          = true,
             },
             minimap = {
                 minimapPos = 50,
