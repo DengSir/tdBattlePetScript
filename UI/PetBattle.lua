@@ -246,7 +246,7 @@ end
 function Module:UpdateScriptList(userCall)
     local scripts = Director:Select()
     if not userCall then
-        if #scripts > 1 and Addon:GetSetting('autoSelect') then
+        if #scripts > 0 and Addon:GetSetting('autoSelect') then
             Director:SetScript(scripts[1])
             return self.ScriptFrame:Hide()
         end
