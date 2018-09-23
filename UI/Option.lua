@@ -3,22 +3,30 @@ Option.lua
 @Author  : DengSir (tdaddon@163.com)
 @Link    : https://dengsir.github.io
 ]]
-local ns = select(2, ...)
-local Addon = ns.Addon
-local L = ns.L
+local ns            = select(2, ...)
+local Addon         = ns.Addon
+local L             = ns.L
+local PluginManager = ns.PluginManager
 
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
 local AceConfigDialog = LibStub('AceConfigDialog-3.0')
 
-local plugins_args = {}
+local pluginsOptions = {}
+
+local function orderGen()
+    local order = 0
+    return function()
+        order = order + 1
+        return order
+    end
+end
 
 function Addon:LoadOptionFrame()
-    self:RefillPluginOptions()
+    self:GeneratePluginOptions()
 
-    local order = self:CreateOrderFactory()
+    local order = orderGen()
 
-    local TestFont = UIParent:CreateFontString(nil, 'BACKGROUND')
-    TestFont:Hide()
+    local TestFont = CreateFont('tdBattlePetScriptFontTest')
 
     local checks = {
         editorFontFace = function(value)
@@ -58,8 +66,13 @@ function Addon:LoadOptionFrame()
                 args = {
                     description = {
                         type = 'description',
+                        order = order(),
                         name = '\n' .. L.OPTION_GENERAL_NOTES .. '\n\n',
-                        order = order()
+                        fontSize = 'medium',
+                        image = [[Interface\Common\help-i]],
+                        imageWidth = 32,
+                        imageHeight = 32,
+                        imageCoords = {.2, .8, .2, .8}
                     },
                     autoSelect = {
                         type = 'toggle',
@@ -120,7 +133,12 @@ function Addon:LoadOptionFrame()
                     description = {
                         type = 'description',
                         name = '\n' .. L.OPTION_SCRIPTEDITOR_NOTES .. '\n\n',
-                        order = order()
+                        order = order(),
+                        fontSize = 'medium',
+                        image = [[Interface\Common\help-i]],
+                        imageWidth = 32,
+                        imageHeight = 32,
+                        imageCoords = {.2, .8, .2, .8}
                     },
                     editorFontFace = {
                         type = 'input',
@@ -142,12 +160,12 @@ function Addon:LoadOptionFrame()
                 name = L['Script selector'],
                 order = order(),
                 get = function(item)
-                    return self:IsPluginAllowed(item[#item])
+                    return PluginManager:IsPluginAllowed(item[#item])
                 end,
                 set = function(item, value)
-                    return self:SetPluginAllowed(item[#item], value)
+                    return PluginManager:SetPluginAllowed(item[#item], value)
                 end,
-                args = plugins_args
+                args = pluginsOptions
             }
         }
     }
@@ -156,67 +174,66 @@ function Addon:LoadOptionFrame()
     AceConfigDialog:AddToBlizOptions('tdBattlePetScript Options', 'tdBattlePetScript')
 end
 
-function Addon:CreateOrderFactory()
-    local order = 0
-    return function()
-        order = order + 1
-        return order
-    end
-end
-
-function Addon:RefillPluginOptions()
-    local args = wipe(plugins_args)
-    local order = self:CreateOrderFactory()
-
-    args.description = {
-        type = 'description',
-        name = '\n' .. L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
-        order = order()
+function Addon:FillInstalledPlugins(args, order)
+    args.installed = {
+        type = 'header',
+        order = order(),
+        name = L['Installed']
     }
 
-    local pluginCount = #self:GetPluginList()
+    local pluginCount = #PluginManager:GetPluginList()
 
-    for i, plugin in self:IteratePlugins() do
+    for i, plugin in PluginManager:IteratePlugins() do
         local name = plugin:GetPluginName()
         local isFirst = i == 1
         local isLast = i == pluginCount
 
         args[name] = {
             type = 'toggle',
-            name = plugin:GetPluginTitle(),
+            name = function()
+                return PluginManager:IsPluginAllowed(name) and plugin:GetPluginTitle() or
+                    format('|cff808080%s (%s)|r', plugin:GetPluginTitle(), DISABLE)
+            end,
             desc = plugin:GetPluginNotes(),
+            width = 'double',
             order = order()
         }
 
         args[name .. 'Up'] = {
             type = 'execute',
             name = '',
-            width = 'half',
+            width = 0.3,
             disabled = isFirst,
-            image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
+            image = function()
+                return isFirst and [[Interface\MINIMAP\MiniMap-VignetteArrow]] or
+                    [[Interface\MINIMAP\MiniMap-QuestArrow]]
+            end,
             imageCoords = {0.1875, 0.8125, 0.1875, 0.8125},
             imageWidth = 19,
             imageHeight = 19,
             order = order(),
             func = function()
-                self:MoveUpPlugin(name)
-                self:RefillPluginOptions()
+                PluginManager:MoveUpPlugin(name)
+                self:GeneratePluginOptions()
             end
         }
 
         args[name .. 'Down'] = {
             type = 'execute',
             name = '',
-            width = 'half',
+            width = 0.3,
             disabled = isLast,
-            image = [[Interface\MINIMAP\MiniMap-VignetteArrow]],
+            image = function()
+                return isLast and [[Interface\MINIMAP\MiniMap-VignetteArrow]] or
+                    [[Interface\MINIMAP\MiniMap-QuestArrow]]
+            end,
             imageCoords = {0.1875, 0.8125, 0.8125, 0.1875},
             imageWidth = 19,
             imageHeight = 19,
             order = order(),
             func = function()
-                self:MoveDownPlugin(name)
-                self:RefillPluginOptions()
+                PluginManager:MoveDownPlugin(name)
+                self:GeneratePluginOptions()
             end
         }
 
@@ -226,7 +243,87 @@ function Addon:RefillPluginOptions()
             order = order()
         }
     end
-    AceConfigRegistry:NotifyChange('tdBattlePetScript Plugins')
+end
+
+function Addon:FillNotInstalledPlugins(args, order)
+    local notInstallPlugins = PluginManager:GetNotInstalledPlugins()
+    if not next(notInstallPlugins) then
+        return
+    end
+
+    args.notinstalled = {
+        type = 'header',
+        order = order(),
+        name = L['Not Installed']
+    }
+
+    for _, v in ipairs(notInstallPlugins) do
+        args[v.addon .. 'NotInstalled'] = {
+            type = 'toggle',
+            order = order(),
+            name = v.addon,
+            width = 'double',
+            disabled = true,
+            get = function()
+                return false
+            end
+        }
+
+        args[v.addon .. 'Download'] = {
+            type = 'execute',
+            order = order(),
+            name = L['Download'],
+            width = 0.7,
+            func = function()
+                self:CopyUrl(v.url)
+            end
+        }
+    end
+end
+
+function Addon:CopyUrl(url)
+    if not StaticPopupDialogs.TDBATTLEPETSCRIPT_COPYURL then
+        StaticPopupDialogs.TDBATTLEPETSCRIPT_COPYURL = {}
+    end
+    local t = StaticPopupDialogs.TDBATTLEPETSCRIPT_COPYURL
+    t.text = L.DIALOG_COPY_URL_HELP
+    t.button2 = OKAY
+    t.whileDead = 1
+    t.hideOnEscape = 1
+    t.hasEditBox = 1
+    t.editBoxWidth = 300
+    t.EditBoxOnTextChanged = function(editBox, url)
+        if editBox:GetText() ~= url then
+            editBox:SetMaxBytes(nil)
+            editBox:SetMaxLetters(nil)
+            editBox:SetText(url)
+            editBox:HighlightText()
+            editBox:SetCursorPosition(0)
+            editBox:SetFocus()
+        end
+    end
+    StaticPopup_Show('TDBATTLEPETSCRIPT_COPYURL', nil, nil, url)
+end
+
+function Addon:GeneratePluginOptions()
+    local args = wipe(pluginsOptions)
+    local order = orderGen()
+
+    args.description = {
+        type = 'description',
+        order = order(),
+        name = '\n' .. L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
+        fontSize = 'medium',
+        image = [[Interface\Common\help-i]],
+        imageWidth = 32,
+        imageHeight = 32,
+        imageCoords = {.2, .8, .2, .8}
+    }
+
+    self:FillInstalledPlugins(args, order)
+    self:FillNotInstalledPlugins(args, order)
+
+    AceConfigRegistry:NotifyChange('tdBattlePetScript Options')
 end
 
 local function OpenToCategory(key)

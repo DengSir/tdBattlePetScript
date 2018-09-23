@@ -16,12 +16,14 @@ function PluginManager:OnInitialize()
     self.moduleWatings = {}
     self.moduleEnableQueue = {}
     self.pluginsOrdered = {}
+    self.pluginsNotInstalled = {}
     self.db = Addon.db
 end
 
 function PluginManager:OnEnable()
     self:InitPlugins()
     self:RebuildPluginOrders()
+    self:InitPluginsNotInstalled()
 
     C_Timer.After(0, function()
         self:LoadPlugins()
@@ -64,12 +66,37 @@ function PluginManager:InitPlugins()
     end
 end
 
+function PluginManager:InitPluginsNotInstalled()
+    local thirdPlugins = {
+        {
+            addon = 'Rematch',
+            plugin = 'tdBattlePetScript_Rematch',
+            url = 'https://www.curseforge.com/wow/addons/tdbattlepetscript-rematch'
+        }
+    }
+
+    local addons = {} do
+        for i = 1, GetNumAddOns() do
+            addons[GetAddOnInfo(i)] = true
+        end
+    end
+
+    for _, v in ipairs(thirdPlugins) do
+        if addons[v.pluginName or v.addon] and not addons[v.plugin] then
+            table.insert(self.pluginsNotInstalled, v)
+        end
+    end
+end
+
+function PluginManager:GetNotInstalledPlugins()
+    return self.pluginsNotInstalled
+end
+
 function PluginManager:RebuildPluginOrders()
     wipe(self.pluginsOrdered)
 
     for _, name in ipairs(self.db.profile.pluginOrders) do
         local plugin = self:GetModule(name, true)
-        print(plugin, name, plugin:GetPluginName())
         if plugin then
             tinsert(self.pluginsOrdered, plugin)
         end
