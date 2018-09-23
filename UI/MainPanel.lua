@@ -40,7 +40,7 @@ function Module:OnInitialize()
         MainPanel:ShowPortrait()
         MainPanel:SetFrameStrata('DIALOG')
         MainPanel:SetTitle(L['Script editor'])
-        MainPanel:SetPortrait([[Interface\Icons\INV_Misc_PenguinPet]])
+        MainPanel:SetPortrait(ns.ICON)
 
         MainPanel:RegisterConfig(Addon.db.profile.position)
 

@@ -18,7 +18,7 @@ function Minimap:OnInitialize()
 
     local BrokerObject = LDB:NewDataObject('tdBattlePetScript', {
         type = 'launcher',
-        icon = [[Interface\Icons\INV_Misc_PenguinPet]],
+        icon = ns.ICON,
         OnClick = function(button, click)
             GameTooltip:Hide()
 

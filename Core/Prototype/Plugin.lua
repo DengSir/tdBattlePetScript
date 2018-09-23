@@ -72,7 +72,7 @@ function PluginPrototype:SetPluginIcon(icon)
 end
 
 function PluginPrototype:GetPluginIcon()
-    return self._icon or [[Interface\Icons\INV_Misc_PenguinPet]]
+    return self._icon or ns.ICON
 end
 
 function PluginPrototype:SetPluginNotes(notes)

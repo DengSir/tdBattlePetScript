@@ -10,6 +10,7 @@ local Addon = LibStub('AceAddon-3.0'):NewAddon('tdBattlePetScript', 'AceEvent-3.
 ns.Addon = Addon
 ns.UI    = {}
 ns.L     = LibStub('AceLocale-3.0'):GetLocale('tdBattlePetScript', true)
+ns.ICON  = [[Interface\Icons\INV_Misc_PenguinPet]]
 
 _G.tdBattlePetScript = Addon
 
@@ -17,6 +18,9 @@ function Addon:OnInitialize()
     local defaults = {
         global = {
             scripts = {
+
+            },
+            notifies = {
 
             }
         },
@@ -54,11 +58,7 @@ end
 function Addon:OnEnable()
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_ADDED')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_REMOVED')
-
-    C_Timer.After(0, function()
-        self:InitSettings()
-        self:LoadOptionFrame()
-    end)
+    self:InitSettings()
 end
 
 function Addon:InitSettings()
