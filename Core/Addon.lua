@@ -52,14 +52,11 @@ function Addon:OnInitialize()
 end
 
 function Addon:OnEnable()
-    self:InitPlugins()
-
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_ADDED')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_REMOVED')
 
     C_Timer.After(0, function()
         self:InitSettings()
-        self:LoadModules()
         self:LoadOptionFrame()
     end)
 end
@@ -67,14 +64,6 @@ end
 function Addon:InitSettings()
     for key, value in pairs(self.db.profile.settings) do
         self:SetSetting(key, value)
-    end
-end
-
-function Addon:LoadModules()
-    for _, module in ipairs(self.moduleEnableQueue) do
-        if not module.GetPluginName or self:IsPluginAllowed(module:GetPluginName()) then
-            module:Enable()
-        end
     end
 end
 
@@ -97,63 +86,6 @@ end
 
 function Addon:PET_BATTLE_SCRIPT_SCRIPT_REMOVED(_, plugin, key)
     self.db.global.scripts[plugin:GetPluginName()][key] = nil
-end
-
-Addon.moduleWatings     = {}
-Addon.moduleEnableQueue = {}
-
-function Addon:EnableModuleWithAddonLoaded(name, addon)
-    local module = self:GetModule(name)
-    if not module then
-        return
-    end
-
-    module:Disable()
-
-    if not IsAddOnLoaded(addon) then
-        self.moduleWatings[addon] = self.moduleWatings[addon] or {}
-        tinsert(self.moduleWatings[addon], module)
-
-        self:RegisterEvent('ADDON_LOADED')
-    else
-        tinsert(self.moduleEnableQueue, module)
-    end
-end
-
-function Addon:ADDON_LOADED(_, addon)
-    repeat
-        local modules = self.moduleWatings[addon]
-        if modules then
-            self.moduleWatings[addon] = nil
-
-            for _, module in ipairs(modules) do
-                if not module.GetPluginName or self:IsPluginAllowed(module:GetPluginName()) then
-                    module:Enable()
-                end
-            end
-        end
-    until not self.moduleWatings[addon]
-
-    if not next(self.moduleWatings) then
-        self:UnregisterEvent('ADDON_LOADED')
-    end
-end
-
-function Addon:IsPluginAllowed(name)
-    return not self.db.profile.pluginDisabled[name]
-end
-
-function Addon:SetPluginAllowed(name, flag)
-    self.db.profile.pluginDisabled[name] = not flag or nil
-
-    C_Timer.After(0, function()
-        local module = self:GetPlugin(name)
-        if flag then
-            module:Enable()
-        else
-            module:Disable()
-        end
-    end)
 end
 
 function Addon:GetSetting(key)

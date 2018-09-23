@@ -5,10 +5,12 @@
     <Script file="Util.lua" />
     <Script file="Action.lua" />
     <Script file="Condition.lua" />
+    <Script file="Manager\ScriptManager.lua" />
+    <Script file="Manager\PluginManager.lua" />
+    <Script file="Manager\BattleCacheManager.lua" />
+    <Script file="Prototype\Plugin.lua" />
+    <Script file="Prototype\BattleCache.lua" />
     <Script file="Director.lua" />
-    <Script file="ScriptManager.lua" />
     <Script file="Script.lua" />
-    <Script file="Plugin.lua" />
-    <Script file="BattleCache.lua" />
     <Script file="Share.lua" />
 </Ui>
