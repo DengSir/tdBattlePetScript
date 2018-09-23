@@ -3,15 +3,14 @@ Option.lua
 @Author  : DengSir (tdaddon@163.com)
 @Link    : https://dengsir.github.io
 ]]
-local ns            = select(2, ...)
-local Addon         = ns.Addon
-local L             = ns.L
-local PluginManager = ns.PluginManager
-
+local ADDON,             ns = ...
+local Addon             = ns.Addon
+local L                 = ns.L
+local PluginManager     = ns.PluginManager
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
-local AceConfigDialog = LibStub('AceConfigDialog-3.0')
-
-local pluginsOptions = {}
+local AceConfigDialog   = LibStub('AceConfigDialog-3.0')
+local GUI               = LibStub('tdGUI-1.0')
+local Option            = Addon:NewModule('Option', 'LibNotify-1.0')
 
 local function orderGen()
     local order = 0
@@ -21,17 +20,50 @@ local function orderGen()
     end
 end
 
-function Addon:LoadOptionFrame()
+function Option:OnInitialize()
+    self.pluginsOptions = {}
+    self.fontChecker    = CreateFont('tdBattlePetScriptFontTest')
+end
+
+function Option:OnEnable()
+    self:InitOptions()
     self:GeneratePluginOptions()
+    self:CheckNotInstalledPlugins()
+end
 
+function Option:CheckNotInstalledPlugins()
+    local notInstallPlugins = PluginManager:GetNotInstalledPlugins()
+    if not next(notInstallPlugins) then
+        return
+    end
+
+    GUI:NotifyDay{
+        text = format('%s\n|cffff0000%s|r', ADDON, L.SCRIPT_SELECTOR_NOTINSTALLED_TEXT),
+        icon = ns.ICON,
+        help = L.SCRIPT_SELECTOR_NOTINSTALLED_HELP,
+        id = format('%s.Plugin.NotInstalled', ADDON),
+        storage = Addon.db.global.notifies,
+        OnAccept = function()
+            self:Open('plugins')
+            dump(s)
+        end,
+        OnCancel = function()
+            dump(s)
+        end
+    }
+
+    for i = 1, 10 do
+        GUI:Notify{text = 'test' .. i}
+    end
+end
+
+function Option:InitOptions()
     local order = orderGen()
-
-    local TestFont = CreateFont('tdBattlePetScriptFontTest')
 
     local checks = {
         editorFontFace = function(value)
-            TestFont:SetFont(value, 10)
-            local font = TestFont:GetFont()
+            self.fontChecker:SetFont(value, 10)
+            local font = self.fontChecker:GetFont()
             return font and font:lower():gsub('/', '\\') == value:lower():gsub('/', '\\')
         end
     }
@@ -42,7 +74,7 @@ function Addon:LoadOptionFrame()
     end
 
     local function get(item)
-        return self:GetSetting(item[#item])
+        return Addon:GetSetting(item[#item])
     end
 
     local function set(item, value)
@@ -50,7 +82,7 @@ function Addon:LoadOptionFrame()
         if not check(key, value) then
             return
         end
-        return self:SetSetting(key, value)
+        return Addon:SetSetting(key, value)
     end
 
     local options = {
@@ -165,16 +197,16 @@ function Addon:LoadOptionFrame()
                 set = function(item, value)
                     return PluginManager:SetPluginAllowed(item[#item], value)
                 end,
-                args = pluginsOptions
+                args = self.pluginsOptions
             }
         }
     }
 
-    AceConfigRegistry:RegisterOptionsTable('tdBattlePetScript Options', options)
-    AceConfigDialog:AddToBlizOptions('tdBattlePetScript Options', 'tdBattlePetScript')
+    AceConfigRegistry:RegisterOptionsTable(ADDON, options)
+    AceConfigDialog:AddToBlizOptions(ADDON, ADDON)
 end
 
-function Addon:FillInstalledPlugins(args, order)
+function Option:FillInstalledPlugins(args, order)
     args.installed = {
         type = 'header',
         order = order(),
@@ -245,7 +277,7 @@ function Addon:FillInstalledPlugins(args, order)
     end
 end
 
-function Addon:FillNotInstalledPlugins(args, order)
+function Option:FillNotInstalledPlugins(args, order)
     local notInstallPlugins = PluginManager:GetNotInstalledPlugins()
     if not next(notInstallPlugins) then
         return
@@ -281,7 +313,28 @@ function Addon:FillNotInstalledPlugins(args, order)
     end
 end
 
-function Addon:CopyUrl(url)
+function Option:GeneratePluginOptions()
+    local args = wipe(self.pluginsOptions)
+    local order = orderGen()
+
+    args.description = {
+        type = 'description',
+        order = order(),
+        name = '\n' .. L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
+        fontSize = 'medium',
+        image = [[Interface\Common\help-i]],
+        imageWidth = 32,
+        imageHeight = 32,
+        imageCoords = {.2, .8, .2, .8}
+    }
+
+    self:FillInstalledPlugins(args, order)
+    self:FillNotInstalledPlugins(args, order)
+
+    AceConfigRegistry:NotifyChange(ADDON)
+end
+
+function Option:CopyUrl(url)
     if not StaticPopupDialogs.TDBATTLEPETSCRIPT_COPYURL then
         StaticPopupDialogs.TDBATTLEPETSCRIPT_COPYURL = {}
     end
@@ -305,34 +358,21 @@ function Addon:CopyUrl(url)
     StaticPopup_Show('TDBATTLEPETSCRIPT_COPYURL', nil, nil, url)
 end
 
-function Addon:GeneratePluginOptions()
-    local args = wipe(pluginsOptions)
-    local order = orderGen()
-
-    args.description = {
-        type = 'description',
-        order = order(),
-        name = '\n' .. L.OPTION_SCRIPTSELECTOR_NOTES .. '\n\n',
-        fontSize = 'medium',
-        image = [[Interface\Common\help-i]],
-        imageWidth = 32,
-        imageHeight = 32,
-        imageCoords = {.2, .8, .2, .8}
-    }
-
-    self:FillInstalledPlugins(args, order)
-    self:FillNotInstalledPlugins(args, order)
-
-    AceConfigRegistry:NotifyChange('tdBattlePetScript Options')
-end
-
-local function OpenToCategory(key)
+local OpenToCategory = function(key)
     InterfaceOptionsFrame_OpenToCategory(key)
     InterfaceOptionsFrame_OpenToCategory(key)
-
     OpenToCategory = InterfaceOptionsFrame_OpenToCategory
 end
 
-function Addon:OpenOptionFrame()
-    OpenToCategory('tdBattlePetScript')
+function Option:Open(...)
+    OpenToCategory(ADDON)
+    if ... then
+        AceConfigDialog:SelectGroup(ADDON, ...)
+    end
+end
+
+----
+
+function Addon:OpenOptionFrame(...)
+    return Option:Open(...)
 end

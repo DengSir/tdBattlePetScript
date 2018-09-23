@@ -75,5 +75,7 @@ L.IMPORT_CHOOSE_KEY = 'Select the key...'
 L.IMPORT_SCRIPT_EXISTS = 'Script exists'
 L.IMPORT_SHARED_STRING_WARNING = 'Share string data incomplete. But you can still import it.'
 L.DIALOG_COPY_URL_HELP = 'Press ctrl-c to copy and open it in the browser'
+L.SCRIPT_SELECTOR_NOTINSTALLED_TEXT = 'A useful script selector is not installed!'
+L.SCRIPT_SELECTOR_NOTINSTALLED_HELP = 'Left click to view, right click to close'
 
 --@end-debug@
