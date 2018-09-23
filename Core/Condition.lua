@@ -6,7 +6,6 @@ Condition.lua
 
 local ns        = select(2, ...)
 local Util      = ns.Util
-local Round     = ns.Round
 local Addon     = ns.Addon
 local Condition = {} ns.Condition = Condition
 

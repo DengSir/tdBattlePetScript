@@ -3,12 +3,11 @@ Played.lua
 @Author  : DengSir (tdaddon@163.com)
 @Link    : https://dengsir.github.io
 ]]
-local ns = select(2, ...)
-local BattleCache = ns.BattleCache
-local Played = BattleCache:NewModule('Played', 'AceEvent-3.0')
+local ns     = select(2, ...)
+local Played = ns.BattleCacheManager:NewModule('Played', 'AceEvent-3.0')
 
 function Played:OnEnable()
-    self.played = self:SetDefault({})
+    self.played = self:AllocCache({})
 
     self:RegisterEvent('PET_BATTLE_PET_CHANGED')
 end

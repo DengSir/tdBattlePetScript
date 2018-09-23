@@ -3,13 +3,11 @@ Round.lua
 @Author  : DengSir (tdaddon@163.com)
 @Link    : https://dengsir.github.io
 ]]
-local ns = select(2, ...)
-local BattleCache = ns.BattleCache
-
-local Round = BattleCache:NewModule('Round', 'AceEvent-3.0')
+local ns    = select(2, ...)
+local Round = ns.BattleCacheManager:NewModule('Round', 'AceEvent-3.0')
 
 function Round:OnEnable()
-    self.rounds = self:SetDefault({
+    self.rounds = self:AllocCache({
         [0] = 0,
         [LE_BATTLE_PET_ALLY] = 0,
         [LE_BATTLE_PET_ENEMY] = 0
