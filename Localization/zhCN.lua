@@ -36,6 +36,9 @@ L['Script manager']   = '脚本管理器'
 L['Installed']        = '已安装'
 L['Not Installed']    = '未安装'
 L['Download']         = '下载'
+L['Don\'t ask me']    = '不再提醒'
+
+L['Update to version: '] = '更新到版本：'
 
 L.TOGGLE_SCRIPT_MANAGER             = '切换脚本管理器'
 L.TOGGLE_SCRIPT_SELECTOR            = '切换脚本选择器'

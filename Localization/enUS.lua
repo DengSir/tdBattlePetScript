@@ -66,6 +66,8 @@ L["PLUGINALLINONE_NOTES"] = 'This script can be used in all pet battles.'
 L['Installed']        = true
 L['Not Installed']    = true
 L['Download']         = true
+L['Don\'t ask me'] = true
+L['Update to version: '] = true
 
 L.IMPORT_SCRIPT_WELCOME = 'Copy Share string or script to edit box.'
 L.IMPORT_SCRIPT_WARNING = 'You have entered the script and are advised to import using the Share string, although you can continue to import as well.'

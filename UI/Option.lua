@@ -10,7 +10,7 @@ local PluginManager     = ns.PluginManager
 local AceConfigRegistry = LibStub('AceConfigRegistry-3.0')
 local AceConfigDialog   = LibStub('AceConfigDialog-3.0')
 local GUI               = LibStub('tdGUI-1.0')
-local Option            = Addon:NewModule('Option', 'LibNotify-1.0')
+local Option            = Addon:NewModule('Option')
 
 local function orderGen()
     local order = 0
@@ -28,7 +28,9 @@ end
 function Option:OnEnable()
     self:InitOptions()
     self:GeneratePluginOptions()
-    self:CheckNotInstalledPlugins()
+    C_Timer.After(1, function()
+        self:CheckNotInstalledPlugins()
+    end)
 end
 
 function Option:CheckNotInstalledPlugins()
@@ -37,24 +39,17 @@ function Option:CheckNotInstalledPlugins()
         return
     end
 
-    GUI:NotifyDay{
-        text = format('%s\n|cffff0000%s|r', ADDON, L.SCRIPT_SELECTOR_NOTINSTALLED_TEXT),
-        icon = ns.ICON,
-        help = L.SCRIPT_SELECTOR_NOTINSTALLED_HELP,
-        id = format('%s.Plugin.NotInstalled', ADDON),
-        storage = Addon.db.global.notifies,
+    GUI:Notify{
+        text     = format('%s\n|cffff0000%s|r', ADDON, L.SCRIPT_SELECTOR_NOTINSTALLED_TEXT),
+        icon     = ns.ICON,
+        help     = L.SCRIPT_SELECTOR_NOTINSTALLED_HELP,
+        ignore   = L['Don\'t ask me'],
+        id       = format('%s.Plugin.NotInstalled', ADDON),
+        storage  = Addon.db.global.notifies,
         OnAccept = function()
             self:Open('plugins')
-            dump(s)
-        end,
-        OnCancel = function()
-            dump(s)
         end
     }
-
-    for i = 1, 10 do
-        GUI:Notify{text = 'test' .. i}
-    end
 end
 
 function Option:InitOptions()

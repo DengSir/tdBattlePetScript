@@ -4,8 +4,9 @@ Addon.lua
 @Link    : https://dengsir.github.io
 ]]
 
-local ns    = select(2, ...)
+local ADDON, ns = ...
 local Addon = LibStub('AceAddon-3.0'):NewAddon('tdBattlePetScript', 'AceEvent-3.0', 'LibClass-2.0')
+local GUI   = LibStub('tdGUI-1.0')
 
 ns.Addon = Addon
 ns.UI    = {}
@@ -59,6 +60,7 @@ function Addon:OnEnable()
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_ADDED')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_REMOVED')
     self:InitSettings()
+    self:UpdateDatabase()
 end
 
 function Addon:InitSettings()
@@ -67,12 +69,29 @@ function Addon:InitSettings()
     end
 end
 
+function Addon:UpdateDatabase()
+    local oldVersion = self.db.global.version or 0
+    local newVersion = tonumber(GetAddOnMetadata(ADDON, 'Version')) or 80000.05
+
+    if oldVersion ~= newVersion then
+        self.db.global.version = newVersion
+
+        C_Timer.After(0.9, function()
+            GUI:Notify{
+                text = format('%s\n|cff00ffff%s%s|r', ADDON, ns.L['Update to version: '], newVersion),
+                icon = ns.ICON,
+                help = ''
+            }
+        end)
+    end
+end
+
 function Addon:OnModuleCreated(module)
     local name = module:GetName()
     if name:find('^UI%.') then
         ns.UI[name:match('^UI%.(.+)$')] = module
     else
-        ns[module:GetName()] = module
+        ns[name] = module
     end
 end
 
