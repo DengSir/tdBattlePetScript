@@ -124,16 +124,11 @@ function Option:InitOptions()
                         name = L.OPTION_SETTINGS_HIDE_MINIMAP,
                         width = 'double',
                         order = order(),
-                        confirm = function()
-                            return IsAddOnLoaded('MBB')
-                        end,
+                        confirm = true,
                         confirmText = L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP,
                         set = function(item, value)
                             set(item, value)
-
-                            if IsAddOnLoaded('MBB') then
-                                ReloadUI()
-                            end
+                            C_UI.Reload()
                         end
                     },
                     testBreak = {

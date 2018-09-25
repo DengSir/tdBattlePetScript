@@ -73,7 +73,7 @@ L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY           = '自动按钮快捷键'
 L.OPTION_SCRIPTEDITOR_NOTES                   = '这里是脚本编辑器的偏好设置'
 L.OPTION_SETTINGS_TEST_BREAK                  = 'Debug: test 命令中断脚本'
 L.OPTION_SETTINGS_HIDE_MINIMAP                = '隐藏小地图图标'
-L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP        = '检测到了插件“MinimapButtonBag”, 修改设置需要重新载入UI，是否继续？'
+L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP        = '修改这项设置需要重新载入UI，是否继续？'
 
 
 L.PLUGINBASE_TITLE      = '基础'
