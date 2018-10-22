@@ -7,7 +7,7 @@ Api.lua
 local ns   = select(2, ...)
 local Util = {} ns.Util = Util
 
-local function parseID(value)
+function Util.ParseID(value)
     return type(value) == 'string' and tonumber(value:match(':(%d+)$')) or nil
 end
 
@@ -18,7 +18,7 @@ end
 function Util.ParseQuote(str)
     local major, quote = str:match('^([^()]+)%((.+)%)$')
     if major then
-        return major, parseID(quote) or quote
+        return major, Util.ParseID(quote) or quote
     end
     return str, nil
 end

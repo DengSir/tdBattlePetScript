@@ -162,6 +162,6 @@ Addon:RegisterCondition('exists', { type = 'boolean', pet = 1, arg = false }, fu
 end)
 
 
-Addon:RegisterCondition('is', { type = 'boolean' }, function(owner, pet, other)
-    return Util.ComparePet(owner, pet, other)
+Addon:RegisterCondition('is', { type = 'boolean', pet = 1 }, function(owner, pet, other)
+    return pet and Util.ComparePet(owner, pet, Util.ParseID(other) or other)
 end)
