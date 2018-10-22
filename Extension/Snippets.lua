@@ -297,3 +297,7 @@ end
 Snippets.Condition.ability = function(list, word, owner, pet)
     return fillAbility(list, owner, pet)
 end
+
+Snippets.Condition.is = function(list, word, owner, pet)
+    return fillPet(list, owner)
+end

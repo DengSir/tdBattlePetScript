@@ -113,10 +113,10 @@ function Condition:RunCondition(condition)
         error('Big Bang !!!!!!')
     end
 
-    if opts.pet and not pet then
+    if opts.pet == true and not pet then
         return false
     end
-    if opts.arg and not arg then
+    if opts.arg == true and not arg then
         return false
     end
     return opTabler[opts.type][op](fn(owner, pet, arg), value)

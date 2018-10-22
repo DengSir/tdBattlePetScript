@@ -11,7 +11,7 @@ local function parseID(value)
     return type(value) == 'string' and tonumber(value:match(':(%d+)$')) or nil
 end
 
-local function comparePet(owner, index, pet)
+function Util.ComparePet(owner, index, pet)
     return pet == C_PetBattles.GetName(owner, index) or tonumber(pet) == C_PetBattles.GetPetSpeciesID(owner, index)
 end
 
@@ -47,11 +47,11 @@ function Util.ParsePetIndex(owner, pet)
         end
     else
         local active = C_PetBattles.GetActivePet(owner)
-        if comparePet(owner, active, pet) then
+        if Util.ComparePet(owner, active, pet) then
             return active
         end
         for i = 1, C_PetBattles.GetNumPets(owner) do
-            if comparePet(owner, i, pet) then
+            if Util.ComparePet(owner, i, pet) then
                 return i
             end
         end

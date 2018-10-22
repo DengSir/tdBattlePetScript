@@ -155,3 +155,13 @@ end)
 Addon:RegisterCondition('quality', { type = 'compare', arg = false, valueParse = Util.ParseQuality }, function(owner, pet)
     return C_PetBattles.GetBreedQuality(owner, pet)
 end)
+
+
+Addon:RegisterCondition('exists', { type = 'boolean', pet = 1, arg = false }, function(owner, pet)
+    return not not pet
+end)
+
+
+Addon:RegisterCondition('is', { type = 'boolean' }, function(owner, pet, other)
+    return Util.ComparePet(owner, pet, other)
+end)
