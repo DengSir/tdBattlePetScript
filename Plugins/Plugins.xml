@@ -1,5 +1,6 @@
 <Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
 ..\FrameXML\UI.xsd">
   <Script file="Base.lua" />
+  <Script file="FirstEnemy.lua" />
   <Script file="AllInOne.lua" />
 </Ui>

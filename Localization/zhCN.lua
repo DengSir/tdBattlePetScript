@@ -85,3 +85,7 @@ L.PLUGINBASE_TOOLTIP_CREATE_SCRIPT = '基础：为当前对阵创建脚本'
 L.PLUGINALLINONE_TITLE = 'All in one'
 L.PLUGINALLINONE_NOTES = '所有小宠物战斗都可以使用这个脚本。'
 
+L.PLUGINFIRSTENEMY_TITLE = 'First enemy'
+L.PLUGINFIRSTENEMY_NOTES = '这个脚本选择器将脚本绑定到战斗的第一个敌人。'
+
+L.PLUGINFIRSTENEMY_NOTIFY = '发现你之前使用过修改版的tdBattlePetScript，已将修改版的Base选择器的部分脚本迁移到FirstEnemy选择器。'

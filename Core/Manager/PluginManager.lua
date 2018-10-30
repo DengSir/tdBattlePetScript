@@ -7,6 +7,8 @@ local ns              = select(2, ...)
 local Addon           = ns.Addon
 local ScriptManager   = ns.ScriptManager
 local PluginPrototype = {}
+local L               = ns.L
+local GUI             = LibStub('tdGUI-1.0')
 
 ns.PluginPrototype = PluginPrototype
 
@@ -22,6 +24,7 @@ end
 
 function PluginManager:OnEnable()
     self:InitPlugins()
+    self:UpdatePlugins()
     self:RebuildPluginOrders()
     self:InitPluginsNotInstalled()
 
@@ -63,6 +66,36 @@ function PluginManager:InitPlugins()
             tinsert(pluginOrders, name)
             pluginOrdersMap[name] = #pluginOrders
         end
+    end
+end
+
+function PluginManager:UpdatePlugins()
+    local base = Addon:GetPlugin('Base')
+    local firstEnemy = Addon:GetPlugin('FirstEnemy')
+    if not base or not firstEnemy then
+        return
+    end
+
+    local found = false
+    for key, script in base:IterateScripts() do
+        if type(key) == 'number' then
+            found = true
+
+            base:RemoveScript(key)
+            firstEnemy:AddScript(key, script)
+        end
+    end
+
+    if found then
+        C_Timer.After(1, function()
+            GUI:Notify{
+                text = L.PLUGINFIRSTENEMY_NOTIFY,
+                icon = ns.ICON,
+                OnAccept = function()
+                    Addon:OpenOptionFrame('plugins')
+                end
+            }
+        end)
     end
 end
 
@@ -142,7 +175,7 @@ function PluginManager:MoveUpPlugin(name)
         return
     end
 
-    table.remove(pluginOrders, index)
+    tDeleteItem(pluginOrders, name)
     tinsert(pluginOrders, index - 1, name)
 
     self:RebuildPluginOrders()
@@ -155,7 +188,7 @@ function PluginManager:MoveDownPlugin(name)
         return
     end
 
-    table.remove(pluginOrders, index)
+    tDeleteItem(pluginOrders, name)
     tinsert(pluginOrders, index + 1, name)
 
     self:RebuildPluginOrders()

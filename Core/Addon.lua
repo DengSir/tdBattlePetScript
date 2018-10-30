@@ -43,11 +43,6 @@ function Addon:OnInitialize()
             },
             position = {
                 point = 'CENTER', x = 0, y = 0, width = 350, height = 450,
-            },
-            pluginOrders = {
-                'Rematch',
-                'Base',
-                'AllInOne',
             }
         }
     }
@@ -67,11 +62,15 @@ function Addon:InitSettings()
     for key, value in pairs(self.db.profile.settings) do
         self:SetSetting(key, value)
     end
+
+    self.db.profile.pluginOrders = self.db.profile.pluginOrders or {
+        'Rematch', 'FirstEnemy', 'Base', 'AllInOne'
+    }
 end
 
 function Addon:UpdateDatabase()
     local oldVersion = self.db.global.version or 0
-    local newVersion = tonumber(GetAddOnMetadata(ADDON, 'Version')) or 80000.05
+    local newVersion = tonumber(GetAddOnMetadata(ADDON, 'Version')) or 99999.99
 
     if oldVersion ~= newVersion then
         self.db.global.version = newVersion
