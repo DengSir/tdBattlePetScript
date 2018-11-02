@@ -39,11 +39,6 @@ function ScriptItem:Constructor()
     end
 
     local Checked = self:CreateTexture(nil, 'OVERLAY') do
-        -- Checked:SetTexture([[Interface\PVPFrame\PvPMegaQueue]])
-        -- Checked:SetTexCoord(0.00195313, 0.63867188, 0.70703125, 0.76757813)
-        -- Checked:SetBlendMode('ADD')
-        -- Checked:SetPoint('TOPLEFT', 20, -3)
-        -- Checked:SetPoint('BOTTOMRIGHT', -20, 2)
         Checked:SetTexture([[Interface\BUTTONS\UI-CheckBox-Check]])
         Checked:SetSize(20, 20)
         Checked:SetPoint('RIGHT', -5, -2)
@@ -64,6 +59,7 @@ function ScriptItem:Constructor()
     self.Icon       = Icon
     self.IconBorder = IconBorder
     self.Checked    = Checked
+    self.Highlight  = Highlight
 end
 
 function ScriptItem:SetTexture(texture)
@@ -86,4 +82,12 @@ function ScriptItem:SetType(type)
     else
         self.Text:SetPoint('LEFT', 5, 0)
     end
+end
+
+function ScriptItem:SetDesaturated(flag)
+    self.Icon:SetDesaturated(flag)
+    self.IconBorder:SetDesaturated(flag)
+    self.Highlight:SetDesaturated(flag)
+    self.Highlight:SetAlpha(flag and 0.5 or 1)
+    self:SetNormalFontObject(flag and 'GameFontDisable' or 'GameFontNormal')
 end

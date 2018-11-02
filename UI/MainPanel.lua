@@ -355,6 +355,7 @@ function Module:OnEnable()
     self:RegisterEvent('PET_BATTLE_PET_ROUND_PLAYBACK_COMPLETE', 'UpdateDebugButton')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_LIST_UPDATE', 'UpdateScriptList')
 
+    self:RegisterMessage('PET_BATTLE_SCRIPT_RESET_FRAMES')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_editorFontFace', 'OnFontChanged')
     self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_editorFontSize', 'OnFontChanged')
 end
@@ -365,6 +366,11 @@ end
 
 function Module:PET_BATTLE_ACTION_SELECTED()
     self.DebugButton:Disable()
+end
+
+function Module:PET_BATTLE_SCRIPT_RESET_FRAMES()
+    self.MainPanel:RestorePosition()
+    self.MainPanel:RestoreSize()
 end
 
 function Module:UpdateScriptList()

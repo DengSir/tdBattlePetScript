@@ -38,7 +38,7 @@ function Module:OnInitialize()
             GameTooltip:AddLine(L.ADDON_NAME, GREEN_FONT_COLOR:GetRGB())
             GameTooltip:AddLine(' ')
             GameTooltip:AddLine(UI.LEFT_MOUSE_BUTTON .. L.TOGGLE_SCRIPT_SELECTOR, HIGHLIGHT_FONT_COLOR:GetRGB())
-            GameTooltip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT, HIGHLIGHT_FONT_COLOR:GetRGB())
+            -- GameTooltip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT, HIGHLIGHT_FONT_COLOR:GetRGB())
             GameTooltip:Show()
         end)
         ToolButton:SetScript('OnLeave', function()
@@ -50,14 +50,10 @@ function Module:OnInitialize()
             local basePlugin = Addon:GetPlugin('Base')
             GameTooltip:Hide()
 
-            if click == 'RightButton' then
-                self:ToggleCreateMenu(ToolButton, 'TOP', ToolButton, 'BOTTOM', 0, 0)
-            elseif click == 'LeftButton' then
-                if self.ScriptFrame:IsShown() then
-                    self.ScriptFrame:Hide()
-                else
-                    self:UpdateScriptList(true)
-                end
+            if self.ScriptFrame:IsShown() then
+                self.ScriptFrame:Hide()
+            else
+                self:UpdateScriptList(true)
             end
         end)
     end
@@ -122,12 +118,13 @@ function Module:OnInitialize()
         AutoButton:SetFrameLevel(ArtFrame2:GetFrameLevel() + 10)
     end
 
-    local ScriptFrame = CreateFrame('Frame', nil, PetBattleFrame, 'BasicFrameTemplate') do
+    local ScriptFrame = GUI:GetClass('BasicPanel'):New(PetBattleFrame) do
         ScriptFrame:Hide()
+        ScriptFrame:SetFrameStrata('DIALOG')
         ScriptFrame:SetSize(200, 200)
-        ScriptFrame:SetPoint('TOP', ToolButton, 'BOTTOM', 0, -10)
-        ScriptFrame:EnableMouse(true)
-        ScriptFrame.TitleText:SetText(L['Script selector'])
+        ScriptFrame:SetText(L['Script selector'])
+        ScriptFrame:RegisterConfig(Addon.db.profile.scriptSelectorPosition)
+        ScriptFrame:RestorePosition()
     end
 
     local ScriptList = GUI:GetClass('GridView'):New(ScriptFrame) do
@@ -146,26 +143,51 @@ function Module:OnInitialize()
             EmptyLabel:Hide()
         end
 
-        ScriptList:SetCallback('OnItemFormatting', function(ScriptList, button, script)
-            local plugin = script:GetPlugin()
+        ScriptList:SetCallback('OnItemFormatting', function(ScriptList, button, plugin)
+            local key = plugin:GetCurrentKey()
+            local script = key and plugin:GetScript(key)
+
+            button.key    = key
+            button.script = script
             button:SetText(plugin:GetPluginTitle())
             button.Icon:SetTexture(plugin:GetPluginIcon())
-            button.Checked:SetShown(script == Director:GetScript())
+
+            if script then
+                button.Checked:SetShown(script == Director:GetScript())
+                button:SetDesaturated(false)
+            else
+                button.Checked:Hide()
+                button:SetDesaturated(true)
+            end
         end)
-        ScriptList:SetCallback('OnItemClick', function(ScriptList, button, script)
-            Director:SetScript(script)
+        ScriptList:SetCallback('OnItemClick', function(ScriptList, button, plugin)
             self.ScriptFrame:Hide()
+
+            if button.script then
+                Director:SetScript(button.script)
+            else
+                plugin:OpenScriptEditor(button.key, plugin:GetTitleByKey(button.key))
+            end
         end)
-        ScriptList:SetCallback('OnItemMenu', function(ScriptList, button, script)
-            self.ScriptFrame:Hide()
-            UI.MainPanel:OpenScriptDialog(script:GetPlugin(), script:GetKey())
+        ScriptList:SetCallback('OnItemMenu', function(ScriptList, button, plugin)
+            if button.script then
+                self.ScriptFrame:Hide()
+                plugin:OpenScriptEditor(button.key, plugin:GetTitleByKey(button.key))
+            end
         end)
-        ScriptList:SetCallback('OnItemEnter', function(ScriptList, button, script)
-            local tip = UI.OpenScriptTooltip(script, button, 'ANCHOR_BOTTOMRIGHT')
-            tip:AddLine(' ')
-            tip:AddLine(UI.LEFT_MOUSE_BUTTON .. L['Select script'])
-            tip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L['Debugging script'])
-            tip:Show()
+        ScriptList:SetCallback('OnItemEnter', function(ScriptList, button, plugin)
+            if button.script then
+                local tip = UI.OpenScriptTooltip(button.script, button, 'ANCHOR_BOTTOMRIGHT')
+                tip:AddLine(' ')
+                tip:AddLine(UI.LEFT_MOUSE_BUTTON .. L['Select script'])
+                tip:AddLine(UI.RIGHT_MOUSE_BUTTON .. L['Debugging script'])
+                tip:Show()
+            else
+                local tip = UI.OpenPluginTooltip(plugin, button.key, button, 'ANCHOR_BOTTOMRIGHT')
+                tip:AddLine(' ')
+                tip:AddLine(UI.LEFT_MOUSE_BUTTON .. L['Create script'])
+                tip:Show()
+            end
         end)
         ScriptList:SetCallback('OnItemLeave', function()
             GameTooltip:Hide()
@@ -199,6 +221,9 @@ function Module:OnEnable()
     self:RegisterMessage('PET_BATTLE_SCRIPT_SCRIPT_UPDATE', 'UpdateAutoButton')
 
     self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_autoButtonHotKey', 'UpdateHotKey')
+    self:RegisterMessage('PET_BATTLE_SCRIPT_SETTING_CHANGED_lockScriptSelector', 'UpdateLocked')
+
+    self:RegisterMessage('PET_BATTLE_SCRIPT_RESET_FRAMES')
 
     self:SecureHook('PetBattleFrame_UpdatePassButtonAndTimer')
 
@@ -207,6 +232,8 @@ function Module:OnEnable()
         self:UpdateAutoButton()
         self:ScheduleTimer('UpdateScriptList', 0)
     end
+
+    self:UpdateLocked()
 end
 
 function Module:PET_BATTLE_OPENING_START()
@@ -221,6 +248,10 @@ end
 function Module:PET_BATTLE_CLOSE()
     self:UpdateAutoButton()
     self.ScriptFrame:Hide()
+end
+
+function Module:PET_BATTLE_SCRIPT_RESET_FRAMES()
+    self.ScriptFrame:RestorePosition()
 end
 
 function Module:UpdateHotKey()
@@ -255,9 +286,13 @@ function Module:UpdateScriptList(userCall)
         end
     end
 
-    self.ScriptList:SetItemList(scripts)
+    self.ScriptList:SetItemList(self:GetPluginList())
     self.ScriptList:Refresh()
     self.ScriptFrame:Show()
+end
+
+function Module:UpdateLocked()
+    self.ScriptFrame:SetMovable(not Addon:GetSetting('lockScriptSelector'))
 end
 
 function Module:PetBattleFrame_UpdatePassButtonAndTimer()
@@ -278,32 +313,13 @@ function Module:OnAutoButtonClick()
     end
 end
 
-function Module:ToggleCreateMenu(anchor, ...)
-    local menuTable = {
-        {
-            text    = L.TOOLTIP_CREATE_OR_DEBUG_SCRIPT,
-            isTitle = true,
-        }
-    }
-
+function Module:GetPluginList()
+    local list = {}
     for name, plugin in Addon:IterateEnabledPlugins() do
         local key = plugin:GetCurrentKey()
         if key then
-            tinsert(menuTable, {
-                text = name,
-                func = function()
-                    plugin:OpenScriptEditor(key, plugin:GetTitleByKey(key))
-                end
-            })
+            tinsert(list, plugin)
         end
     end
-
-    if #menuTable <= 1 then
-        tinsert(menuTable, {
-            text     = L.SCRIPT_SELECTOR_NOT_MATCH,
-            disabled = true,
-        })
-    end
-
-    GUI:ToggleMenu(anchor, menuTable, ...)
+    return list
 end

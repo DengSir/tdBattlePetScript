@@ -75,6 +75,8 @@ L.OPTION_SETTINGS_TEST_BREAK                  = 'Debug: test 命令中断脚本'
 L.OPTION_SETTINGS_HIDE_MINIMAP                = '隐藏小地图图标'
 L.OPTION_SETTINGS_HIDE_MINIMAP_TOOLTIP        = '修改这项设置需要重新载入UI，是否继续？'
 
+L.OPTION_SETTINGS_LOCK_SCRIPT_SELECTOR = '锁定脚本选择器'
+L.OPTION_SETTINGS_RESET_FRAMES = '重置面板大小与位置'
 
 L.PLUGINBASE_TITLE      = '基础'
 L.PLUGINBASE_NOTES      = '这个脚本选择器将脚本绑定到对阵双方的完整阵容。'

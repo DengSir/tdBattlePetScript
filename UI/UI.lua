@@ -11,7 +11,10 @@ UI.LEFT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:5
 UI.RIGHT_MOUSE_BUTTON = [[|TInterface\TutorialFrame\UI-Tutorial-Frame:12:12:0:0:512:512:10:65:330:385|t ]]
 
 function UI.OpenScriptTooltip(script, owner, anchor)
-    local plugin, key   = script:GetPlugin(), script:GetKey()
+    return UI.OpenPluginTooltip(script:GetPlugin(), script:GetKey(), owner, anchor)
+end
+
+function UI.OpenPluginTooltip(plugin, key, owner, anchor)
     local title         = plugin:GetPluginTitle()
     local notes         = plugin:GetPluginNotes()
     local tipFormatting = plugin.OnTooltipFormatting
@@ -28,6 +31,5 @@ function UI.OpenScriptTooltip(script, owner, anchor)
         tipFormatting(plugin, GameTooltip, key)
     end
     GameTooltip:Show()
-
     return GameTooltip
 end

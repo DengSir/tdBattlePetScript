@@ -131,6 +131,12 @@ function Option:InitOptions()
                             C_UI.Reload()
                         end
                     },
+                    lockScriptSelector = {
+                        type = 'toggle',
+                        name = L.OPTION_SETTINGS_LOCK_SCRIPT_SELECTOR,
+                        width = 'double',
+                        order = order()
+                    },
                     testBreak = {
                         type = 'toggle',
                         name = L.OPTION_SETTINGS_TEST_BREAK,
@@ -142,6 +148,15 @@ function Option:InitOptions()
                         name = L.OPTION_SETTINGS_AUTOBUTTON_HOTKEY,
                         width = 'double',
                         order = order()
+                    },
+                    scriptSelectorResetPos = {
+                        type = 'execute',
+                        name = L.OPTION_SETTINGS_RESET_FRAMES,
+                        width = 'double',
+                        order = order(),
+                        func = function()
+                            Addon:ResetFrames()
+                        end
                     }
                 }
             },
