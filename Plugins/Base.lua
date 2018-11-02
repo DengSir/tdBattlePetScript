@@ -48,7 +48,7 @@ local function SplitTeams(key)
     return allys, enemys
 end
 
-function Base:GetPetTip(id)
+function Base:GetPetTip(id, iconAtRight)
     if not id then
         return ' '
     end
@@ -56,7 +56,7 @@ function Base:GetPetTip(id)
     if not name then
         return ' '
     end
-    return format('|T%s:20|t %s', icon, name)
+    return iconAtRight and format('%s |T%s:20|t', name, icon) or format('|T%s:20|t %s', icon, name)
 end
 
 function Base:OnTooltipFormatting(tip, key)
@@ -67,7 +67,7 @@ function Base:OnTooltipFormatting(tip, key)
     for i = 1, max(#allys, #enemys) do
         tip:AddDoubleLine(
             self:GetPetTip(tonumber(allys[i])),
-            self:GetPetTip(tonumber(enemys[i])),
+            self:GetPetTip(tonumber(enemys[i]), true),
             1, 1, 1, 1, 1, 1
         )
     end
