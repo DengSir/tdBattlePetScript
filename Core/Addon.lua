@@ -31,7 +31,7 @@ function Addon:OnInitialize()
             },
             settings = {
                 autoSelect         = true,
-                hideNoScript       = false,
+                hideNoScript       = true,
                 noWaitDeleteScript = false,
                 editorFontFace     = STANDARD_TEXT_FONT,
                 editorFontSize     = 14,
