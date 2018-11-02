@@ -215,7 +215,7 @@ function PluginManager:SetPluginAllowed(name, flag)
     self.db.profile.pluginDisabled[name] = not flag or nil
 
     C_Timer.After(0, function()
-        local module = self:GetPlugin(name)
+        local module = Addon:GetPlugin(name)
         if flag then
             module:Enable()
         else
