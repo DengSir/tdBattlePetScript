@@ -24,6 +24,7 @@ end
 
 function PluginManager:OnEnable()
     self:InitPlugins()
+    self:InitOrders()
     self:UpdatePlugins()
     self:RebuildPluginOrders()
     self:InitPluginsNotInstalled()
@@ -52,21 +53,34 @@ function PluginManager:IterateEnabledPlugins()
 end
 
 function PluginManager:InitPlugins()
-    local pluginOrders = self.db.profile.pluginOrders
-    local pluginOrdersMap = tInvert(pluginOrders)
-
     for name, plugin in self:IterateModules() do
         self.db.global.scripts[name] = self.db.global.scripts[name] or {}
 
         for key, db in pairs(self.db.global.scripts[name]) do
             ScriptManager:AddScript(plugin, key, Addon:GetClass('Script'):New(db, plugin, key))
         end
+    end
+end
 
-        if not pluginOrdersMap[name] then
-            tinsert(pluginOrders, name)
-            pluginOrdersMap[name] = #pluginOrders
+function PluginManager:InitOrders()
+    local default         = {'Rematch', 'Base', 'FirstEnemy', 'AllInOne'}
+    local pluginOrdersMap = tInvert(self.db.profile.pluginOrders)
+    local pluginOrders    = {} do
+        for k in pairs(pluginOrdersMap) do
+            tinsert(pluginOrders, k)
+        end
+        sort(pluginOrders, function(lhs, rhs)
+            return pluginOrdersMap[lhs] < pluginOrdersMap[rhs]
+        end)
+    end
+
+    for i, v in pairs(default) do
+        if not pluginOrdersMap[v] and self:GetModule(v) then
+            tinsert(pluginOrders, i, v)
         end
     end
+
+    self.db.profile.pluginOrders = pluginOrders
 end
 
 function PluginManager:UpdatePlugins()

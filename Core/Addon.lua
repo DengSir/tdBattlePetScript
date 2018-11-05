@@ -26,9 +26,8 @@ function Addon:OnInitialize()
             }
         },
         profile = {
-            pluginDisabled = {
-
-            },
+            pluginDisabled = {},
+            pluginOrders = {},
             settings = {
                 autoSelect         = true,
                 hideNoScript       = true,
@@ -51,7 +50,6 @@ function Addon:OnInitialize()
         }
     }
 
-
     self.db = LibStub('AceDB-3.0'):New('TD_DB_BATTLEPETSCRIPT_GLOBAL', defaults, true)
 
     self.db.RegisterCallback(self, 'OnDatabaseShutdown')
@@ -68,10 +66,6 @@ function Addon:InitSettings()
     for key, value in pairs(self.db.profile.settings) do
         self:SetSetting(key, value)
     end
-
-    self.db.profile.pluginOrders = self.db.profile.pluginOrders or {
-        'Rematch', 'FirstEnemy', 'Base', 'AllInOne'
-    }
 end
 
 function Addon:UpdateDatabase()
