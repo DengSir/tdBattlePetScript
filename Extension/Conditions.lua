@@ -15,14 +15,18 @@ local function getOpponent(owner)
     return owner == LE_BATTLE_PET_ALLY and LE_BATTLE_PET_ENEMY or LE_BATTLE_PET_ALLY
 end
 
+local function getOpponentActivePet(owner)
+    local opponent = getOpponent(owner)
+    return opponent, C_PetBattles.GetActivePet(opponent)
+end
+
 local function GetAbilityAttackModifier(owner, pet, ability)
     local abilityType, noStrongWeakHints = select(7, C_PetBattles.GetAbilityInfo(owner, pet, ability))
     if noStrongWeakHints then
         return
     end
 
-    local opponent     = getOpponent(owner)
-    local opponentType = C_PetBattles.GetPetType(opponent, C_PetBattles.GetActivePet(opponent))
+    local opponentType = C_PetBattles.GetPetType(getOpponentActivePet(owner))
 
     return C_PetBattles.GetAttackModifier(abilityType, opponentType)
 end
@@ -40,6 +44,21 @@ end)
 
 Addon:RegisterCondition('hp.full', { type = 'boolean', arg = false }, function(owner, pet)
     return C_PetBattles.GetHealth(owner, pet) == C_PetBattles.GetMaxHealth(owner, pet)
+end)
+
+
+Addon:RegisterCondition('hp.can_explode', { type = 'boolean', arg = false }, function(owner, pet)
+    return C_PetBattles.GetHealth(owner, pet) < floor(C_PetBattles.GetMaxHealth(getOpponentActivePet(owner)) * 0.4)
+end)
+
+
+Addon:RegisterCondition('hp.lower', { type = 'boolean', pet = false, arg = false }, function(owner, pet)
+    return C_PetBattles.GetHealth(owner, pet) < C_PetBattles.GetHealth(getOpponentActivePet(owner))
+end)
+
+
+Addon:RegisterCondition('hp.higher', { type = 'boolean', pet = false, arg = false }, function(owner, pet)
+    return C_PetBattles.GetHealth(owner, pet) > C_PetBattles.GetHealth(getOpponentActivePet(owner))
 end)
 
 
@@ -136,14 +155,12 @@ end)
 
 
 Addon:RegisterCondition('speed.fast', { type = 'boolean', pet = false, arg = false }, function(owner)
-    local opponent = getOpponent(owner)
-    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) > C_PetBattles.GetSpeed(opponent, C_PetBattles.GetActivePet(opponent))
+    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) > C_PetBattles.GetSpeed(getOpponentActivePet(owner))
 end)
 
 
 Addon:RegisterCondition('speed.slow', { type = 'boolean', pet = false, arg = false }, function(owner)
-    local opponent = getOpponent(owner)
-    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) < C_PetBattles.GetSpeed(opponent, C_PetBattles.GetActivePet(opponent))
+    return C_PetBattles.GetSpeed(owner, C_PetBattles.GetActivePet(owner)) < C_PetBattles.GetSpeed(getOpponentActivePet(owner))
 end)
 
 
@@ -164,4 +181,9 @@ end)
 
 Addon:RegisterCondition('is', { type = 'boolean', pet = 1 }, function(owner, pet, other)
     return pet and Util.ComparePet(owner, pet, Util.ParseID(other) or other)
+end)
+
+
+Addon:RegisterCondition('id', { type = 'equality', pet = 1, arg = false }, function(owner, pet)
+    return pet and C_PetBattles.GetPetSpeciesID(owner, pet) or 0
 end)
