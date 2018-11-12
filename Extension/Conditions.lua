@@ -52,12 +52,12 @@ Addon:RegisterCondition('hp.can_explode', { type = 'boolean', arg = false }, fun
 end)
 
 
-Addon:RegisterCondition('hp.lower', { type = 'boolean', pet = false, arg = false }, function(owner, pet)
+Addon:RegisterCondition('hp.low', { type = 'boolean', pet = false, arg = false }, function(owner, pet)
     return C_PetBattles.GetHealth(owner, pet) < C_PetBattles.GetHealth(getOpponentActivePet(owner))
 end)
 
 
-Addon:RegisterCondition('hp.higher', { type = 'boolean', pet = false, arg = false }, function(owner, pet)
+Addon:RegisterCondition('hp.high', { type = 'boolean', pet = false, arg = false }, function(owner, pet)
     return C_PetBattles.GetHealth(owner, pet) > C_PetBattles.GetHealth(getOpponentActivePet(owner))
 end)
 
