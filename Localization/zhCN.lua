@@ -55,12 +55,12 @@ L.SCRIPT_IMPORT_LABEL_COVER = '这个匹配模式下已存在脚本，继续导�
 L.SCRIPT_IMPORT_LABEL_EXTRA = '继续导入扩展信息'
 L.SCRIPT_IMPORT_LABEL_GOON  = '覆盖并继续导入'
 
-L.IMPORT_SCRIPT_WELCOME = '复制分享字符串或脚本到输入框。'
-L.IMPORT_SCRIPT_WARNING = '你输入了脚本，建议你使用分享码导入，当然你也可以继续导入。'
-L.IMPORT_REINPUT_TEXT = '重新编辑'
-L.IMPORT_CHOOSE_PLUGIN = '请选择脚本选择器...'
-L.IMPORT_CHOOSE_KEY = '请选择关建值...'
-L.IMPORT_SCRIPT_EXISTS = '已存在脚本'
+L.IMPORT_SCRIPT_WELCOME        = '复制分享字符串或脚本到输入框。'
+L.IMPORT_SCRIPT_WARNING        = '你输入了脚本，建议你使用分享码导入，当然你也可以继续导入。'
+L.IMPORT_REINPUT_TEXT          = '重新编辑'
+L.IMPORT_CHOOSE_PLUGIN         = '请选择脚本选择器...'
+L.IMPORT_CHOOSE_KEY            = '请选择关建值...'
+L.IMPORT_SCRIPT_EXISTS         = '已存在脚本'
 L.IMPORT_SHARED_STRING_WARNING = '分享字符串数据不全。但依然可以导入。'
 
 L.OPTION_GENERAL_NOTES                        = '这里是一些常规设置。'

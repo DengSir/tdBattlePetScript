@@ -53,6 +53,7 @@ function Module:OnInitialize()
     local Inset = CreateFrame('Frame', nil, MainPanel, 'InsetFrameTemplate') do
         Inset:SetPoint('TOPLEFT', 4, -60)
         Inset:SetPoint('BOTTOMRIGHT', -6, 26)
+        Inset.Bg:SetDrawLayer('BACKGROUND')
     end
 
     local ScriptList = GUI:GetClass('ListView'):New(Inset) do
