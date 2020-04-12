@@ -114,10 +114,10 @@ function Condition:RunCondition(condition)
     end
 
     if opts.pet == true and not pet then
-        return false
+        return opTabler[opts.type][op](false)
     end
     if opts.arg == true and not arg then
-        return false
+        return opTabler[opts.type][op](false)
     end
     return opTabler[opts.type][op](fn(owner, pet, arg), value)
 end
