@@ -1,0 +1,16 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="ViewItem.lua" />
+  <Script file="EditBox.lua" />
+  <Script file="InputBox.lua" />
+  <Script file="NumericBox.lua" />
+  <Script file="EditBoxGroup.lua" />
+  <Script file="BlockDialog.lua" />
+  <Script file="BasicPanel.lua" />
+  <Script file="AutoHideController.lua" />
+  <Script file="DropMenuItem.lua" />
+  <Script file="DropMenu.lua" />
+  <Script file="Dropdown.lua" />
+  <Script file="AnimPageFrame.lua" />
+  <Script file="NotifyFrame.lua" />
+</Ui>

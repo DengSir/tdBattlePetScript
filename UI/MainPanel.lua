@@ -263,6 +263,7 @@ function Module:OnInitialize()
     end
 
     local BugFrame = CreateFrame('Frame', nil, Content) do
+        Mixin(BugFrame, BackdropTemplateMixin)
         BugFrame:Hide()
         BugFrame:SetPoint('BOTTOMLEFT', 8, 6)
         BugFrame:SetPoint('BOTTOMRIGHT', -8, 6)

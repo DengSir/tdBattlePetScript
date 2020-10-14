@@ -1,0 +1,6 @@
+## Interface: 80000
+## Title: tdGUI
+## Author: DengSir
+## Version: 80000.02
+
+Load.xml

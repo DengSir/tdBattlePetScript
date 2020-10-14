@@ -1,8 +1,8 @@
-## Interface: 80000
+## Interface: 90001
 ## Title: tdBattlePetScript
 ## Description: 自动宠物战斗
 ## Author: DengSir
-## Version: @project-version@
+## Version: 9.0
 ## OptionalDeps: tdGUI, Ace3
 ## SavedVariables: TD_DB_BATTLEPETSCRIPT_GLOBAL
 ## SavedVariablesPerCharacter: TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE

@@ -124,10 +124,7 @@ local PET_TYPES = {} do
 end
 
 function Util.ParsePetType(value)
-    if not value then 
-        return nil 
-    end
-    return PET_TYPES[lower(value)] or PET_TYPES[Util.ParseID(value)] or nil
+    return value and PET_TYPES[lower(value)] or nil
 end
 
 local PET_QUALITIES = {} do

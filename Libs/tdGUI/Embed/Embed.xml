@@ -1,0 +1,8 @@
+<Ui xsi:schemaLocation="http://www.blizzard.com/wow/ui/
+..\FrameXML\UI.xsd">
+  <Script file="Enable.lua" />
+  <Script file="Owner.lua" />
+  <Script file="Refresh.lua" />
+  <Script file="View.lua" />
+  <Script file="Select.lua" />
+</Ui>
