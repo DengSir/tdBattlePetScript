@@ -262,7 +262,7 @@ function Module:OnInitialize()
         end)
     end
 
-    local BugFrame = CreateFrame('Frame', nil, Content, "BackdropTemplate") do
+    local BugFrame = CreateFrame('Frame', nil, Content, 'BackdropTemplate') do
         BugFrame:Hide()
         BugFrame:SetPoint('BOTTOMLEFT', 8, 6)
         BugFrame:SetPoint('BOTTOMRIGHT', -8, 6)
