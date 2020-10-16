@@ -312,7 +312,7 @@ function Import:InitPageImport(frame)
         end)
 
         local Icon = ScriptInfo:CreateTexture(nil, 'BORDER') do
-            Icon:SetMask([[Textures\MinimapMask]])
+            Icon:SetMask([[Interface\Minimap\UI-Minimap-Background]])
             Icon:SetSize(28, 28)
             Icon:SetPoint('LEFT', 5, 0)
         end
