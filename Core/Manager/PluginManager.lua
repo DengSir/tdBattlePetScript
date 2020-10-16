@@ -75,8 +75,8 @@ function PluginManager:InitOrders()
     end
 
     for i, v in pairs(default) do
-        if not pluginOrdersMap[v] and self:GetModule(v) then
-            tinsert(pluginOrders, i, v)
+        if not pluginOrdersMap[v] and self:GetModule(v, true) then
+            tinsert(pluginOrders, v)
         end
     end
 
