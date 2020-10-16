@@ -139,7 +139,7 @@ function Module:OnInitialize()
         end
 
         local Icon = HelpIcon:CreateTexture(nil, 'BORDER') do
-            Icon:SetMask([[Textures\MinimapMask]])
+            Icon:SetMask([[Interface\Minimap\UI-Minimap-Background]])
             Icon:SetSize(28, 28)
             Icon:SetAllPoints(true)
         end
@@ -262,7 +262,7 @@ function Module:OnInitialize()
         end)
     end
 
-    local BugFrame = CreateFrame('Frame', nil, Content) do
+    local BugFrame = CreateFrame('Frame', nil, Content, 'BackdropTemplate') do
         BugFrame:Hide()
         BugFrame:SetPoint('BOTTOMLEFT', 8, 6)
         BugFrame:SetPoint('BOTTOMRIGHT', -8, 6)
