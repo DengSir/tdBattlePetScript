@@ -2,7 +2,7 @@
 Label Widget
 Displays text and optionally an icon.
 -------------------------------------------------------------------------------]]
-local Type, Version = "Label", 26
+local Type, Version = "Label", 27
 local AceGUI = LibStub and LibStub("AceGUI-3.0", true)
 if not AceGUI or (AceGUI:GetWidgetVersion(Type) or 0) >= Version then return end
 
@@ -57,12 +57,12 @@ local function UpdateImageAnchor(self)
 		label:SetWidth(width)
 		height = label:GetStringHeight()
 	end
-	
+
 	-- avoid zero-height labels, since they can used as spacers
 	if not height or height == 0 then
 		height = 1
 	end
-	
+
 	self.resizing = true
 	frame:SetHeight(height)
 	frame.height = height
@@ -113,7 +113,7 @@ local methods = {
 	["SetImage"] = function(self, path, ...)
 		local image = self.image
 		image:SetTexture(path)
-		
+
 		if image:GetTexture() then
 			self.imageshown = true
 			local n = select("#", ...)
@@ -130,6 +130,7 @@ local methods = {
 
 	["SetFont"] = function(self, font, height, flags)
 		self.label:SetFont(font, height, flags)
+		UpdateImageAnchor(self)
 	end,
 
 	["SetFontObject"] = function(self, font)
