@@ -1,0 +1,16 @@
+language: node_js
+
+node_js:
+- 10
+
+before_deploy:
+- npm install -g https://github.com/DengSir/wow-curse-tools.git
+
+deploy:
+- provider: script
+  script: wct publish --token $CURSE_TOKEN
+  skip_cleanup: true
+  on:
+    repo: DengSir/tdBattlePetScript
+    branch: master
+    tags: true

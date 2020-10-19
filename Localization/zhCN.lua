@@ -7,6 +7,7 @@ zhCN.lua
 local L = LibStub('AceLocale-3.0'):NewLocale('tdBattlePetScript', 'zhCN')
 if not L then return end
 
+-- @import@
 L.ADDON_NAME = '小宠物战斗脚本'
 
 L['Auto']             = '自动'
@@ -91,3 +92,4 @@ L.PLUGINFIRSTENEMY_TITLE = 'First enemy'
 L.PLUGINFIRSTENEMY_NOTES = '这个脚本选择器将脚本绑定到战斗的第一个敌人。'
 
 L.PLUGINFIRSTENEMY_NOTIFY = '发现你之前使用过修改版的tdBattlePetScript，已将修改版的Base选择器的部分脚本迁移到FirstEnemy选择器。'
+-- @end-import@
