@@ -257,17 +257,21 @@ end
 Snippets.Condition.self = Snippets.Condition.ally
 
 Snippets.Condition.weather = function(list)
-    local weathers = { 596, 590, 229, 403, 171, 205, 718, 257, 454 }
-
-    -- 596 月光
-    -- 590 奥术之风
-    -- 229 净化之雨
-    -- 403 晴天
-    -- 171 灼燃大地
-    -- 205 暴风雪
-    -- 718 泥石流
-    -- 257 黑暗
-    -- 454 沙尘暴
+    local weathers = {
+        171,  -- Weather_BurntEarth
+        590,  -- Weather_ArcaneStorm
+        596,  -- Weather_Moonlight
+        257,  -- Weather_Darkness
+        454,  -- Weather_Sandstorm
+        205,  -- Weather_Blizzard
+        718,  -- Weather_Mud
+        229,  -- Weather_Rain
+        403,  -- Weather_Sunlight
+        203,  -- Weather_LightningStorm
+        2320, -- Weather_LightningStorm
+        ---,  -- Weather_Windy
+        2350, -- Weather_Toxic_Gas
+    }
 
     for i, id in ipairs(weathers) do
         local id, name, icon = C_PetBattles.GetAbilityInfoByID(id)
