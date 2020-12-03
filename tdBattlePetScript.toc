@@ -1,4 +1,4 @@
-## Interface: 90001
+## Interface: 90002
 ## Title: tdBattlePetScript
 ## Description: 自动宠物战斗
 ## Author: DengSir
