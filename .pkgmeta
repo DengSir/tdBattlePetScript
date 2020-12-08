@@ -1,0 +1,19 @@
+manual-changelog:
+  filename: CHANGELOG.md
+  markup-type: markdown
+license-output: LICENSE.md
+
+enable-nolib-creation: no
+embedded-libraries:
+  - Ace3
+  - callbackhandler
+  - libbase64-1-0
+  - libdatabroker-1-1
+  - libdbicon-1-0
+  - libstub
+  ## not published separately
+  # - tdGUI
+  # - LibCRC32-1.0
+  ### via tdGUI
+  - libwindow-1-1
+

@@ -9,5 +9,6 @@
 ## SavedVariablesPerCharacter: TD_DB_BATTLEPETSCRIPT_BATTLE_CACHE
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
+## X-Curse-Project-ID: 254463
 
 Load.xml
