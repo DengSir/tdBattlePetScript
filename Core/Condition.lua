@@ -113,13 +113,8 @@ function Condition:RunCondition(condition)
         error('Big Bang !!!!!!')
     end
 
-    if opts.pet == true and not pet then
-        return opTabler[opts.type][op](false)
-    end
-    if opts.arg == true and not arg then
-        return opTabler[opts.type][op](false)
-    end
-    return opTabler[opts.type][op](fn(owner, pet, arg), value)
+    local res = fn(owner, pet, arg)
+    return opTabler[opts.type][op](res, value)
 end
 
 function Condition:ParsePet(str)
