@@ -18,6 +18,11 @@ function Round:OnEnable()
 end
 
 function Round:PET_BATTLE_PET_ROUND_RESULTS(_, round)
+    -- for some reason, the event is fired twice if an enemy(?) pet dies,
+    -- leading to increasing self.round counter twice. See issue #1.
+    if round == self.rounds[0] - 1 then
+        return
+    end
     self.rounds[0] = round + 1
     self.rounds[LE_BATTLE_PET_ALLY] = self.rounds[LE_BATTLE_PET_ALLY] + 1
     self.rounds[LE_BATTLE_PET_ENEMY] = self.rounds[LE_BATTLE_PET_ENEMY] + 1
