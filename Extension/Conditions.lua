@@ -187,3 +187,8 @@ end)
 Addon:RegisterCondition('id', { type = 'equality', pet = 1, arg = false }, function(owner, pet)
     return pet and C_PetBattles.GetPetSpeciesID(owner, pet) or 0
 end)
+
+Addon:RegisterCondition('collected', { type = 'boolean', arg = false }, function(owner, pet)
+    local name = select(2, C_PetBattles.GetName(owner, pet))
+    return select(2, C_PetJournal.FindPetIDByName(name)) ~= nil
+end)
