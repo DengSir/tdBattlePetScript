@@ -192,3 +192,8 @@ Addon:RegisterCondition('collected', { type = 'boolean', arg = false }, function
     local name = select(2, C_PetBattles.GetName(owner, pet))
     return select(2, C_PetJournal.FindPetIDByName(name)) ~= nil
 end)
+
+Addon:RegisterCondition('trap', { type = 'boolean', owner = false , pet = false, arg = false }, function()
+    local usable, err = C_PetBattles.IsTrapAvailable()
+    return usable or (not usable and err == 4)
+end)
