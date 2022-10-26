@@ -21,6 +21,9 @@ local function getOpponentActivePet(owner)
 end
 
 local function GetAbilityAttackModifier(owner, pet, ability)
+    if not pet or not ability then
+        return
+    end
     local abilityType, noStrongWeakHints = select(7, C_PetBattles.GetAbilityInfo(owner, pet, ability))
     if noStrongWeakHints then
         return
@@ -31,6 +34,10 @@ local function GetAbilityAttackModifier(owner, pet, ability)
     return C_PetBattles.GetAttackModifier(abilityType, opponentType)
 end
 
+local infinite = tonumber('inf')
+local function logical_max_health(owner, pet)
+    return pet and C_PetBattles.GetMaxHealth(owner, pet) or infinite
+end
 
 Addon:RegisterCondition('dead', { type = 'boolean', arg = false }, function(owner, pet)
     return C_PetBattles.GetHealth(owner, pet) == 0
@@ -43,12 +50,12 @@ end)
 
 
 Addon:RegisterCondition('hp.full', { type = 'boolean', arg = false }, function(owner, pet)
-    return C_PetBattles.GetHealth(owner, pet) == C_PetBattles.GetMaxHealth(owner, pet)
+    return C_PetBattles.GetHealth(owner, pet) == logical_max_health(owner, pet)
 end)
 
 
 Addon:RegisterCondition('hp.can_explode', { type = 'boolean', arg = false }, function(owner, pet)
-    return C_PetBattles.GetHealth(owner, pet) < floor(C_PetBattles.GetMaxHealth(getOpponentActivePet(owner)) * 0.4)
+    return pet and C_PetBattles.GetHealth(owner, pet) < floor(logical_max_health(getOpponentActivePet(owner)) * 0.4)
 end)
 
 
@@ -63,18 +70,18 @@ end)
 
 
 Addon:RegisterCondition('hpp', { type = 'compare', arg = false }, function(owner, pet)
-    return C_PetBattles.GetHealth(owner, pet) / C_PetBattles.GetMaxHealth(owner, pet) * 100
+    return C_PetBattles.GetHealth(owner, pet) / logical_max_health(owner, pet) * 100
 end)
 
 
 Addon:RegisterCondition('aura.exists', { type = 'boolean' }, function(owner, pet, aura)
-    return Util.FindAura(owner, pet, aura)
+    return aura and Util.FindAura(owner, pet, aura)
 end)
 
 
 Addon:RegisterCondition('aura.duration', { type = 'compare' }, function(owner, pet, aura)
     local owner, pet, index = Util.FindAura(owner, pet, aura)
-    if index then
+    if aura and index then
         return (select(3, C_PetBattles.GetAuraInfo(owner, pet, index)))
     end
     return 0
@@ -87,13 +94,13 @@ Addon:RegisterCondition('weather', { type = 'boolean', owner = false, pet = fals
     if aura then
         id, name = C_PetBattles.GetAbilityInfoByID(aura)
     end
-    return id == weather or name == weather
+    return weather and (id == weather or name == weather)
 end)
 
 
 Addon:RegisterCondition('weather.duration', { type = 'compare', owner = false, pet = false }, function(_, _, weather)
     local id, _, duration = C_PetBattles.GetAuraInfo(LE_BATTLE_PET_WEATHER, PET_BATTLE_PAD_INDEX, 1)
-    if id and (id == weather or select(2, C_PetBattles.GetAbilityInfoByID(id)) == weather) then
+    if weather and id and (id == weather or select(2, C_PetBattles.GetAbilityInfoByID(id)) == weather) then
         return duration
     end
     return 0
@@ -106,12 +113,14 @@ end)
 
 
 Addon:RegisterCondition('ability.usable', { type = 'boolean', argParse = Util.ParseAbility }, function(owner, pet, ability)
-    return (C_PetBattles.GetAbilityState(owner, pet, ability))
+    local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(owner, pet, ability)
+    return ability and isUsable
 end)
 
 
 Addon:RegisterCondition('ability.duration', { type = 'compare', argParse = Util.ParseAbility }, function(owner, pet, ability)
-    return (select(2, C_PetBattles.GetAbilityState(owner, pet, ability)))
+    local isUsable, currentCooldown, currentLockdown = C_PetBattles.GetAbilityState(owner, pet, ability)
+    return ability and currentCooldown or infinite
 end)
 
 
@@ -141,7 +150,7 @@ Addon:RegisterCondition('round', { type = 'compare', pet = false, arg = false },
 end)
 
 Addon:RegisterCondition('played', { type = 'boolean', arg = false }, function(owner, pet)
-    return Played:IsPetPlayed(owner, pet)
+    return pet and Played:IsPetPlayed(owner, pet)
 end)
 
 Addon:RegisterCondition('speed', { type = 'compare', arg = false }, C_PetBattles.GetSpeed)
@@ -150,7 +159,7 @@ Addon:RegisterCondition('level', { type = 'compare', arg = false }, C_PetBattles
 
 
 Addon:RegisterCondition('level.max', { type = 'boolean', arg = false }, function(owner, pet)
-    return C_PetBattles.GetLevel(owner, pet) == 25
+    return pet and C_PetBattles.GetLevel(owner, pet) == 25
 end)
 
 
@@ -170,7 +179,7 @@ end)
 
 
 Addon:RegisterCondition('quality', { type = 'compare', arg = false, valueParse = Util.ParseQuality }, function(owner, pet)
-    return C_PetBattles.GetBreedQuality(owner, pet)
+    return pet and C_PetBattles.GetBreedQuality(owner, pet)
 end)
 
 
