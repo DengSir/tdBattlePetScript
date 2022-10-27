@@ -22,7 +22,6 @@ local STATUS_LABELS = {
 }
 
 local Module = Addon:NewModule('UI.MainPanel', 'AceEvent-3.0')
-
 function Module:OnInitialize()
     local function UpdateLayout() self:UpdateLayout() end
     local function UpdateSaveButton() self:UpdateSaveButton() end
@@ -35,8 +34,7 @@ function Module:OnInitialize()
         MainPanel:SetPoint('CENTER')
         MainPanel:SetMovable(true)
         MainPanel:SetResizable(true)
-        MainPanel:SetMinResize(550, 350)
-        MainPanel:SetMaxResize(900, 700)
+        MainPanel:SetResizeBounds(550, 350, 900, 700)
         MainPanel:ShowPortrait()
         MainPanel:SetFrameStrata('DIALOG')
         MainPanel:SetTitle(L['Script editor'])
@@ -362,7 +360,7 @@ function Module:OnEnable()
 end
 
 function Module:OnFontChanged()
-    self.ScriptBox:SetFont(Addon:GetSetting('editorFontFace'), Addon:GetSetting('editorFontSize'))
+    self.ScriptBox:SetFont(Addon:GetSetting('editorFontFace'), Addon:GetSetting('editorFontSize'), '')
 end
 
 function Module:PET_BATTLE_ACTION_SELECTED()
@@ -504,13 +502,11 @@ function Module:UpdateLayout()
     end
     if self.ScriptList:IsShown() then
         self.Content:SetPoint('TOPLEFT', self.ScriptList, 'TOPRIGHT', 2, 0)
-        self.MainPanel:SetMinResize(550, 350)
-        self.MainPanel:SetMaxResize(900, 700)
+        self.MainPanel:SetResizeBounds(550, 350, 900, 700)
         self.MainPanel:ShowPortrait()
     else
         self.Content:SetPoint('TOPLEFT')
-        self.MainPanel:SetMinResize(350, 350)
-        self.MainPanel:SetMaxResize(700, 700)
+        self.MainPanel:SetResizeBounds(350, 350, 700, 700)
         self.MainPanel:HidePortrait()
     end
 
