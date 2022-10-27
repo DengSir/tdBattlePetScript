@@ -23,6 +23,7 @@
   "wow": {
     "name": "tdBattlePetScript",
     "curse_id": 254463,
+	"changelog": "CHANGELOG.md",
     "localizations": {
       "enUS": "Localization/enUS.lua",
       "zhCN": "Localization/zhCN.lua"
