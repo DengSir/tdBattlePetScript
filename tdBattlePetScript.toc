@@ -1,7 +1,8 @@
 ## Interface: 100000
 ## Title: tdBattlePetScript
-## Description: 自动宠物战斗
-## Author: DengSir
+## X-Wago-ID: WYK9036L
+## Description: Battle pet combat scripting
+## Author: axc450
 ## Version: 10.0.0
 ## OptionalDeps: tdGUI, Ace3
 ## SavedVariables: TD_DB_BATTLEPETSCRIPT_GLOBAL
