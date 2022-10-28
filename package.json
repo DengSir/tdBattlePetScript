@@ -1,6 +1,6 @@
 {
   "name": "tdbattlepetscript",
-  "version": "9.0.1",
+  "version": "10.0.0",
   "description": "This addon makes battle pet combat support scripting.",
   "main": "index.js",
   "scripts": {
