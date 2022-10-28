@@ -10,5 +10,7 @@
 ## LoadManagers: AddonLoader
 ## X-LoadOn-Always: delayed
 ## X-Curse-Project-ID: 254463
+## X-Wago-ID: WYK9036L
+## X-WoWI-ID: 26435
 
 Load.xml
