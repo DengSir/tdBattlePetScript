@@ -1,17 +1,17 @@
--- @debug@
+--@debug@
 local L = LibStub('AceLocale-3.0'):NewLocale(..., 'enUS', true)
--- @end-debug@
---[[@non-debug@
+--@end-debug@
+--[===[@non-debug@
 local L = LibStub('AceLocale-3.0'):NewLocale(..., 'enUS', true, true)
---@end-non-debug@]]
+--@end-non-debug@]===]
 if not L then
     return
 end
 
--- @localization(locale=""enUS", format="lua_additive_table", table-name="L", same-key-is-true=true)@
+--@localization(locale="enUS", format="lua_additive_table", table-name="L", same-key-is-true=true)@
 
--- @debug@
--- @import@
+--@debug@
+--@import@
 L['ADDON_NAME'] = 'Battle pet script'
 L['Auto'] = true
 L['Beauty script'] = true
@@ -86,5 +86,5 @@ L['TOGGLE_SCRIPT_MANAGER'] = 'Toggle script manager'
 L['TOGGLE_SCRIPT_SELECTOR'] = 'Toggle script selector'
 L['TOOLTIP_CREATE_OR_DEBUG_SCRIPT'] = 'Create or debug script'
 L['Update to version: '] = true
--- @end-import@
--- @end-debug@
+--@end-import@
+--@end-debug@
