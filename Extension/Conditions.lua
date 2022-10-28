@@ -12,7 +12,7 @@ local Played = ns.BattleCacheManager:GetModule('Played')
 
 
 local function getOpponent(owner)
-    return owner == LE_BATTLE_PET_ALLY and LE_BATTLE_PET_ENEMY or LE_BATTLE_PET_ALLY
+    return owner == Enum.BattlePetOwner.Ally and Enum.BattlePetOwner.Enemy or Enum.BattlePetOwner.Ally
 end
 
 local function getOpponentActivePet(owner)
@@ -90,7 +90,7 @@ end)
 
 Addon:RegisterCondition('weather', { type = 'boolean', owner = false, pet = false }, function(_, _, weather)
     local id, name = 0, ''
-    local aura = C_PetBattles.GetAuraInfo(LE_BATTLE_PET_WEATHER, PET_BATTLE_PAD_INDEX, 1)
+    local aura = C_PetBattles.GetAuraInfo(Enum.BattlePetOwner.Weather, PET_BATTLE_PAD_INDEX, 1)
     if aura then
         id, name = C_PetBattles.GetAbilityInfoByID(aura)
     end
@@ -99,7 +99,7 @@ end)
 
 
 Addon:RegisterCondition('weather.duration', { type = 'compare', owner = false, pet = false }, function(_, _, weather)
-    local id, _, duration = C_PetBattles.GetAuraInfo(LE_BATTLE_PET_WEATHER, PET_BATTLE_PAD_INDEX, 1)
+    local id, _, duration = C_PetBattles.GetAuraInfo(Enum.BattlePetOwner.Weather, PET_BATTLE_PAD_INDEX, 1)
     if weather and id and (id == weather or select(2, C_PetBattles.GetAbilityInfoByID(id)) == weather) then
         return duration
     end

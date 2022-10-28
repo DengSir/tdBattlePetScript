@@ -296,7 +296,7 @@ function Module:UpdateLocked()
 end
 
 function Module:PetBattleFrame_UpdatePassButtonAndTimer()
-    local pveBattle = C_PetBattles.IsPlayerNPC(LE_BATTLE_PET_ENEMY)
+    local pveBattle = C_PetBattles.IsPlayerNPC(Enum.BattlePetOwner.Enemy)
 
     self.AutoButton:SetShown(pveBattle)
     self.ArtFrame2:SetShown(pveBattle)

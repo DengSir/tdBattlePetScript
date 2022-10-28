@@ -28,9 +28,9 @@ function Util.ParseIndex(value)
 end
 
 function Util.ParsePetOwner(owner)
-    return  owner == 'self'  and LE_BATTLE_PET_ALLY  or
-            owner == 'ally'  and LE_BATTLE_PET_ALLY  or
-            owner == 'enemy' and LE_BATTLE_PET_ENEMY or nil
+    return  owner == 'self'  and Enum.BattlePetOwner.Ally  or
+            owner == 'ally'  and Enum.BattlePetOwner.Ally  or
+            owner == 'enemy' and Enum.BattlePetOwner.Enemy or nil
 end
 
 function Util.ParsePetIndex(owner, pet)
