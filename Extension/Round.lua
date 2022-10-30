@@ -9,8 +9,8 @@ local Round = ns.BattleCacheManager:NewModule('Round', 'AceEvent-3.0')
 function Round:OnEnable()
     self.rounds = self:AllocCache({
         [0] = 0,
-        [LE_BATTLE_PET_ALLY] = 0,
-        [LE_BATTLE_PET_ENEMY] = 0
+        [Enum.BattlePetOwner.Ally] = 0,
+        [Enum.BattlePetOwner.Enemy] = 0
     })
 
     self:RegisterEvent('PET_BATTLE_PET_ROUND_RESULTS')
@@ -24,8 +24,8 @@ function Round:PET_BATTLE_PET_ROUND_RESULTS(_, round)
         return
     end
     self.rounds[0] = round + 1
-    self.rounds[LE_BATTLE_PET_ALLY] = self.rounds[LE_BATTLE_PET_ALLY] + 1
-    self.rounds[LE_BATTLE_PET_ENEMY] = self.rounds[LE_BATTLE_PET_ENEMY] + 1
+    self.rounds[Enum.BattlePetOwner.Ally] = self.rounds[Enum.BattlePetOwner.Ally] + 1
+    self.rounds[Enum.BattlePetOwner.Enemy] = self.rounds[Enum.BattlePetOwner.Enemy] + 1
 end
 
 function Round:PET_BATTLE_PET_CHANGED(_, owner)
@@ -36,8 +36,8 @@ end
 
 function Round:OnBattleStart()
     self.rounds[0] = 0
-    self.rounds[LE_BATTLE_PET_ALLY] = 0
-    self.rounds[LE_BATTLE_PET_ENEMY] = 0
+    self.rounds[Enum.BattlePetOwner.Ally] = 0
+    self.rounds[Enum.BattlePetOwner.Enemy] = 0
 end
 
 function Round:GetRound()

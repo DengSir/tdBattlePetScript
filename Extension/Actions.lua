@@ -16,13 +16,13 @@ end)
 
 
 Addon:RegisterAction('change', function(index)
-    local active = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
+    local active = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
     if index == 'next' then
-        index = active % C_PetBattles.GetNumPets(LE_BATTLE_PET_ALLY) + 1
+        index = active % C_PetBattles.GetNumPets(Enum.BattlePetOwner.Ally) + 1
     else
-        index = Util.ParsePetIndex(LE_BATTLE_PET_ALLY, index)
+        index = Util.ParsePetIndex(Enum.BattlePetOwner.Ally, index)
     end
-    -- if not index or active == index or C_PetBattles.GetHealth(LE_BATTLE_PET_ALLY, index) == 0 then
+    -- if not index or active == index or C_PetBattles.GetHealth(Enum.BattlePetOwner.Ally, index) == 0 then
     --     return false
     -- end
 
@@ -36,12 +36,12 @@ end)
 
 
 Addon:RegisterAction('ability', 'use', function(ability)
-    local index = C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY)
-    local ability= Util.ParseAbility(LE_BATTLE_PET_ALLY, index, ability)
+    local index = C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally)
+    local ability= Util.ParseAbility(Enum.BattlePetOwner.Ally, index, ability)
     if not ability then
         return false
     end
-    if not C_PetBattles.GetAbilityState(LE_BATTLE_PET_ALLY, index, ability) then
+    if not C_PetBattles.GetAbilityState(Enum.BattlePetOwner.Ally, index, ability) then
         return false
     end
     C_PetBattles.UseAbility(ability)

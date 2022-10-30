@@ -18,7 +18,7 @@ function FirstEnemy:OnInitialize()
 end
 
 function FirstEnemy:GetCurrentKey()
-    return C_PetBattles.GetPetSpeciesID(LE_BATTLE_PET_ENEMY, 1)
+    return C_PetBattles.GetPetSpeciesID(Enum.BattlePetOwner.Enemy, 1)
 end
 
 function FirstEnemy:GetTitleByKey(key)

@@ -227,7 +227,7 @@ local function fillPet(list, owner)
 end
 
 Snippets.Action.use = function(list)
-    return fillAbility(list, LE_BATTLE_PET_ALLY, C_PetBattles.GetActivePet(LE_BATTLE_PET_ALLY))
+    return fillAbility(list, Enum.BattlePetOwner.Ally, C_PetBattles.GetActivePet(Enum.BattlePetOwner.Ally))
 end
 
 Snippets.Action.ability = Snippets.Action.use
@@ -243,15 +243,15 @@ local function fillNext(list, column)
 end
 
 Snippets.Action.change = function(list)
-    return fillNext(list, fillPet(list, LE_BATTLE_PET_ALLY))
+    return fillNext(list, fillPet(list, Enum.BattlePetOwner.Ally))
 end
 
 Snippets.Condition.enemy = function(list)
-    return fillPet(list, LE_BATTLE_PET_ENEMY)
+    return fillPet(list, Enum.BattlePetOwner.Enemy)
 end
 
 Snippets.Condition.ally = function(list)
-    return fillPet(list, LE_BATTLE_PET_ALLY)
+    return fillPet(list, Enum.BattlePetOwner.Ally)
 end
 
 Snippets.Condition.self = Snippets.Condition.ally

@@ -25,7 +25,7 @@ function Base:OnDisable()
 end
 
 function Base:GetCurrentKey()
-    return self:GetOwnerKey(LE_BATTLE_PET_ALLY) .. ':' .. self:GetOwnerKey(LE_BATTLE_PET_ENEMY)
+    return self:GetOwnerKey(Enum.BattlePetOwner.Ally) .. ':' .. self:GetOwnerKey(Enum.BattlePetOwner.Enemy)
 end
 
 function Base:GetOwnerKey(owner)
