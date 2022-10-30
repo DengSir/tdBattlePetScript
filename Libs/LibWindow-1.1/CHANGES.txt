@@ -1,0 +1,38 @@
+------------------------------------------------------------------------
+r22 | nevcairiel | 2021-06-29 09:32:58 +0000 (Tue, 29 Jun 2021) | 1 line
+Changed paths:
+   M /trunk/LibWindow-1.1.toc
+
+Update TOC for 9.1
+------------------------------------------------------------------------
+r21 | nevcairiel | 2021-03-15 10:26:43 +0000 (Mon, 15 Mar 2021) | 1 line
+Changed paths:
+   M /trunk/LibWindow-1.1.toc
+
+Update TOC for 9.0.5
+------------------------------------------------------------------------
+r20 | nevcairiel | 2020-12-19 10:45:26 +0000 (Sat, 19 Dec 2020) | 1 line
+Changed paths:
+   M /trunk/LibWindow-1.1.toc
+
+Update TOC
+------------------------------------------------------------------------
+r19 | nevcairiel | 2020-10-13 17:59:08 +0000 (Tue, 13 Oct 2020) | 1 line
+Changed paths:
+   M /trunk/LibWindow-1.1.toc
+
+Update TOC
+------------------------------------------------------------------------
+r18 | nevcairiel | 2019-09-07 08:42:10 +0000 (Sat, 07 Sep 2019) | 1 line
+Changed paths:
+   M /trunk/LibWindow-1.1/LibWindow-1.1.lua
+
+Verify scale is valid before using, early in the loading process it may not return anything yet
+------------------------------------------------------------------------
+r17 | nevcairiel | 2017-08-29 14:31:58 +0000 (Tue, 29 Aug 2017) | 1 line
+Changed paths:
+   M /trunk/LibWindow-1.1.toc
+
+Update TOC for 7.3
+------------------------------------------------------------------------
+

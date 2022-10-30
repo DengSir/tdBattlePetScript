@@ -18,5 +18,6 @@
     <Include file="LibBase64-1.0\lib.xml" />
     <Include file="LibCRC32-1.0\LibCRC32-1.0.xml" />
 
+    <Script file="LibWindow-1.1\LibWindow-1.1\LibWindow-1.1.lua" />
     <Include file="tdGUI\Load.xml" />
 </Ui>

@@ -1,0 +1,12 @@
+## Interface: 90100
+## LoadOnDemand: 1
+## Title: Lib: Window-1.1
+## Version: 1.1.22
+## Notes: A library that handles the basics of "window" style frames
+## Author: Mikk
+## eMail: dpsgnome@mail.com
+## X-Category: Library
+## X-License: Public Domain
+
+LibStub.lua
+LibWindow-1.1\LibWindow-1.1.lua
