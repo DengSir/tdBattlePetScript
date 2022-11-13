@@ -2,6 +2,13 @@
 
 This addon makes battle pet combat support scripting.
 
+⚠️ **This addon is unmaintained since Shadowlands. Please use the updated addon here:**
+
+- [Curse](https://www.curseforge.com/wow/addons/pet-battle-scripts)
+- [Wago](https://addons.wago.io/addons/pbs)
+- [WoW Interface](https://www.wowinterface.com/downloads/info26435-PetBattleScripts.html)
+- [GitHub](https://github.com/axc450/pbs/releases)
+
 ## Screenshot
 
 ![Screenshot](https://raw.githubusercontent.com/DengSir/tdBattlePetScript/master/.images/screenshot.jpg "Screenshot")
